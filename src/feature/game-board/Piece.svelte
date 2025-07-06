@@ -1,10 +1,17 @@
 <script lang="ts">
+  let isHanded = $state(false);
+  
+  function toggleHighlight() {
+    isHanded = !isHanded;
+  }
 </script>
 
 <div 
-  class="piece"
+  class="piece {isHanded ? 'highlighted' : ''}"
   role="button"
   tabindex="0"
+  onclick={toggleHighlight}
+  onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
 >
   <span class="piece-character">歩</span>
 </div>
@@ -49,7 +56,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .piece:hover::before {
+  .piece.highlighted::before {
     transform: scale(1.05);
     box-shadow: 
       /* メインの影（ホバー時は強く） */
@@ -64,7 +71,8 @@
       inset 0 -1px 1px rgba(0, 0, 0, 0.1);
   }
 
-  .piece:hover .piece-character {
+  .piece-character,
+  .piece.highlighted .piece-character {
     transform: translate(-50%, -50%) scale(1.05);
   }
 
