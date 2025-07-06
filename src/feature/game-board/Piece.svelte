@@ -14,7 +14,7 @@
   }
 </script>
 
-<div class="square"
+<div class="square {isHanded ? 'handed' : ''}"
   style="--square-width: {width}px; --square-height: {height}px;">
   <div 
     class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
@@ -31,7 +31,6 @@
 
 <style>
   .square {
-    position: relative;
     width: var(--square-width);
     height: var(--square-height);
     background: transparent;
@@ -39,6 +38,12 @@
     align-items: center;
     justify-content: center;
     border: 1px solid transparent;
+    transition: all 0.2s ease;
+    filter: drop-shadow(2px 2px 2px black);
+  }
+
+  .square.handed {
+    filter: drop-shadow(4px 8px 3px black);
   }
 
   .piece {
@@ -47,11 +52,11 @@
     --piece-height: calc(var(--square-height) * var(--piece-scale));
     --font-size: calc(var(--font-size) * var(--piece-scale));
 
+    position: relative;
     width: var(--piece-width);
     height: var(--piece-height);
     cursor: pointer;
     user-select: none;
-    transition: all 0.2s ease;
     z-index: 10; /* ボードの上に表示 */
     border: 1px solid transparent; /* 駒の境界線 */
   }
@@ -66,15 +71,6 @@
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(50% 0%, 95% 20%, 100% 100%, 0% 100%, 5% 20%);
-    box-shadow: 
-      /* メインの影 */
-      0 2px 4px rgba(0, 0, 0, 0.3),
-      /* より柔らかい外側の影 */
-      0 4px 12px rgba(0, 0, 0, 0.15),
-      /* 内側のハイライト */
-      inset 0 1px 2px rgba(255, 255, 255, 0.5),
-      /* 内側の微細な影 */
-      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
@@ -87,33 +83,11 @@
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(0% 0%, 100% 0%, 95% 80%, 50% 100%, 5% 80%);
-    box-shadow: 
-      /* メインの影 */
-      0 2px 4px rgba(0, 0, 0, 0.3),
-      /* より柔らかい外側の影 */
-      0 4px 12px rgba(0, 0, 0, 0.15),
-      /* 内側のハイライト */
-      inset 0 1px 2px rgba(255, 255, 255, 0.5),
-      /* 内側の微細な影 */
-      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .piece.handed::before {
     transform: scale(1.02) translateY(-8px);
-    box-shadow: 
-      /* 持ち上がった時の大きな影 */
-      0 12px 24px rgba(0, 0, 0, 0.4),
-      /* さらに広がる薄い影 */
-      0 20px 40px rgba(0, 0, 0, 0.2),
-      /* 遠い影（地面との距離感） */
-      0 30px 60px rgba(0, 0, 0, 0.1),
-      /* 光る縁（選択効果） */
-      0 0 0 2px rgba(255, 215, 0, 0.6),
-      /* 内側のハイライト（より明るく） */
-      inset 0 1px 3px rgba(255, 255, 255, 0.8),
-      /* 内側の影 */
-      inset 0 -1px 2px rgba(0, 0, 0, 0.15);
   }
 
   .piece-character {
@@ -127,7 +101,7 @@
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
     font-family: 'MS Mincho', 'Yu Mincho', serif;
     line-height: 1;
-    z-index: 1;
+    z-index: 10;
     transition: transform 0.2s ease;
   }
 
