@@ -1,10 +1,9 @@
 <script lang="ts">
-  import Piece from './feature/game-board/Piece.svelte';
+  import GameBoard from './feature/game-board/GameBoard.svelte';
 </script>
 
 <main>
-  <Piece/>
-  <Piece character="金" isHanded={true} scale={1.2}/>
+  <GameBoard/>
 </main>
 
 <style>
