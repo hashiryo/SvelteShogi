@@ -3,14 +3,18 @@
     character?: string;
     isHanded?: boolean;
     scale?: number;
-    reverse?: boolean; 
+    reverse?: boolean;
+    row?: number;
+    col?: number;
   }
 
   let { 
     character = '歩',
     isHanded = false,
     scale = 1,
-    reverse = false
+    reverse = false,
+    row = 0,
+    col = 0
   }: PieceProps = $props();
   
   function toggleHighlight() {
@@ -24,7 +28,7 @@
   tabindex="0"
   onclick={toggleHighlight}
   onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
-  style="--piece-scale: {scale}; --piece-reverse: {reverse ? '180deg' : '0deg'}"
+  style="--piece-scale: {scale}; --piece-reverse: {reverse ? '180deg' : '0deg'}; --row: {row}; --col: {col};"
 >
   <span class="piece-character">{character}</span>
 </div>
@@ -36,7 +40,9 @@
     --piece-height: calc(44px * var(--piece-scale));
     --font-size: calc(30px * var(--piece-scale));
 
-    position: relative;
+    position: absolute;
+    top: calc(var(--row) * var(--piece-height));
+    left: calc(var(--col) * var(--piece-width));
     width: var(--piece-width);
     height: var(--piece-height);
     cursor: pointer;
@@ -44,6 +50,7 @@
     transition: all 0.2s ease;
     margin: 2px;
     border: 1px solid red;
+    z-index: 10; /* ボードの上に表示 */
   }
 
   /* 五角形の形状をCSSで作成 */
