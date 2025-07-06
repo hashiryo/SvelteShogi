@@ -39,11 +39,11 @@
     justify-content: center;
     border: 1px solid transparent;
     transition: all 0.2s ease;
-    filter: drop-shadow(2px 2px 2px black);
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
   }
 
   .square.handed {
-    filter: drop-shadow(4px 8px 3px black);
+    filter: drop-shadow(4px 8px 3px rgba(0, 0, 0, 0.4));
   }
 
   .piece {

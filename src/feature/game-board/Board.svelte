@@ -28,6 +28,7 @@
     border: 1px solid #2c1810;
     background: linear-gradient(135deg, #f0e68c, #daa520);
     cursor: pointer;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
   }
 
   .square {
