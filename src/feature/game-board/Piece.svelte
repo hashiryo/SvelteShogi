@@ -19,7 +19,7 @@
 </script>
 
 <div 
-  class="piece {isHanded ? 'handed' : ''}"
+  class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
   role="button"
   tabindex="0"
   onclick={toggleHighlight}
@@ -68,6 +68,27 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
+  .piece.reversed::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #f5f5dc, #e4c77c);
+    clip-path: polygon(0% 0%, 100% 0%, 95% 80%, 50% 100%, 5% 80%);
+    box-shadow: 
+      /* メインの影 */
+      0 2px 4px rgba(0, 0, 0, 0.3),
+      /* より柔らかい外側の影 */
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      /* 内側のハイライト */
+      inset 0 1px 2px rgba(255, 255, 255, 0.5),
+      /* 内側の微細な影 */
+      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
   .piece.handed::before {
     transform: scale(1.02) translateY(-8px);
     box-shadow: 
@@ -89,7 +110,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(var(--piece-reverse));
     font-size: var(--font-size);
     font-weight: bold;
     color: #2c1810;
@@ -101,6 +122,6 @@
   }
 
   .piece.handed .piece-character {
-    transform: translate(-50%, calc(-50% - 8px)) scale(1.02);
+    transform: translate(-50%, calc(-50% - 8px)) scale(1.02) rotate(var(--piece-reverse));
   }
 </style>
