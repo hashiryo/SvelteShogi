@@ -29,7 +29,7 @@
 </script>
 
 <div class="square"
-  style="--square-width: {width}px; --square-height: {height}px; --top: {top}; --left: {left};">
+  style="--square-width: {width}px; --square-height: {height}px; --top: {top}px; --left: {left}px;">
   <div 
     class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
     role="button"
@@ -45,7 +45,6 @@
 
 <style>
   .square {
-
     position: absolute;
     width: var(--square-width);
     height: var(--square-height);
@@ -55,7 +54,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid red;
+    border: 1px solid transparent;
   }
 
   .piece {

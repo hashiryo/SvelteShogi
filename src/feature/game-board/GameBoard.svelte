@@ -10,7 +10,7 @@
 <div class="game-board">
   <Board />
   <div class="pieces-container">
-    <!-- <Piece top={0} left={0} scale={PIECE_SCALE} /> -->
+    <Piece top={0} left={0} scale={PIECE_SCALE} />
     <Piece reverse={true} top={SQUARE_HEIGHT * 8} left={SQUARE_WIDTH * 8} scale={PIECE_SCALE} />
   </div>
 </div>
