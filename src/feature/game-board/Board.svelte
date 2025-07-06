@@ -1,9 +1,11 @@
 <script lang="ts">
   interface BoardProps {
-    scale?: number;
+    squareWidth?: number;
+    squareHeight?: number;
   }
   let { 
-    scale = 1
+    squareWidth = 40, // 駒の幅
+    squareHeight = 44, // 駒の高さ
   }: BoardProps = $props();
 </script>
 
@@ -14,7 +16,7 @@
         class="square {row%3 === 0 && col%3 === 0 && row > 0 && col > 0? 'dot' : ''}" 
         data-row={row} 
         data-col={col}
-        style="--piece-scale: {scale};"
+        style="--width: {squareWidth}px; --height: {squareHeight}px;"
       >
         <!-- 駒はGameBoardコンポーネントで配置 -->
       </div>
@@ -32,11 +34,8 @@
   }
 
   .square {
-    --square-width: calc(40px * var(--piece-scale));
-    --square-height: calc(44px * var(--piece-scale));
-
-    width: var(--square-width);
-    height: var(--square-height);
+    width: var(--width);
+    height: var(--height);
     background: transparent;
     /* border: 1px solid #8b7355; */
     display: flex;
