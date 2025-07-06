@@ -3,12 +3,14 @@
     character?: string;
     isHanded?: boolean;
     scale?: number;
+    reverse?: boolean; 
   }
 
   let { 
     character = '歩',
     isHanded = false,
-    scale = 1
+    scale = 1,
+    reverse = false
   }: PieceProps = $props();
   
   function toggleHighlight() {
@@ -17,12 +19,12 @@
 </script>
 
 <div 
-  class="piece {isHanded ? 'highlighted' : ''}"
+  class="piece {isHanded ? 'handed' : ''}"
   role="button"
   tabindex="0"
   onclick={toggleHighlight}
   onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
-  style="--piece-scale: {scale}"
+  style="--piece-scale: {scale}; --piece-reverse: {reverse ? '180deg' : '0deg'}"
 >
   <span class="piece-character">{character}</span>
 </div>
@@ -30,11 +32,10 @@
 <style>
   .piece {
     /* スケール変数で全体のサイズを制御 */
-    --piece-scale: 1;
     --piece-width: calc(40px * var(--piece-scale));
-    --piece-height: calc(48px * var(--piece-scale));
-    --font-size: calc(22px * var(--piece-scale));
-    
+    --piece-height: calc(44px * var(--piece-scale));
+    --font-size: calc(30px * var(--piece-scale));
+
     position: relative;
     width: var(--piece-width);
     height: var(--piece-height);
@@ -67,7 +68,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .piece.highlighted::before {
+  .piece.handed::before {
     transform: scale(1.02) translateY(-8px);
     box-shadow: 
       /* 持ち上がった時の大きな影 */
@@ -99,7 +100,7 @@
     transition: transform 0.2s ease;
   }
 
-  .piece.highlighted .piece-character {
+  .piece.handed .piece-character {
     transform: translate(-50%, calc(-50% - 8px)) scale(1.02);
   }
 </style>
