@@ -1,5 +1,15 @@
 <script lang="ts">
-  let isHanded = $state(false);
+  interface PieceProps {
+    character?: string;
+    isHanded?: boolean;
+    scale?: number;
+  }
+
+  let { 
+    character = '歩',
+    isHanded = false,
+    scale = 1
+  }: PieceProps = $props();
   
   function toggleHighlight() {
     isHanded = !isHanded;
@@ -12,8 +22,9 @@
   tabindex="0"
   onclick={toggleHighlight}
   onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
+  style="--piece-scale: {scale}"
 >
-  <span class="piece-character">歩</span>
+  <span class="piece-character">{character}</span>
 </div>
 
 <style>
