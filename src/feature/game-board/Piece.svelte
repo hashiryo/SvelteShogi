@@ -38,31 +38,34 @@
     background: linear-gradient(145deg, #f5f5dc, #e4c77c);
     clip-path: polygon(50% 0%, 95% 20%, 100% 100%, 0% 100%, 5% 20%);
     box-shadow: 
+      /* メインの影 */
       0 2px 4px rgba(0, 0, 0, 0.3),
-      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+      /* より柔らかい外側の影 */
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      /* 内側のハイライト */
+      inset 0 1px 2px rgba(255, 255, 255, 0.5),
+      /* 内側の微細な影 */
+      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .piece:hover::before {
     transform: scale(1.05);
     box-shadow: 
+      /* メインの影（ホバー時は強く） */
       0 4px 8px rgba(0, 0, 0, 0.4),
-      inset 0 1px 2px rgba(255, 255, 255, 0.5);
-  }
-
-  .piece:active::before {
-    transform: scale(0.98) translateY(-3px);
-    box-shadow: 
-      0 8px 16px rgba(0, 0, 0, 0.3),
-      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+      /* より大きな外側の影 */
+      0 8px 20px rgba(0, 0, 0, 0.2),
+      /* 光る効果 */
+      0 0 0 1px rgba(255, 215, 0, 0.3),
+      /* 内側のハイライト */
+      inset 0 1px 2px rgba(255, 255, 255, 0.6),
+      /* 内側の影 */
+      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
   }
 
   .piece:hover .piece-character {
     transform: translate(-50%, -50%) scale(1.05);
-  }
-
-  .piece:active .piece-character {
-    transform: translate(-50%, calc(-50% - 3px)) scale(0.98);
   }
 
   .piece-character {
