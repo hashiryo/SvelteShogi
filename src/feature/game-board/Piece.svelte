@@ -1,11 +1,14 @@
 <script lang="ts">
   interface PieceProps {
     character?: string;
-    isHanded?: boolean;
+    top?: number;
+    left?: number;
+    width?: number;
+    height?: number;
+    fontSize?: number;
     scale?: number;
     reverse?: boolean;
-    row?: number;
-    col?: number;
+    isHanded?: boolean;
   }
 
   let { 
@@ -13,8 +16,11 @@
     isHanded = false,
     scale = 1,
     reverse = false,
-    row = 0,
-    col = 0
+    top = 0,
+    left = 0,
+    width = 40,
+    height = 44,
+    fontSize = 30
   }: PieceProps = $props();
   
   function toggleHighlight() {
@@ -22,35 +28,49 @@
   }
 </script>
 
-<div 
-  class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
-  role="button"
-  tabindex="0"
-  onclick={toggleHighlight}
-  onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
-  style="--piece-scale: {scale}; --piece-reverse: {reverse ? '180deg' : '0deg'}; --row: {row}; --col: {col};"
->
-  <span class="piece-character">{character}</span>
+<div class="square"
+  style="--square-width: {width}px; --square-height: {height}px; --top: {top}; --left: {left};">
+  <div 
+    class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
+    role="button"
+    tabindex="0"
+    onclick={toggleHighlight}
+    onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
+    style="--font-size: {fontSize}px; --piece-scale: {scale}; --piece-rotate: {reverse ? '180deg' : '0deg'}; "
+  >
+    <span class="piece-character">{character}</span>
+  </div>
 </div>
 
+
 <style>
-  .piece {
-    /* スケール変数で全体のサイズを制御 */
-    --piece-width: calc(40px * var(--piece-scale));
-    --piece-height: calc(44px * var(--piece-scale));
-    --font-size: calc(30px * var(--piece-scale));
+  .square {
 
     position: absolute;
-    top: calc(var(--row) * var(--piece-height));
-    left: calc(var(--col) * var(--piece-width));
+    width: var(--square-width);
+    height: var(--square-height);
+    top: var(--top);
+    left: var(--left);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid red;
+  }
+
+  .piece {
+    /* スケール変数で全体のサイズを制御 */
+    --piece-width: calc(var(--square-width) * var(--piece-scale));
+    --piece-height: calc(var(--square-height) * var(--piece-scale));
+    --font-size: calc(var(--font-size) * var(--piece-scale));
+
     width: var(--piece-width);
     height: var(--piece-height);
     cursor: pointer;
     user-select: none;
     transition: all 0.2s ease;
-    margin: 2px;
-    border: 1px solid red;
     z-index: 10; /* ボードの上に表示 */
+    border: 1px solid transparent; /* 駒の境界線 */
   }
 
   /* 五角形の形状をCSSで作成 */
@@ -61,7 +81,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(145deg, #f5f5dc, #e4c77c);
+    background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(50% 0%, 95% 20%, 100% 100%, 0% 100%, 5% 20%);
     box-shadow: 
       /* メインの影 */
@@ -82,7 +102,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(145deg, #f5f5dc, #e4c77c);
+    background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(0% 0%, 100% 0%, 95% 80%, 50% 100%, 5% 80%);
     box-shadow: 
       /* メインの影 */
@@ -117,7 +137,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(var(--piece-reverse));
+    transform: translate(-50%, -50%) rotate(var(--piece-rotate));
     font-size: var(--font-size);
     font-weight: bold;
     color: #2c1810;
@@ -129,6 +149,6 @@
   }
 
   .piece.handed .piece-character {
-    transform: translate(-50%, calc(-50% - 8px)) scale(1.02) rotate(var(--piece-reverse));
+    transform: translate(-50%, calc(-50% - 8px)) scale(1.02) rotate(var(--piece-rotate));
   }
 </style>
