@@ -31,6 +31,7 @@
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);
     border: 1px solid #2c1810;
+    background: linear-gradient(135deg, #f0e68c, #daa520);
   }
 
   .square {
