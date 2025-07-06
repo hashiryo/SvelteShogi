@@ -1,20 +1,11 @@
 <script lang="ts">
-  interface BoardProps {
-    top?: number;
-    left?: number;
-    squareWidth?: number;
-    squareHeight?: number;
-  }
-  let { 
-    top = 0, // ボードの上端位置
-    left = 0, // ボードの左端位置
+  let {
     squareWidth = 40, // 駒の幅
     squareHeight = 44, // 駒の高さ
-  }: BoardProps = $props();
+  } = $props();
 </script>
 
-<div class="board"
-  style="--top: {top}px; --left: {left}px;">
+<div class="board">
   {#each Array.from({length: 9}, (_, i) => i) as row}
     {#each Array.from({length: 9}, (_, i) => i) as col}
       <div 
@@ -31,9 +22,6 @@
 
 <style>
   .board {
-    position: absolute;
-    top: var(--top);
-    left: var(--left);
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);

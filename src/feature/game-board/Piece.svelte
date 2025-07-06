@@ -1,27 +1,13 @@
 <script lang="ts">
-  interface PieceProps {
-    character?: string;
-    top?: number;
-    left?: number;
-    width?: number;
-    height?: number;
-    fontSize?: number;
-    scale?: number;
-    reverse?: boolean;
-    isHanded?: boolean;
-  }
-
   let { 
     character = '歩',
     isHanded = false,
     scale = 1,
     reverse = false,
-    top = 0,
-    left = 0,
     width = 40,
     height = 44,
     fontSize = 30
-  }: PieceProps = $props();
+  } = $props();
   
   function toggleHighlight() {
     isHanded = !isHanded;
@@ -29,7 +15,7 @@
 </script>
 
 <div class="square"
-  style="--square-width: {width}px; --square-height: {height}px; --top: {top}px; --left: {left}px;">
+  style="--square-width: {width}px; --square-height: {height}px;">
   <div 
     class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
     role="button"
@@ -45,11 +31,9 @@
 
 <style>
   .square {
-    position: absolute;
+    position: relative;
     width: var(--square-width);
     height: var(--square-height);
-    top: var(--top);
-    left: var(--left);
     background: transparent;
     display: flex;
     align-items: center;
