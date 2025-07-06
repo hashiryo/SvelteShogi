@@ -4,6 +4,7 @@
 
 <main>
   <Piece/>
+  <Piece character="金" isHanded={true} scale={1.2}/>
 </main>
 
 <style>
