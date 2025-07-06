@@ -5,14 +5,11 @@
   let { 
     scale = 1
   }: BoardProps = $props();
-
-  // 将棋盤の設定
-  const BOARD_SIZE = 9;
 </script>
 
 <div class="board">
-  {#each Array.from({length: BOARD_SIZE}, (_, i) => i) as row}
-    {#each Array.from({length: BOARD_SIZE}, (_, i) => i) as col}
+  {#each Array.from({length: 9}, (_, i) => i) as row}
+    {#each Array.from({length: 9}, (_, i) => i) as col}
       <div 
         class="square {row%3 === 0 && col%3 === 0 && row > 0 && col > 0? 'dot' : ''}" 
         data-row={row} 
