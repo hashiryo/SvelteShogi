@@ -40,6 +40,29 @@
     box-shadow: 
       0 2px 4px rgba(0, 0, 0, 0.3),
       inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .piece:hover::before {
+    transform: scale(1.05);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .piece:active::before {
+    transform: scale(0.98) translateY(-3px);
+    box-shadow: 
+      0 8px 16px rgba(0, 0, 0, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .piece:hover .piece-character {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  .piece:active .piece-character {
+    transform: translate(-50%, calc(-50% - 3px)) scale(0.98);
   }
 
   .piece-character {
