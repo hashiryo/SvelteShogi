@@ -57,23 +57,20 @@
   }
 
   .piece.highlighted::before {
-    transform: scale(1.05);
+    transform: scale(1.02) translateY(-8px);
     box-shadow: 
-      /* メインの影（ホバー時は強く） */
-      0 4px 8px rgba(0, 0, 0, 0.4),
-      /* より大きな外側の影 */
-      0 8px 20px rgba(0, 0, 0, 0.2),
-      /* 光る効果 */
-      0 0 0 1px rgba(255, 215, 0, 0.3),
-      /* 内側のハイライト */
-      inset 0 1px 2px rgba(255, 255, 255, 0.6),
+      /* 持ち上がった時の大きな影 */
+      0 12px 24px rgba(0, 0, 0, 0.4),
+      /* さらに広がる薄い影 */
+      0 20px 40px rgba(0, 0, 0, 0.2),
+      /* 遠い影（地面との距離感） */
+      0 30px 60px rgba(0, 0, 0, 0.1),
+      /* 光る縁（選択効果） */
+      0 0 0 2px rgba(255, 215, 0, 0.6),
+      /* 内側のハイライト（より明るく） */
+      inset 0 1px 3px rgba(255, 255, 255, 0.8),
       /* 内側の影 */
-      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
-  }
-
-  .piece-character,
-  .piece.highlighted .piece-character {
-    transform: translate(-50%, -50%) scale(1.05);
+      inset 0 -1px 2px rgba(0, 0, 0, 0.15);
   }
 
   .piece-character {
@@ -89,5 +86,9 @@
     line-height: 1;
     z-index: 1;
     transition: transform 0.2s ease;
+  }
+
+  .piece.highlighted .piece-character {
+    transform: translate(-50%, calc(-50% - 8px)) scale(1.02);
   }
 </style>
