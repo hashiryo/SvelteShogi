@@ -4,6 +4,8 @@
     squareHeight = 44,
     squareElements = $bindable([]),
   } = $props();
+  const KANJI_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  const ZENKAKU_NUM = ['１', '２', '３', '４', '５', '６', '７', '８', '９'];
 </script>
 
 <div class="board">
