@@ -22,7 +22,10 @@
     tabindex="0"
     onclick={toggleHighlight}
     onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
-    style="--font-size: {fontSize}px; --piece-scale: {scale}; --piece-rotate: {reverse ? '180deg' : '0deg'}; "
+    style="--font-size: {fontSize}px; 
+           --piece-scale: {scale}; 
+           --piece-top: {reverse ? '40%' : '60%'};
+           --piece-rotate: {reverse ? '180deg' : '0deg'};"
   >
     <span class="piece-character">{character}</span>
   </div>
@@ -39,11 +42,11 @@
     justify-content: center;
     border: 1px solid transparent;
     transition: all 0.2s ease;
-    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(3px 4px 2px rgba(0, 0, 0, 0.7));
   }
 
   .square.handed {
-    filter: drop-shadow(4px 8px 3px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(4px 8px 3px rgba(0, 0, 0, 0.7));
   }
 
   .piece {
@@ -92,8 +95,7 @@
 
   .piece-character {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: var(--piece-top);
     transform: translate(-50%, -50%) rotate(var(--piece-rotate));
     font-size: var(--font-size);
     font-weight: bold;
