@@ -28,8 +28,6 @@
   // 3. ボード全体のコンテナ要素とその座標
   let gameBoardElement: HTMLDivElement | undefined = $state();
 
-  // --- 副作用 (Effects) ---
-
   let relativeSquarePositions: {x: number, y: number}[] = $derived((() => {
     // squarePositionsが更新されたときに、相対座標を計算
       const boardRect = gameBoardElement?.getBoundingClientRect();
