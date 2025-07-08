@@ -73,7 +73,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
-    clip-path: polygon(50% 0%, 95% 20%, 100% 100%, 0% 100%, 5% 20%);
+    clip-path: polygon(50% 0%, 90% 20%, 100% 100%, 0% 100%, 10% 20%);
     transition: all 0.2s ease;
   }
 
@@ -85,7 +85,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
-    clip-path: polygon(0% 0%, 100% 0%, 95% 80%, 50% 100%, 5% 80%);
+    clip-path: polygon(0% 0%, 100% 0%, 90% 80%, 50% 100%, 10% 80%);
     transition: all 0.2s ease;
   }
 
