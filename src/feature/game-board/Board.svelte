@@ -3,12 +3,13 @@
     squareWidth = 40,
     squareHeight = 44,
     squareElements = $bindable([]),
+    reverse = false,
   } = $props();
   const KANJI_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
   const ZENKAKU_NUM = ['１', '２', '３', '４', '５', '６', '７', '８', '９'];
 
-  let cols = Array.from({ length: 9 }, (_, i) => i ).reverse();
-  let rows = Array.from({ length: 9 }, (_, i) => i );
+  let cols = reverse?  [0,1,2,3,4,5,6,7,8]: [8,7,6,5,4,3,2,1,0];
+  let rows = reverse? [8,7,6,5,4,3,2,1,0]: [0,1,2,3,4,5,6,7,8];
 </script>
 
 <div class="board-container">
@@ -22,10 +23,12 @@
   <div class="board-with-row-labels">
     <!-- 将棋盤本体 -->
     <div class="board">
-      {#each rows as row}
-        {#each cols as col}
+      {#each {length: 9}, ri}
+        {@const row = rows[ri]}
+        {#each {length: 9}, ci}
+          {@const col = cols[ci]}
           <div 
-            class="square {row%3 === 0 && col%3 === 0 && row > 0 && col > 0? 'dot' : ''}" 
+            class="square {ri%3 === 0 && ci%3 === 0 && ri > 0 && ci > 0? 'dot' : ''}" 
             data-row={row} 
             data-col={col}
             style="--width: {squareWidth}px; --height: {squareHeight}px;"

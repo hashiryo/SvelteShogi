@@ -18,8 +18,8 @@
     { id: 3, name: '歩', row: 6, col: 0, isMine: true },
     // 相手の駒
     { id: 4, name: '玉', row: 0, col: 4, isMine: false },
-    { id: 5, name: '飛', row: 1, col: 7, isMine: false },
-    { id: 6, name: '歩', row: 2, col: 8, isMine: false },
+    { id: 5, name: '角', row: 1, col: 1, isMine: false },
+    { id: 6, name: '歩', row: 2, col: 7, isMine: false },
   ]);
 
   // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
