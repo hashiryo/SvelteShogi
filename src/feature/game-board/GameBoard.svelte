@@ -26,33 +26,21 @@
   let squarePositions: DOMRect[] = $state([]);
 
   // 3. ボード全体のコンテナ要素とその座標
-  let gameBoardElement: HTMLDivElement;
-  let boardRect: DOMRect | undefined = $state();
+  let gameBoardElement: HTMLDivElement | undefined = $state();
 
   // --- 副作用 (Effects) ---
 
-  function updateBoardRect() {
-    if (gameBoardElement) {
-      boardRect = gameBoardElement.getBoundingClientRect();
-    }
-  }
-
-  // gameBoardElementがマウントされたら、その座標を取得
-  $effect(() => {
-    updateBoardRect();
-  });
-
   let relativeSquarePositions: {x: number, y: number}[] = $derived((() => {
     // squarePositionsが更新されたときに、相対座標を計算
-      return squarePositions.map(pos => {
-        if (boardRect) {
-          return {
-            x: pos.left - boardRect.left,
-            y: pos.top - boardRect.top
-          };
-        }
-        return pos;
-      });
+      const boardRect = gameBoardElement?.getBoundingClientRect();
+      if (boardRect) {
+        // ボードの座標が取得できた場合、相対座標を計算
+        return squarePositions.map(pos => ({
+          x: pos.left - boardRect.left,
+          y: pos.top - boardRect.top
+        }));
+      }
+      return squarePositions.map(() => ({ x: 0, y: 0 }));
   })());
 
   // $inspect(boardRect);
@@ -63,8 +51,6 @@
     squarePositions = positions;
   }
 </script>
-
-<svelte:window on:resize={updateBoardRect}  on:scroll={updateBoardRect} />
 
 <div class="canvas">
   <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
@@ -80,31 +66,31 @@
     />
 
     <!-- 盤上の駒を配置するレイヤー -->
-    <!-- squarePositions と boardRect の両方が準備できてから描画 -->
-    {#if squarePositions.length > 0 && boardRect}
+    <!-- squarePositions と gameBoardElement の両方が準備できてから描画 -->
+    {#if squarePositions.length > 0 && gameBoardElement}
       <div class="pieces-layer">
         {#each piecesOnBoard as piece (piece.id)}
           {@const index = piece.row * 9 + piece.col}
-            <!-- 駒を配置するためのラッパー -->
-            <div 
-              class="piece-wrapper"
-              style="
-                position: absolute;
-                top: {relativeSquarePositions[index]?.y}px;
-                left: {relativeSquarePositions[index]?.x}px;
-                width: {SQUARE_WIDTH}px;
-                height: {SQUARE_HEIGHT}px;
-              "
-            >
-              <Piece 
-                fontSize={FONT_SIZE} 
-                width={SQUARE_WIDTH}  
-                height={SQUARE_HEIGHT} 
-                scale={PIECE_SCALE} 
-                reverse={!piece.isMine}
-                character={piece.name}
-              />
-            </div>
+          <!-- 駒を配置するためのラッパー -->
+          <div 
+            class="piece-wrapper"
+            style="
+              position: absolute;
+              top: {relativeSquarePositions[index]?.y}px;
+              left: {relativeSquarePositions[index]?.x}px;
+              width: {SQUARE_WIDTH}px;
+              height: {SQUARE_HEIGHT}px;
+            "
+          >
+            <Piece 
+              fontSize={FONT_SIZE} 
+              width={SQUARE_WIDTH}  
+              height={SQUARE_HEIGHT} 
+              scale={PIECE_SCALE} 
+              reverse={!piece.isMine}
+              character={piece.name}
+            />
+          </div>
         {/each}
       </div>
     {/if}

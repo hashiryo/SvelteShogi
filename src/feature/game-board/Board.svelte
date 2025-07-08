@@ -30,9 +30,6 @@
   });
 </script>
 
-<!-- windowのイベントリスナーは引き続き有効です -->
-<svelte:window on:resize={updateSquarePositions} on:scroll={updateSquarePositions} />
-
 <div class="board">
   {#each Array.from({length: 9}, (_, row) => row) as row}
     {#each Array.from({length: 9}, (_, col) => col) as col}
