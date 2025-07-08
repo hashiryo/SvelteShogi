@@ -7,19 +7,11 @@
 
   let squareElements: HTMLDivElement[] = $state([]);
 
-  function updateSquarePositions() {
-    // squareElementsが全て揃ってから処理を実行
-    if (squareElements.length === 81 && squareElements.every(el => el)) {
-      const positions = squareElements.map(el => el.getBoundingClientRect());
-      // 親コンポーネントに計算結果を通知
-      squarePositions = positions;
-    }
-  }
-
-  // Svelte5では、$effect内でDOMの更新を監視するのが一般的です
   $effect(() => {
     // squareElementsが変更されたときに位置を再計算
-    updateSquarePositions();
+    if (squareElements.length === 81 && squareElements.every(el => el)) {
+      squarePositions = squareElements.map(el => el.getBoundingClientRect());
+    }
   });
 </script>
 
