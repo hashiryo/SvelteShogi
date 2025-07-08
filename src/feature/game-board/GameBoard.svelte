@@ -22,8 +22,8 @@
     { id: 6, name: '歩', row: 2, col: 8, isMine: false },
   ]);
 
-  // 2. 盤上の各マスの座標を格納する配列 (Boardコンポーネントから受け取る)
-  let squarePositions: DOMRect[] = $state([]);
+  // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
+  let squareElements: HTMLDivElement[] = $state([]);
 
   // 3. ボード全体のコンテナ要素とその座標
   let gameBoardElement: HTMLDivElement | undefined = $state();
@@ -35,12 +35,15 @@
       const boardRect = gameBoardElement?.getBoundingClientRect();
       if (boardRect) {
         // ボードの座標が取得できた場合、相対座標を計算
-        return squarePositions.map(pos => ({
-          x: pos.left - boardRect.left,
-          y: pos.top - boardRect.top
-        }));
+        return squareElements.map(el => {
+          const pos = el.getBoundingClientRect();
+          return {
+            x: pos.left - boardRect.left,
+            y: pos.top - boardRect.top
+          };
+        });
       }
-      return squarePositions.map(() => ({ x: 0, y: 0 }));
+      return squareElements.map(() => ({ x: 0, y: 0 }));
   })());
 
 </script>
@@ -55,12 +58,12 @@
     <Board 
       squareWidth={SQUARE_WIDTH} 
       squareHeight={SQUARE_HEIGHT} 
-      bind:squarePositions={squarePositions}
+      bind:squareElements={squareElements}
     />
 
     <!-- 盤上の駒を配置するレイヤー -->
-    <!-- squarePositions と gameBoardElement の両方が準備できてから描画 -->
-    {#if squarePositions.length > 0 && gameBoardElement}
+    <!-- squareElements と gameBoardElement の両方が準備できてから描画 -->
+    {#if squareElements.length > 0 && gameBoardElement}
       <div class="pieces-layer">
         {#each piecesOnBoard as piece (piece.id)}
           {@const index = piece.row * 9 + piece.col}

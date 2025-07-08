@@ -2,17 +2,8 @@
   let {
     squareWidth = 40,
     squareHeight = 44,
-    squarePositions = $bindable([]),
+    squareElements = $bindable([]),
   } = $props();
-
-  let squareElements: HTMLDivElement[] = $state([]);
-
-  $effect(() => {
-    // squareElementsが変更されたときに位置を再計算
-    if (squareElements.length === 81 && squareElements.every(el => el)) {
-      squarePositions = squareElements.map(el => el.getBoundingClientRect());
-    }
-  });
 </script>
 
 <div class="board">
