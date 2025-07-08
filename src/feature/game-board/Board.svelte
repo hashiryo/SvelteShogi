@@ -13,7 +13,6 @@
   }: Props = $props();
 
   let squareElements: HTMLDivElement[] = $state([]);
-  let boardElement: HTMLDivElement; // ボード全体のdiv要素をバインド
 
   function updateSquarePositions() {
     // squareElementsが全て揃ってから処理を実行
@@ -28,20 +27,13 @@
   $effect(() => {
     // squareElementsが変更されたときに位置を再計算
     updateSquarePositions();
-
-    // ResizeObserverを使うと、要素のサイズ変更をより正確に検知できます
-    if (boardElement) {
-      const observer = new ResizeObserver(updateSquarePositions);
-      observer.observe(boardElement);
-      return () => observer.disconnect();
-    }
   });
 </script>
 
 <!-- windowのイベントリスナーは引き続き有効です -->
 <svelte:window on:resize={updateSquarePositions} on:scroll={updateSquarePositions} />
 
-<div class="board" bind:this={boardElement}>
+<div class="board">
   {#each Array.from({length: 9}, (_, row) => row) as row}
     {#each Array.from({length: 9}, (_, col) => col) as col}
       <div 
