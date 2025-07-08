@@ -96,7 +96,10 @@
 </div>
 
 <style>
-  /* その他は変更なし */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   .canvas {
     position: relative; /* これが駒の配置の基準点になる */
     display: flex;
