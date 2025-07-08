@@ -1,16 +1,9 @@
 <script lang="ts">
-  type Props = {
-    squareWidth?: number;
-    squareHeight?: number;
-    // 位置が更新されたときに親に通知するためのコールバック関数
-    onUpdate?: (positions: DOMRect[]) => void;
-  };
-
   let {
     squareWidth = 40,
     squareHeight = 44,
-    onUpdate = () => {}
-  }: Props = $props();
+    squarePositions = $bindable([]),
+  } = $props();
 
   let squareElements: HTMLDivElement[] = $state([]);
 
@@ -19,7 +12,7 @@
     if (squareElements.length === 81 && squareElements.every(el => el)) {
       const positions = squareElements.map(el => el.getBoundingClientRect());
       // 親コンポーネントに計算結果を通知
-      onUpdate(positions);
+      squarePositions = positions;
     }
   }
 

@@ -43,13 +43,6 @@
       return squarePositions.map(() => ({ x: 0, y: 0 }));
   })());
 
-  // $inspect(boardRect);
-  // $inspect(relativeSquarePositions);
-
-  // --- 関数 ---
-  function handlePositionsUpdate(positions: DOMRect[]) {
-    squarePositions = positions;
-  }
 </script>
 
 <div class="canvas">
@@ -62,7 +55,7 @@
     <Board 
       squareWidth={SQUARE_WIDTH} 
       squareHeight={SQUARE_HEIGHT} 
-      onUpdate={handlePositionsUpdate}
+      bind:squarePositions={squarePositions}
     />
 
     <!-- 盤上の駒を配置するレイヤー -->
