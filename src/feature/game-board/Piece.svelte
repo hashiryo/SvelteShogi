@@ -24,7 +24,7 @@
     onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
     style="--font-size: {fontSize}px; 
            --piece-scale: {scale}; 
-           --piece-top: {reverse ? '40%' : '60%'};
+           --piece-top: {reverse ? '5%' : '25%'};
            --piece-rotate: {reverse ? '180deg' : '0deg'};"
   >
     <span class="piece-character">{character}</span>
@@ -96,7 +96,7 @@
   .piece-character {
     position: absolute;
     top: var(--piece-top);
-    transform: translate(-50%, -50%) rotate(var(--piece-rotate));
+    transform: translate(-50%, 0%) rotate(var(--piece-rotate));
     font-size: var(--font-size);
     font-weight: bold;
     color: #2c1810;
@@ -108,6 +108,6 @@
   }
 
   .piece.handed .piece-character {
-    transform: translate(-50%, calc(-50% - 8px)) scale(1.02) rotate(var(--piece-rotate));
+    transform: translate(-50%, calc(0% - 8px)) scale(1.02) rotate(var(--piece-rotate));
   }
 </style>

@@ -25,19 +25,19 @@
   // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
 
-  // 3. ボード全体のコンテナ要素とその座標
-  let gameBoardElement: HTMLDivElement | undefined = $state();
+  // 3. キャンバス全体のコンテナ要素とその座標
+  let canvasElement: HTMLDivElement | undefined = $state();
 
   let relativeSquarePositions: {x: number, y: number}[] = $derived((() => {
     // squarePositionsが更新されたときに、相対座標を計算
-      const boardRect = gameBoardElement?.getBoundingClientRect();
-      if (boardRect) {
+      const canvasRect = canvasElement?.getBoundingClientRect();
+      if (canvasRect) {
         // ボードの座標が取得できた場合、相対座標を計算
         return squareElements.map(el => {
           const pos = el.getBoundingClientRect();
           return {
-            x: pos.left - boardRect.left,
-            y: pos.top - boardRect.top
+            x: pos.left - canvasRect.left,
+            y: pos.top - canvasRect.top
           };
         });
       }
@@ -46,13 +46,13 @@
 
 </script>
 
-<div class="canvas">
+<div class="canvas" bind:this={canvasElement}>
   <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
     <!-- 持ち駒のロジックは別途実装 -->
   </div>
 
   <!-- position: relative を設定して、中の駒の配置基準にする -->
-  <div class="game-board" bind:this={gameBoardElement}>
+  <div class="game-board">
     <Board 
       squareWidth={SQUARE_WIDTH} 
       squareHeight={SQUARE_HEIGHT} 
@@ -60,8 +60,8 @@
     />
 
     <!-- 盤上の駒を配置するレイヤー -->
-    <!-- squareElements と gameBoardElement の両方が準備できてから描画 -->
-    {#if squareElements.length > 0 && gameBoardElement}
+    <!-- squareElements と canvasElement の両方が準備できてから描画 -->
+    {#if squareElements.length > 0 && canvasElement}
       <div class="pieces-layer">
         {#each piecesOnBoard as piece (piece.id)}
           {@const index = piece.row * 9 + piece.col}
@@ -96,9 +96,17 @@
 </div>
 
 <style>
+  /* その他は変更なし */
+  .canvas {
+    position: relative; /* これが駒の配置の基準点になる */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+  }
+
   .game-board {
-    /* これが駒の配置の基準点になる */
-    position: relative;
     display: inline-block;
   }
 
@@ -121,14 +129,6 @@
     justify-content: center;
   }
 
-  /* その他は変更なし */
-  .canvas { /* canvasクラスを追加したと仮定 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 20px;
-  }
   .captured-opponent {
     display: flex;
     flex-wrap: wrap;
