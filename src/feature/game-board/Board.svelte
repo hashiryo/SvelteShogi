@@ -1,26 +1,63 @@
 <script lang="ts">
+  type Props = {
+    squareWidth?: number;
+    squareHeight?: number;
+    // 位置が更新されたときに親に通知するためのコールバック関数
+    onUpdate?: (positions: DOMRect[]) => void;
+  };
+
   let {
-    squareWidth = 40, // 駒の幅
-    squareHeight = 44, // 駒の高さ
-  } = $props();
+    squareWidth = 40,
+    squareHeight = 44,
+    onUpdate = () => {}
+  }: Props = $props();
+
+  let squareElements: HTMLDivElement[] = $state([]);
+  let boardElement: HTMLDivElement; // ボード全体のdiv要素をバインド
+
+  function updateSquarePositions() {
+    // squareElementsが全て揃ってから処理を実行
+    if (squareElements.length === 81 && squareElements.every(el => el)) {
+      const positions = squareElements.map(el => el.getBoundingClientRect());
+      // 親コンポーネントに計算結果を通知
+      onUpdate(positions);
+    }
+  }
+
+  // Svelte5では、$effect内でDOMの更新を監視するのが一般的です
+  $effect(() => {
+    // squareElementsが変更されたときに位置を再計算
+    updateSquarePositions();
+
+    // ResizeObserverを使うと、要素のサイズ変更をより正確に検知できます
+    if (boardElement) {
+      const observer = new ResizeObserver(updateSquarePositions);
+      observer.observe(boardElement);
+      return () => observer.disconnect();
+    }
+  });
 </script>
 
-<div class="board">
-  {#each Array.from({length: 9}, (_, i) => i) as row}
-    {#each Array.from({length: 9}, (_, i) => i) as col}
+<!-- windowのイベントリスナーは引き続き有効です -->
+<svelte:window on:resize={updateSquarePositions} on:scroll={updateSquarePositions} />
+
+<div class="board" bind:this={boardElement}>
+  {#each Array.from({length: 9}, (_, row) => row) as row}
+    {#each Array.from({length: 9}, (_, col) => col) as col}
       <div 
         class="square {row%3 === 0 && col%3 === 0 && row > 0 && col > 0? 'dot' : ''}" 
         data-row={row} 
         data-col={col}
         style="--width: {squareWidth}px; --height: {squareHeight}px;"
+        bind:this={squareElements[row * 9 + col]}
       >
-        <!-- 駒はGameBoardコンポーネントで配置 -->
       </div>
     {/each}
   {/each}
 </div>
 
 <style>
+  /* styleは変更なし */
   .board {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -35,7 +72,6 @@
     width: var(--width);
     height: var(--height);
     background: transparent;
-    /* border: 1px solid #8b7355; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -47,7 +83,6 @@
     background: linear-gradient(135deg, #f0e68c, #daa520);
   }
 
-  /* 盤面の線を表現 */
   .square::after {
     content: '';
     position: absolute;
@@ -59,7 +94,6 @@
     pointer-events: none;
   }
 
-  /* 格子点の黒丸 */
   .square.dot::before {
     content: '';
     position: absolute;

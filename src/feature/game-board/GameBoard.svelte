@@ -2,42 +2,153 @@
   import Board from './Board.svelte';
   import Piece from './Piece.svelte';
 
-  const SQUARE_WIDTH = 55; // 駒の幅
-  const SQUARE_HEIGHT = 60; // 駒の高さ
-  const FONT_SIZE = 40; // 駒のフォントサイズ
-  const PIECE_SCALE = 0.95; // 駒のサイズ調整用スケール
+  // --- 定数 ---
+  const SQUARE_WIDTH = 55;
+  const SQUARE_HEIGHT = 60;
+  const FONT_SIZE = 40;
+  const PIECE_SCALE = 0.95;
+
+  // --- 状態 (State) ---
+
+  // 1. 駒の配置状態を管理する配列
+  // row, col は 0-8 のインデックス
+  let piecesOnBoard = $state([
+    { id: 1, name: '玉', row: 8, col: 4, isMine: true },
+    { id: 2, name: '飛', row: 7, col: 1, isMine: true },
+    { id: 3, name: '歩', row: 6, col: 0, isMine: true },
+    // 相手の駒
+    { id: 4, name: '玉', row: 0, col: 4, isMine: false },
+    { id: 5, name: '飛', row: 1, col: 7, isMine: false },
+    { id: 6, name: '歩', row: 2, col: 8, isMine: false },
+  ]);
+
+  // 2. 盤上の各マスの座標を格納する配列 (Boardコンポーネントから受け取る)
+  let squarePositions: DOMRect[] = $state([]);
+
+  // 3. ボード全体のコンテナ要素とその座標
+  let gameBoardElement: HTMLDivElement;
+  let boardRect: DOMRect | undefined = $state();
+
+  // --- 副作用 (Effects) ---
+
+  function updateBoardRect() {
+    if (gameBoardElement) {
+      boardRect = gameBoardElement.getBoundingClientRect();
+    }
+  }
+
+  // gameBoardElementがマウントされたら、その座標を取得
+  $effect(() => {
+    updateBoardRect();
+  });
+
+  let relativeSquarePositions: {x: number, y: number}[] = $derived((() => {
+    // squarePositionsが更新されたときに、相対座標を計算
+      return squarePositions.map(pos => {
+        if (boardRect) {
+          return {
+            x: pos.left - boardRect.left,
+            y: pos.top - boardRect.top
+          };
+        }
+        return pos;
+      });
+  })());
+
+  // $inspect(boardRect);
+  // $inspect(relativeSquarePositions);
+
+  // --- 関数 ---
+  function handlePositionsUpdate(positions: DOMRect[]) {
+    squarePositions = positions;
+  }
 </script>
 
+<svelte:window on:resize={updateBoardRect}  on:scroll={updateBoardRect} />
+
 <div class="canvas">
-  <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;"> 
-    <Piece fontSize={FONT_SIZE} width={SQUARE_WIDTH}  height={SQUARE_HEIGHT} scale={PIECE_SCALE} reverse={true} />
+  <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
+    <!-- 持ち駒のロジックは別途実装 -->
   </div>
-  <div class="game-board">
-    <Board squareWidth={SQUARE_WIDTH} squareHeight={SQUARE_HEIGHT} />
-    <div class="pieces-on-board" style="top: 0px; left: 0px;">
-      <Piece fontSize={FONT_SIZE} width={SQUARE_WIDTH}  height={SQUARE_HEIGHT} scale={PIECE_SCALE} />
-    </div>
-    <div class="pieces-on-board" style="top: {SQUARE_HEIGHT * 2}px; left: {SQUARE_WIDTH * 3}px;">
-      <Piece fontSize={FONT_SIZE} width={SQUARE_WIDTH}  height={SQUARE_HEIGHT} scale={PIECE_SCALE} reverse={true}/>
-    </div>
+
+  <!-- position: relative を設定して、中の駒の配置基準にする -->
+  <div class="game-board" bind:this={gameBoardElement}>
+    <Board 
+      squareWidth={SQUARE_WIDTH} 
+      squareHeight={SQUARE_HEIGHT} 
+      onUpdate={handlePositionsUpdate}
+    />
+
+    <!-- 盤上の駒を配置するレイヤー -->
+    <!-- squarePositions と boardRect の両方が準備できてから描画 -->
+    {#if squarePositions.length > 0 && boardRect}
+      <div class="pieces-layer">
+        {#each piecesOnBoard as piece (piece.id)}
+          {@const index = piece.row * 9 + piece.col}
+            <!-- 駒を配置するためのラッパー -->
+            <div 
+              class="piece-wrapper"
+              style="
+                position: absolute;
+                top: {relativeSquarePositions[index]?.y}px;
+                left: {relativeSquarePositions[index]?.x}px;
+                width: {SQUARE_WIDTH}px;
+                height: {SQUARE_HEIGHT}px;
+              "
+            >
+              <Piece 
+                fontSize={FONT_SIZE} 
+                width={SQUARE_WIDTH}  
+                height={SQUARE_HEIGHT} 
+                scale={PIECE_SCALE} 
+                reverse={!piece.isMine}
+                character={piece.name}
+              />
+            </div>
+        {/each}
+      </div>
+    {/if}
   </div>
-  <div class="captured-me" style="width: {SQUARE_WIDTH * 9}px;"> 
-    <Piece fontSize={FONT_SIZE} width={SQUARE_WIDTH}  height={SQUARE_HEIGHT} scale={PIECE_SCALE}/>
+
+  <div class="captured-me" style="width: {SQUARE_WIDTH * 9}px;">
+    <!-- 持ち駒のロジックは別途実装 -->
   </div>
 </div>
 
-
-
 <style>
   .game-board {
+    /* これが駒の配置の基準点になる */
     position: relative;
     display: inline-block;
   }
 
-  .pieces-on-board {
+  /* .pieces-layerは省略可能ですが、駒をまとめる層としてあると便利 */
+  .pieces-layer {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 盤のクリックを妨げないようにする */
+    pointer-events: none; 
   }
 
+  .piece-wrapper {
+    /* 駒自身のイベントは有効にする */
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* その他は変更なし */
+  .canvas { /* canvasクラスを追加したと仮定 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+  }
   .captured-opponent {
     display: flex;
     flex-wrap: wrap;
