@@ -1,7 +1,8 @@
 <script lang="ts">
   import Grid from './Grid.svelte';
   import Piece from './Piece.svelte';
-
+  import type { PieceOnBoard } from '../../../types/shogi.d.ts';
+  
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
   const SQUARE_HEIGHT = 60;
@@ -9,18 +10,9 @@
   const PIECE_SCALE = 0.95;
 
   // --- 状態 (State) ---
-
-  // 1. 駒の配置状態を管理する配列
-  // row, col は 0-8 のインデックス
-  let piecesOnBoard = $state([
-    { id: 1, name: '玉', row: 8, col: 4, isMine: true },
-    { id: 2, name: '飛', row: 7, col: 1, isMine: true },
-    { id: 3, name: '歩', row: 6, col: 0, isMine: true },
-    // 相手の駒
-    { id: 4, name: '玉', row: 0, col: 4, isMine: false },
-    { id: 5, name: '角', row: 1, col: 1, isMine: false },
-    { id: 6, name: '歩', row: 2, col: 7, isMine: false },
-  ]);
+  let {
+    piecesOnBoard = [] as PieceOnBoard[]
+  } = $props();
 
   // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -63,7 +55,7 @@
     <!-- squareElements と gameBoardElement の両方が準備できてから描画 -->
     {#if squareElements.length > 0 && gameBoardElement}
       <div class="pieces-layer">
-        {#each piecesOnBoard as piece (piece.id)}
+        {#each piecesOnBoard as piece}
           {@const index = piece.row * 9 + piece.col}
           <!-- 駒を配置するためのラッパー -->
           <div 
@@ -81,8 +73,8 @@
               width={SQUARE_WIDTH}  
               height={SQUARE_HEIGHT} 
               scale={PIECE_SCALE} 
-              reverse={!piece.isMine}
-              character={piece.name}
+              reverse={!piece.is_sente}
+              character={piece.piece}
             />
           </div>
         {/each}
