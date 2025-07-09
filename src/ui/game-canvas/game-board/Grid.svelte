@@ -12,7 +12,7 @@
   let rows = reverse? [8,7,6,5,4,3,2,1,0]: [0,1,2,3,4,5,6,7,8];
 </script>
 
-<div class="board-container">
+<div class="grid-container">
   <!-- 列の座標（算用数字） -->
   <div class="column-labels">
     {#each cols as col}
@@ -20,9 +20,9 @@
     {/each}
   </div>
   
-  <div class="board-with-row-labels">
+  <div class="grid-with-row-labels">
     <!-- 将棋盤本体 -->
-    <div class="board">
+    <div class="grid">
       {#each {length: 9}, ri}
         {@const row = rows[ri]}
         {#each {length: 9}, ci}
@@ -49,7 +49,7 @@
 </div>
 
 <style>
-  .board-container {
+  .grid-container {
     display: inline-block;
     background: linear-gradient(135deg, #f0e68c, #daa520);
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
@@ -72,7 +72,7 @@
     color: #2c1810;
   }
 
-  .board-with-row-labels {
+  .grid-with-row-labels {
     display: flex;
   }
 
@@ -92,7 +92,7 @@
     margin: 0 2px 0 2px;
   }
 
-  .board {
+  .grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);

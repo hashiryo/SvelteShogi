@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Board from './Board.svelte';
+  import Grid from './Grid.svelte';
   import Piece from './Piece.svelte';
 
   // --- 定数 ---
@@ -53,7 +53,7 @@
 
   <!-- position: relative を設定して、中の駒の配置基準にする -->
   <div class="game-board" bind:this={gameBoardElement}>
-    <Board 
+    <Grid 
       squareWidth={SQUARE_WIDTH} 
       squareHeight={SQUARE_HEIGHT} 
       bind:squareElements={squareElements}
