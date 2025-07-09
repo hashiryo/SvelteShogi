@@ -1,5 +1,5 @@
 <script lang="ts">
-  import GameCanvas from './features/game-canvas/GameCanvas.svelte';
+  import GameCanvas from './ui/game-canvas/GameCanvas.svelte';
 </script>
 
 <main>
