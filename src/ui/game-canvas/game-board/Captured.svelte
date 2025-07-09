@@ -67,13 +67,13 @@
   }
 
   .piece-top {
-    position: absolute;
-    top: 0;
-    left: 0;
     z-index: 20;
   }
 
   .piece-below {
+    position: absolute;
+    top: 0;
+    left: 0;
     z-index: 10;
   }
 

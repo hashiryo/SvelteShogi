@@ -43,7 +43,14 @@
 
 <div class="canvas">
   <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
-    <!-- 持ち駒のロジックは別途実装 -->
+    <Captured
+      fontSize={FONT_SIZE}
+      squareWidth={SQUARE_WIDTH}
+      squareHeight={SQUARE_HEIGHT}
+      pieceScale={PIECE_SCALE}
+      capturedPieces={capturedPiecesOpponent}
+      reverse={true}
+    />
   </div>
 
   <!-- position: relative を設定して、中の駒の配置基準にする -->
@@ -137,6 +144,7 @@
     align-items: flex-end;
     justify-content: right;
   }
+  
   .captured-me {
     display: flex;
     flex-wrap: wrap;
