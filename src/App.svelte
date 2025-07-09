@@ -1,10 +1,9 @@
 <script lang="ts">
-  import GameBoard from './feature/game-board/GameBoard.svelte';
+  import GameCanvas from './feature/game-canvas/GameCanvas.svelte';
 </script>
 
 <main>
-  <!-- <GameBoard/> -->
-  <GameBoard />
+  <GameCanvas />
 </main>
 
 <style>
