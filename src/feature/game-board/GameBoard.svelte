@@ -25,19 +25,19 @@
   // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
 
-  // 3. キャンバス全体のコンテナ要素とその座標
-  let canvasElement: HTMLDivElement | undefined = $state();
+  // 3. ボード全体のコンテナ要素とその座標
+  let gameBoardElement: HTMLDivElement | undefined = $state();
 
   let relativeSquarePositions: {x: number, y: number}[] = $derived((() => {
     // squarePositionsが更新されたときに、相対座標を計算
-      const canvasRect = canvasElement?.getBoundingClientRect();
-      if (canvasRect) {
+      const boardRect = gameBoardElement?.getBoundingClientRect();
+      if (boardRect) {
         // ボードの座標が取得できた場合、相対座標を計算
         return squareElements.map(el => {
           const pos = el.getBoundingClientRect();
           return {
-            x: pos.left - canvasRect.left,
-            y: pos.top - canvasRect.top
+            x: pos.left - boardRect.left,
+            y: pos.top - boardRect.top
           };
         });
       }
@@ -46,13 +46,13 @@
 
 </script>
 
-<div class="canvas" bind:this={canvasElement}>
+<div class="canvas">
   <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
     <!-- 持ち駒のロジックは別途実装 -->
   </div>
 
   <!-- position: relative を設定して、中の駒の配置基準にする -->
-  <div class="game-board">
+  <div class="game-board" bind:this={gameBoardElement}>
     <Board 
       squareWidth={SQUARE_WIDTH} 
       squareHeight={SQUARE_HEIGHT} 
@@ -60,8 +60,8 @@
     />
 
     <!-- 盤上の駒を配置するレイヤー -->
-    <!-- squareElements と canvasElement の両方が準備できてから描画 -->
-    {#if squareElements.length > 0 && canvasElement}
+    <!-- squareElements と gameBoardElement の両方が準備できてから描画 -->
+    {#if squareElements.length > 0 && gameBoardElement}
       <div class="pieces-layer">
         {#each piecesOnBoard as piece (piece.id)}
           {@const index = piece.row * 9 + piece.col}
@@ -96,12 +96,8 @@
 </div>
 
 <style>
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
+  
   .canvas {
-    position: relative; /* これが駒の配置の基準点になる */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,6 +106,8 @@
   }
 
   .game-board {
+    /* これが駒の配置の基準点になる */
+    position: relative;
     display: inline-block;
   }
 
