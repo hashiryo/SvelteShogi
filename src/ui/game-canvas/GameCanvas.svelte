@@ -1,6 +1,6 @@
 <script lang="ts">
   import GameBoard from './game-board/GameBoard.svelte';
-  import type { PieceOnBoard } from '../../types/shogi.d.ts';
+  import type { PieceType, PieceOnBoard } from '../../types/shogi.d.ts';
 
   // 仮の盤上の駒データ
   let piecesOnBoard: PieceOnBoard[] = [
@@ -23,10 +23,20 @@
       col: 4
     }
   ];
+
+  // 仮の持ち駒データ
+  let capturedPiecesMe: { piece: PieceType; num: number }[] = [
+    { piece: "歩", num: 2 },
+    { piece: "香", num: 1 }
+  ];
+  let capturedPiecesOpponent: { piece: PieceType; num: number }[] = [
+    { piece: "銀", num: 1 },
+    { piece: "角", num: 1 }
+  ];
 </script>
 
 <main>
-  <GameBoard {piecesOnBoard} />
+  <GameBoard {piecesOnBoard} {capturedPiecesMe} {capturedPiecesOpponent} />
 </main>
 
 <style>

@@ -1,8 +1,9 @@
 <script lang="ts">
   import Grid from './Grid.svelte';
   import Piece from './Piece.svelte';
-  import type { PieceOnBoard } from '../../../types/shogi.d.ts';
-  
+  import Captured from './Captured.svelte';
+  import type { PieceType, PieceOnBoard } from '../../../types/shogi.d.ts';
+
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
   const SQUARE_HEIGHT = 60;
@@ -11,7 +12,9 @@
 
   // --- 状態 (State) ---
   let {
-    piecesOnBoard = [] as PieceOnBoard[]
+    piecesOnBoard = [] as PieceOnBoard[],
+    capturedPiecesMe = [] as { piece: PieceType; num: number }[],
+    capturedPiecesOpponent = [] as { piece: PieceType; num: number }[]
   } = $props();
 
   // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
@@ -83,7 +86,13 @@
   </div>
 
   <div class="captured-me" style="width: {SQUARE_WIDTH * 9}px;">
-    <!-- 持ち駒のロジックは別途実装 -->
+    <Captured
+      fontSize={FONT_SIZE}
+      squareWidth={SQUARE_WIDTH}
+      squareHeight={SQUARE_HEIGHT}
+      pieceScale={PIECE_SCALE}
+      capturedPieces={capturedPiecesMe}
+    />
   </div>
 </div>
 
