@@ -29,9 +29,8 @@
 {#if info}
 <div 
   class="info-text"
-  style="left: {endX + 10}px;
-         top: {endY - 10}px;
-         color: {`rgba(${color.r}, ${color.g}, ${color.b}, 1)`};"
+  style="left: {endX}px;
+         top: {endY + (endY > startY ? width / 2 : -30 - width / 2)}px;"
 >
   {info}
 </div>
@@ -48,6 +47,7 @@
   position: absolute;
   font-size: 14px;
   font-weight: bold;
+  color: rgba(0, 0, 0, 0.9);
   background: rgba(255, 255, 255, 0.9);
   padding: 2px 6px;
   border-radius: 4px;

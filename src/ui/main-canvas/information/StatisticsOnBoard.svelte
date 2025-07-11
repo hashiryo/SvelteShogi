@@ -74,7 +74,7 @@
       startCol: 2,
       endRow: 1,
       endCol: 1,
-      apparentRate: 0.2,
+      apparentRate: 0.9,
       winRate: 0.1,
     },
     {
@@ -125,7 +125,7 @@
         endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
         width: arrow.apparentRate * 30, // 矢印の太さをアピアレントレートに基づいて調整
         color: getColorFromRate(arrow.winRate),
-        info: `出現率${arrow.apparentRate.toFixed(2)}\n 勝率: ${arrow.winRate.toFixed(2)}`
+        info: `出現率${arrow.apparentRate.toFixed(2)} 勝率: ${arrow.winRate.toFixed(2)}`
       };
     } else {
       // FromCaptured
@@ -138,7 +138,7 @@
           endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
           width: 30,
           color: getColorFromRate(arrow.winRate),
-          info: `出現率${arrow.apparentRate.toFixed(2)}\n 勝率: ${arrow.winRate.toFixed(2)}`
+          info: `出現率${arrow.apparentRate.toFixed(2)} 勝率: ${arrow.winRate.toFixed(2)}`
         };
       }
     }
