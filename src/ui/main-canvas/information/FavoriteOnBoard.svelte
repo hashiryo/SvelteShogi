@@ -25,6 +25,18 @@
       startCol: 4,
       endRow: 8,
       endCol: 8,
+    },
+    {
+      startRow: 2,
+      startCol: 2,
+      endRow: 3,
+      endCol: 3,
+    },
+    {
+      startRow: 1,
+      startCol: 1,
+      endRow: 1,
+      endCol: 2,
     }
   ];
 

@@ -29,21 +29,23 @@
 .arrow {
   position: absolute;
   transform-origin: left center;
-  /* より金ピカなグラデーション */
+  /* より金ピカなグラデーション（透明度を追加） */
   background: linear-gradient(135deg, 
-    #FFD700 0%, 
-    #FFEF94 25%, 
-    #FFD700 50%, 
-    #FF8C00 75%, 
-    #FFD700 100%);
-  /* 光沢効果を追加 */
+    rgba(255, 215, 0, 0.8) 0%, 
+    rgba(255, 239, 148, 0.8) 25%, 
+    rgba(255, 215, 0, 0.8) 50%, 
+    rgba(255, 140, 0, 0.8) 75%, 
+    rgba(255, 215, 0, 0.8) 100%);
+  /* 光沢効果を追加（透明度調整） */
   box-shadow: 
-    0 0 10px rgba(255, 215, 0, 0.6),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    0 0 10px rgba(255, 215, 0, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
   z-index: 20;
   /* アニメーション効果 */
   animation: shine 2s infinite;
+  /* 透過効果 */
+  opacity: 0.85;
 }
 
 /* 光る効果のアニメーション */
