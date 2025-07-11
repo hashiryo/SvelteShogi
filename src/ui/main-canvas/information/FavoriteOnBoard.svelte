@@ -1,14 +1,29 @@
 <script lang="ts">
   import FavoriteArrow from './FavoriteArrow.svelte';
   import { fade } from 'svelte/transition';
+  import type { PieceType } from '../../../types/shogi.d.ts';
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
+    relativeCapturedMePositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedOpponentPositions = new Map<PieceType, { x: number; y: number }>(),
   }
   = $props();
 
+  type FromBoard = {
+    startRow: number;
+    startCol: number;
+    endRow: number;
+    endCol: number;
+  };
+  type FromCaptured = {
+    piece: PieceType;
+    is_sente: boolean;
+    endRow: number;
+    endCol: number;
+  };
 
-  let arrows = [
+  let arrows: (FromBoard | FromCaptured)[] = [
     // {
     //   startRow: 8,
     //   startCol: 0,
@@ -44,16 +59,49 @@
       startCol: 4,
       endRow: 6,
       endCol: 0,
+    },
+    {
+      piece: "歩",
+      is_sente: true,
+      endRow: 6,
+      endCol: 0,
+    },
+    {
+      piece: "銀",
+      is_sente: false,
+      endRow: 7,
+      endCol: 0,
     }
   ];
+
+  function getStartEndPositions(arrow: FromBoard | FromCaptured) {
+    if ('startRow' in arrow && 'startCol' in arrow) {
+      // FromBoard
+      return {
+        startX: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].x,
+        startY: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].y,
+        endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
+        endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
+      };
+    } else {
+      // FromCaptured
+      const position = arrow.is_sente ? relativeCapturedMePositions.get(arrow.piece) : relativeCapturedOpponentPositions.get(arrow.piece);
+      if (position) {
+        return {
+          startX: position.x,
+          startY: position.y,
+          endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
+          endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
+        };
+      }
+    }
+    return { startX: 0, startY: 0, endX: 0, endY: 0 };
+  }
 
   let selected = $state(0);
   let selectedArrow = $derived(arrows[selected]);
 
-  let startX = $derived(relativeSquarePositions[selectedArrow.startRow * 9 + selectedArrow.startCol].x);
-  let startY = $derived(relativeSquarePositions[selectedArrow.startRow * 9 + selectedArrow.startCol].y);
-  let endX = $derived(relativeSquarePositions[selectedArrow.endRow * 9 + selectedArrow.endCol].x);
-  let endY = $derived(relativeSquarePositions[selectedArrow.endRow * 9 + selectedArrow.endCol].y);
+  let { startX, startY, endX, endY } = $derived(getStartEndPositions(selectedArrow));
 
   $effect(() => {
     const interval = setInterval(() => {

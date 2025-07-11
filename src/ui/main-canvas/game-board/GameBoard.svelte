@@ -16,6 +16,8 @@
     capturedPiecesMe = [] as { piece: PieceType; num: number }[],
     capturedPiecesOpponent = [] as { piece: PieceType; num: number }[],
     squareElements = $bindable([]) as HTMLDivElement[],
+    capturedMeElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
+    capturedOpponentElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
     reverse = false
   } = $props();
 
@@ -42,14 +44,27 @@
 
 <div class="canvas">
   <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
-    <Captured
-      fontSize={FONT_SIZE}
-      squareWidth={SQUARE_WIDTH}
-      squareHeight={SQUARE_HEIGHT}
-      pieceScale={PIECE_SCALE}
-      capturedPieces={reverse? capturedPiecesMe: capturedPiecesOpponent}
-      reverse={true}
-    />
+    {#if reverse}
+      <Captured
+        fontSize={FONT_SIZE}
+        squareWidth={SQUARE_WIDTH}
+        squareHeight={SQUARE_HEIGHT}
+        pieceScale={PIECE_SCALE}
+        capturedPieces={capturedPiecesMe}
+        reverse={true}
+        bind:capturedElements={capturedMeElements}
+      />
+    {:else}
+      <Captured
+        fontSize={FONT_SIZE}
+        squareWidth={SQUARE_WIDTH}
+        squareHeight={SQUARE_HEIGHT}
+        pieceScale={PIECE_SCALE}
+        capturedPieces={capturedPiecesOpponent}
+        reverse={false}
+        bind:capturedElements={capturedOpponentElements}
+      />
+    {/if}
   </div>
 
   <!-- position: relative を設定して、中の駒の配置基準にする -->
@@ -94,13 +109,25 @@
   </div>
 
   <div class="captured-me" style="width: {SQUARE_WIDTH * 9}px;">
-    <Captured
-      fontSize={FONT_SIZE}
-      squareWidth={SQUARE_WIDTH}
-      squareHeight={SQUARE_HEIGHT}
-      pieceScale={PIECE_SCALE}
-      capturedPieces={reverse?  capturedPiecesOpponent: capturedPiecesMe}
-    />
+    {#if reverse}
+      <Captured
+        fontSize={FONT_SIZE}
+        squareWidth={SQUARE_WIDTH}
+        squareHeight={SQUARE_HEIGHT}
+        pieceScale={PIECE_SCALE}
+        capturedPieces={capturedPiecesOpponent}
+        bind:capturedElements={capturedOpponentElements}
+      />
+    {:else}      
+      <Captured
+        fontSize={FONT_SIZE}
+        squareWidth={SQUARE_WIDTH}
+        squareHeight={SQUARE_HEIGHT}
+        pieceScale={PIECE_SCALE}
+        capturedPieces={capturedPiecesMe}
+        bind:capturedElements={capturedMeElements}
+      />
+    {/if}
   </div>
 </div>
 

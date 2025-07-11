@@ -9,18 +9,29 @@
     fontSize = 32,
     capturedPieces = [] as { piece: PieceType; num: number }[],
     handPiece = null as PieceType | null,
-    reverse = false
+    reverse = false,
+    capturedElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
   } = $props();
 
+  let elements = $state([]) as HTMLDivElement[];
   if (reverse) {
     capturedPieces = capturedPieces.reverse();
   }
+  $effect(() => {
+    if(elements.length == capturedPieces.length) {
+      elements.forEach((element, index) => {
+        if (element) {
+          capturedElements.set(capturedPieces[index].piece, element);
+        }
+      });
+    }
+  });
 </script>
 
 <div class="captured">
-  {#each capturedPieces as {piece, num}}
+  {#each capturedPieces as {piece, num}, index}
     <div class="piece-container" style="width: {squareWidth}px;">
-      <div class="piece-top">
+      <div class="piece-top" bind:this={elements[index]}>
         <Piece
           width={squareWidth}
           height={squareHeight}
