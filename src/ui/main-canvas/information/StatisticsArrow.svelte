@@ -8,9 +8,9 @@
     width = 30,
   } = $props();
 
-  const length = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
-  const angle = Math.atan2(endY - startY, endX - startX) * (180 / Math.PI);
-  const marker = 100 - 30 * 100 / length;
+  let length = $derived(Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2));
+  let angle = $derived(Math.atan2(endY - startY, endX - startX) * (180 / Math.PI));
+  let marker = $derived(100 - width * 70 / length);
 </script>
 
 <div 

@@ -156,7 +156,7 @@
     };
   });
 
-  $inspect(selected);
+  // $inspect(selected);
 </script>
 
 

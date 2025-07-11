@@ -9,7 +9,7 @@
   const width = 15; // 矢印の太さ
   let length = $derived(Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2));
   let angle = $derived(Math.atan2(endY - startY, endX - startX) * (180 / Math.PI));
-  let marker = $derived(100 - 30 * 100 / length);
+  let marker = $derived(100 - width * 70 / length);
   // $inspect({ startX, startY, endX, endY, length, angle, marker });  
 </script>
 
