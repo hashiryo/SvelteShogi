@@ -47,9 +47,9 @@
     },
     {
       startRow: 4,
-      startCol: 4,
+      startCol: 8,
       endRow: 8,
-      endCol: 8,
+      endCol: 4,
       apparentRate: 0.6,
       winRate: 0.5,
     },
@@ -66,6 +66,14 @@
       startCol: 1,
       endRow: 1,
       endCol: 2,
+      apparentRate: 0.2,
+      winRate: 0.1,
+    },
+    {
+      startRow: 1,
+      startCol: 2,
+      endRow: 1,
+      endCol: 1,
       apparentRate: 0.2,
       winRate: 0.1,
     },
@@ -116,7 +124,8 @@
         endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
         endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
         width: arrow.apparentRate * 30, // 矢印の太さをアピアレントレートに基づいて調整
-        color: getColorFromRate(arrow.winRate)
+        color: getColorFromRate(arrow.winRate),
+        info: `出現率${arrow.apparentRate.toFixed(2)}\n 勝率: ${arrow.winRate.toFixed(2)}`
       };
     } else {
       // FromCaptured
@@ -128,18 +137,19 @@
           endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
           endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
           width: 30,
-          color: getColorFromRate(arrow.winRate)
+          color: getColorFromRate(arrow.winRate),
+          info: `出現率${arrow.apparentRate.toFixed(2)}\n 勝率: ${arrow.winRate.toFixed(2)}`
         };
       }
     }
-    return { startX: 0, startY: 0, endX: 0, endY: 0, width: 30, color: { r: 255, g: 255, b: 255 } };
+    return { startX: 0, startY: 0, endX: 0, endY: 0, width: 30, color: { r: 255, g: 255, b: 255 }, info: '' };
   }
 
   let selected = $state(0);
   let selectedArrow = $derived(arrows[selected]);
   let isVisible = $state(true);
 
-  let { startX, startY, endX, endY, width, color } = $derived(getStartEndPositions(selectedArrow));
+  let { startX, startY, endX, endY, width, color, info } = $derived(getStartEndPositions(selectedArrow));
 
   $effect(() => {
     const delay = isVisible ? 3000 : 3000;
@@ -171,6 +181,7 @@
           endY={endY}
           width={width}
           color={color}
+          info={info}
         />
       </div>
     {/if}
