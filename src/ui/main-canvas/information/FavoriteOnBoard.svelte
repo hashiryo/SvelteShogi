@@ -9,35 +9,41 @@
 
 
   let arrows = [
+    // {
+    //   startRow: 8,
+    //   startCol: 0,
+    //   endRow: 0,
+    //   endCol: 0
+    // },
+    // {
+    //   startRow: 5,
+    //   startCol: 0,
+    //   endRow: 5,
+    //   endCol: 8
+    // },
+    // {
+    //   startRow: 4,
+    //   startCol: 4,
+    //   endRow: 8,
+    //   endCol: 8,
+    // },
+    // {
+    //   startRow: 2,
+    //   startCol: 2,
+    //   endRow: 3,
+    //   endCol: 3,
+    // },
+    // {
+    //   startRow: 1,
+    //   startCol: 1,
+    //   endRow: 1,
+    //   endCol: 2,
+    // },
     {
-      startRow: 8,
-      startCol: 0,
-      endRow: 0,
-      endCol: 0
-    },
-    {
-      startRow: 5,
-      startCol: 0,
-      endRow: 5,
-      endCol: 8
-    },
-    {
-      startRow: 4,
+      startRow: 0,
       startCol: 4,
-      endRow: 8,
-      endCol: 8,
-    },
-    {
-      startRow: 2,
-      startCol: 2,
-      endRow: 3,
-      endCol: 3,
-    },
-    {
-      startRow: 1,
-      startCol: 1,
-      endRow: 1,
-      endCol: 2,
+      endRow: 6,
+      endCol: 0,
     }
   ];
 
@@ -49,12 +55,10 @@
   let endX = $derived(relativeSquarePositions[selectedArrow.endRow * 9 + selectedArrow.endCol].x);
   let endY = $derived(relativeSquarePositions[selectedArrow.endRow * 9 + selectedArrow.endCol].y);
 
-  const visibleDuration = 3000; // 矢印が表示される時間（ミリ秒）
-
   $effect(() => {
     const interval = setInterval(() => {
         selected = (selected + 1) % arrows.length;
-    }, visibleDuration);
+    }, 5000);
     return () => clearInterval(interval);
   });
 
@@ -64,14 +68,16 @@
 
 <div class="favorite-on-board">
   {#if arrows.length > 0}
-    <div>
-      <FavoriteArrow
-        startX={startX}
-        startY={startY}
-        endX={endX}
-        endY={endY}
-      />
-    </div>
+    {#key selected}
+      <div transition:fade={{ delay: 500, duration: 1000 }}>
+        <FavoriteArrow
+          startX={startX}
+          startY={startY}
+          endX={endX}
+          endY={endY}
+        />
+      </div>
+    {/key}
   {/if}
 </div>
 
