@@ -1,80 +1,17 @@
 <script lang="ts">
   import FavoriteArrow from './FavoriteArrow.svelte';
   import { fade } from 'svelte/transition';
-  import type { PieceType } from '../../../types/shogi.d.ts';
+  import type { PieceType, FavoriteFrom } from '../../../types/shogi.d.ts';
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
     relativeCapturedMePositions = new Map<PieceType, { x: number; y: number }>(),
     relativeCapturedOpponentPositions = new Map<PieceType, { x: number; y: number }>(),
+    arrows = [] as FavoriteFrom[],
   }
   = $props();
 
-  type FromBoard = {
-    startRow: number;
-    startCol: number;
-    endRow: number;
-    endCol: number;
-  };
-  type FromCaptured = {
-    piece: PieceType;
-    is_sente: boolean;
-    endRow: number;
-    endCol: number;
-  };
-
-  let arrows: (FromBoard | FromCaptured)[] = [
-    // {
-    //   startRow: 8,
-    //   startCol: 0,
-    //   endRow: 0,
-    //   endCol: 0
-    // },
-    // {
-    //   startRow: 5,
-    //   startCol: 0,
-    //   endRow: 5,
-    //   endCol: 8
-    // },
-    // {
-    //   startRow: 4,
-    //   startCol: 4,
-    //   endRow: 8,
-    //   endCol: 8,
-    // },
-    // {
-    //   startRow: 2,
-    //   startCol: 2,
-    //   endRow: 3,
-    //   endCol: 3,
-    // },
-    // {
-    //   startRow: 1,
-    //   startCol: 1,
-    //   endRow: 1,
-    //   endCol: 2,
-    // },
-    // {
-    //   startRow: 0,
-    //   startCol: 4,
-    //   endRow: 6,
-    //   endCol: 0,
-    // },
-    // {
-    //   piece: "歩",
-    //   is_sente: true,
-    //   endRow: 6,
-    //   endCol: 0,
-    // },
-    {
-      piece: "銀",
-      is_sente: false,
-      endRow: 7,
-      endCol: 0,
-    }
-  ];
-
-  function getStartEndPositions(arrow: FromBoard | FromCaptured) {
+  function getStartEndPositions(arrow: FavoriteFrom) {
     if ('startRow' in arrow && 'startCol' in arrow) {
       // FromBoard
       return {

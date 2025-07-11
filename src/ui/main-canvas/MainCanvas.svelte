@@ -1,8 +1,7 @@
 <script lang="ts">
   import GameBoard from './game-board/GameBoard.svelte';
   import Information from './information/Information.svelte';
-  import type { PieceType, PieceOnBoard } from '../../types/shogi';
-  import Piece from './game-board/Piece.svelte';
+  import type { PieceType, PieceOnSquare } from '../../types/shogi';
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -46,7 +45,7 @@
   })());
 
   // 仮の盤上の駒データ
-  let piecesOnBoard: PieceOnBoard[] = [
+  let piecesOnBoard: PieceOnSquare[] = [
     {
       piece: "歩",
       is_sente: true,

@@ -2,7 +2,7 @@
   import Grid from './Grid.svelte';
   import Piece from './Piece.svelte';
   import Captured from './Captured.svelte';
-  import type { PieceType, PieceOnBoard } from '../../../types/shogi.d.ts';
+  import type { PieceType, PieceOnSquare } from '../../../types/shogi.d.ts';
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -12,7 +12,7 @@
 
   // --- 状態 (State) ---
   let {
-    piecesOnBoard = [] as PieceOnBoard[],
+    piecesOnBoard = [] as PieceOnSquare[],
     capturedPiecesMe = [] as { piece: PieceType; num: number }[],
     capturedPiecesOpponent = [] as { piece: PieceType; num: number }[],
     squareElements = $bindable([]) as HTMLDivElement[],

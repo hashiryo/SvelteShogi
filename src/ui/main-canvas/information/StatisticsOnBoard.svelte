@@ -1,107 +1,15 @@
 <script lang="ts">
   import StatisticsArrow from './StatisticsArrow.svelte';
   import { fade } from 'svelte/transition';
-  import type { PieceType } from '../../../types/shogi.d.ts';
-  import { get } from 'svelte/store';
+  import type { PieceType, StatisticsFrom } from '../../../types/shogi.d.ts';
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
     relativeCapturedMePositions = new Map<PieceType, { x: number; y: number }>(),
     relativeCapturedOpponentPositions = new Map<PieceType, { x: number; y: number }>(),
+    arrows = [] as StatisticsFrom[],
   }
   = $props();
-
-  type FromBoard = {
-    startRow: number;
-    startCol: number;
-    endRow: number;
-    endCol: number;
-    apparentRate: number;
-    winRate: number;
-  };
-  type FromCaptured = {
-    piece: PieceType;
-    is_sente: boolean;
-    endRow: number;
-    endCol: number;
-    apparentRate: number;
-    winRate: number;
-  };
-
-  let arrows: (FromBoard | FromCaptured)[] = [
-    {
-      startRow: 8,
-      startCol: 0,
-      endRow: 0,
-      endCol: 0,
-      apparentRate: 0.8,
-      winRate: 0.75,
-    },
-    {
-      startRow: 5,
-      startCol: 0,
-      endRow: 5,
-      endCol: 8,
-      apparentRate: 0.7,
-      winRate: 0.6,
-    },
-    {
-      startRow: 4,
-      startCol: 8,
-      endRow: 8,
-      endCol: 4,
-      apparentRate: 0.6,
-      winRate: 0.5,
-    },
-    {
-      startRow: 2,
-      startCol: 2,
-      endRow: 3,
-      endCol: 3,
-      apparentRate: 0.4,
-      winRate: 0.3,
-    },
-    {
-      startRow: 1,
-      startCol: 1,
-      endRow: 1,
-      endCol: 2,
-      apparentRate: 0.2,
-      winRate: 0.1,
-    },
-    {
-      startRow: 1,
-      startCol: 2,
-      endRow: 1,
-      endCol: 1,
-      apparentRate: 0.9,
-      winRate: 0.1,
-    },
-    {
-      startRow: 0,
-      startCol: 4,
-      endRow: 6,
-      endCol: 0,
-      apparentRate: 0.8,
-      winRate: 0.75,
-    },
-    {
-      piece: "歩",
-      is_sente: true,
-      endRow: 6,
-      endCol: 0,
-      apparentRate: 0.9,
-      winRate: 0.85,
-    },
-    {
-      piece: "銀",
-      is_sente: false,
-      endRow: 7,
-      endCol: 0,
-      apparentRate: 0.7,
-      winRate: 0.65,
-    }
-  ];
 
   function getColorFromRate(rate: number): { r: number, g: number, b: number } {
     if (rate < 0.5) {
@@ -115,7 +23,7 @@
     }
   }
 
-  function getStartEndPositions(arrow: FromBoard | FromCaptured) {
+  function getStartEndPositions(arrow: StatisticsFrom) {
     if ('startRow' in arrow && 'startCol' in arrow) {
       // FromBoard
       return {
