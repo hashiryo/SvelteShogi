@@ -22,14 +22,37 @@
          clip-path: polygon(0 0, {marker}% 0, 100% 50%, {marker}% 100%, 0 100%);
          transform: rotate({angle}deg);
          "
-></div>
+>
+</div>
 
 <style>
 .arrow {
   position: absolute;
   transform-origin: left center;
-  /* 金色 */
-  background: linear-gradient(135deg, #FFD700, #FF8C00);
+  /* より金ピカなグラデーション */
+  background: linear-gradient(135deg, 
+    #FFD700 0%, 
+    #FFEF94 25%, 
+    #FFD700 50%, 
+    #FF8C00 75%, 
+    #FFD700 100%);
+  /* 光沢効果を追加 */
+  box-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   z-index: 20;
+  /* アニメーション効果 */
+  animation: shine 2s infinite;
+}
+
+/* 光る効果のアニメーション */
+@keyframes shine {
+  0%, 100% { 
+    filter: brightness(1) saturate(1); 
+  }
+  50% { 
+    filter: brightness(1.3) saturate(1.5); 
+  }
 }
 </style>
