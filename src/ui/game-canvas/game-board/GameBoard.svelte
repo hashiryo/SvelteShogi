@@ -15,11 +15,9 @@
     piecesOnBoard = [] as PieceOnBoard[],
     capturedPiecesMe = [] as { piece: PieceType; num: number }[],
     capturedPiecesOpponent = [] as { piece: PieceType; num: number }[],
+    squareElements = $bindable([]) as HTMLDivElement[],
     reverse = false
   } = $props();
-
-  // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
-  let squareElements: HTMLDivElement[] = $state([]);
 
   // 3. ボード全体のコンテナ要素とその座標
   let gameBoardElement: HTMLDivElement | undefined = $state();

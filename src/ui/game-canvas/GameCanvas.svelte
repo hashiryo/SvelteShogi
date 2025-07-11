@@ -2,6 +2,9 @@
   import GameBoard from './game-board/GameBoard.svelte';
   import type { PieceType, PieceOnBoard } from '../../types/shogi.d.ts';
 
+  // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
+  let squareElements: HTMLDivElement[] = $state([]);
+
   // 仮の盤上の駒データ
   let piecesOnBoard: PieceOnBoard[] = [
     {
@@ -39,7 +42,11 @@
 </script>
 
 <main>
-  <GameBoard {piecesOnBoard} {capturedPiecesMe} {capturedPiecesOpponent} {reverse} />
+  <GameBoard {piecesOnBoard} 
+             {capturedPiecesMe} 
+             {capturedPiecesOpponent} 
+             {reverse} 
+             bind:squareElements={squareElements} />
 </main>
 
 <style>
