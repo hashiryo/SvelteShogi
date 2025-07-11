@@ -43,8 +43,6 @@
             isHanded={false}
           />
         </div>
-      {/if}
-      {#if num > 1}
         <span class="piece-count" class:reverse style="--font-size: {fontSize * pieceScale * 0.6}px;">{num}</span>
       {/if}
     </div>
@@ -93,10 +91,5 @@
     right: -10%;
     z-index: 30;
     box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
-  }
-
-  .piece-count.reverse {
-    top: -10%;
-    bottom: auto;
   }
 </style>
