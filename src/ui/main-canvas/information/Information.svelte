@@ -12,6 +12,6 @@
 <FavoriteOnBoard
   {relativeSquarePositions}
 />
-<StatisticsOnBoard
+<!-- <StatisticsOnBoard
   {relativeSquarePositions}
-/>
+/> -->

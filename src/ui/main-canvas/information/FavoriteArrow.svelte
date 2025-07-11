@@ -7,10 +7,10 @@
   } = $props();
 
   const width = 20; // 矢印の太さ
-  const length = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
-  const angle = Math.atan2(endY - startY, endX - startX) * (180 / Math.PI);
-  const marker = 100 - 30 * 100 / length;
-  console.log(`Arrow: startX=${startX}, startY=${startY}, endX=${endX}, endY=${endY}, length=${length}, angle=${angle}`);
+  let length = $derived(Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2));
+  let angle = $derived(Math.atan2(endY - startY, endX - startX) * (180 / Math.PI));
+  let marker = $derived(100 - 30 * 100 / length);
+  $inspect({ startX, startY, endX, endY, length, angle, marker });  
 </script>
 
 <div 
@@ -28,6 +28,8 @@
 .arrow {
   position: absolute;
   transform-origin: left center;
+  /* 金色 */
+  background: linear-gradient(135deg, #FFD700, #FF8C00);
   z-index: 20;
 }
 </style>
