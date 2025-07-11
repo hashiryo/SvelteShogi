@@ -1,7 +1,7 @@
 <script lang="ts">
   import GameBoard from './game-board/GameBoard.svelte';
   import Arrow from './information/Arrow.svelte';
-  import type { PieceType, PieceOnBoard } from '../../types/shogi.d.ts';
+  import type { PieceType, PieceOnBoard } from '../../types/shogi';
   import { onMount } from 'svelte';
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
