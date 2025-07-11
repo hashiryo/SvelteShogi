@@ -74,6 +74,6 @@
 <style>
   .favorite-on-board {
     pointer-events: none; /* 矢印のクリックイベントを無効化 */
-    z-index: 1000; /* 矢印のレイヤーを上に */
+    z-index: 20; /* 矢印のレイヤーを上に */
   }
 </style>

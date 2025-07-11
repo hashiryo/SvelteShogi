@@ -42,7 +42,6 @@
     inset 0 2px 4px rgba(255, 255, 255, 0.2),
     inset 0 -2px 4px rgba(0, 0, 0, 0.1);
   z-index: 20;
-  /* アニメーション効果 */
   animation: shine 2s infinite;
   /* 透過効果 */
   opacity: 0.85;
