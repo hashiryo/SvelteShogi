@@ -43,7 +43,9 @@
             isHanded={false}
           />
         </div>
-        <span class="piece-count"> {num}</span>
+      {/if}
+      {#if num > 1}
+        <span class="piece-count" class:reverse style="--font-size: {fontSize * pieceScale * 0.6}px;">{num}</span>
       {/if}
     </div>
   {/each}
@@ -67,19 +69,34 @@
   }
 
   .piece-top {
+    position: relative;
     z-index: 20;
   }
 
   .piece-below {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 3px;
+    left: 3px;
     z-index: 10;
   }
 
   .piece-count {
-    font-size: 30px;
-    color: #555;
+    position: absolute;
+    font-weight: bold;
+    font-size: var(--font-size);
+    width: calc(var(--font-size) * 1.2);
+    background-color: rgba(128, 128, 255, 0.9); 
+    color: rgba(255, 255, 255, 1);
+    border-radius: 60%;
+    line-height: 1;
+    bottom: -10%;
+    right: -10%;
     z-index: 30;
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .piece-count.reverse {
+    top: -10%;
+    bottom: auto;
   }
 </style>
