@@ -14,7 +14,8 @@
   let {
     piecesOnBoard = [] as PieceOnBoard[],
     capturedPiecesMe = [] as { piece: PieceType; num: number }[],
-    capturedPiecesOpponent = [] as { piece: PieceType; num: number }[]
+    capturedPiecesOpponent = [] as { piece: PieceType; num: number }[],
+    reverse = false
   } = $props();
 
   // 2. 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
@@ -48,7 +49,7 @@
       squareWidth={SQUARE_WIDTH}
       squareHeight={SQUARE_HEIGHT}
       pieceScale={PIECE_SCALE}
-      capturedPieces={capturedPiecesOpponent}
+      capturedPieces={reverse? capturedPiecesMe: capturedPiecesOpponent}
       reverse={true}
     />
   </div>
@@ -58,6 +59,7 @@
     <Grid 
       squareWidth={SQUARE_WIDTH} 
       squareHeight={SQUARE_HEIGHT} 
+      reverse={reverse}
       bind:squareElements={squareElements}
     />
 
@@ -83,7 +85,7 @@
               width={SQUARE_WIDTH}  
               height={SQUARE_HEIGHT} 
               scale={PIECE_SCALE} 
-              reverse={!piece.is_sente}
+              reverse={reverse? piece.is_sente: !piece.is_sente}
               character={piece.piece}
             />
           </div>
@@ -98,7 +100,7 @@
       squareWidth={SQUARE_WIDTH}
       squareHeight={SQUARE_HEIGHT}
       pieceScale={PIECE_SCALE}
-      capturedPieces={capturedPiecesMe}
+      capturedPieces={reverse?  capturedPiecesOpponent: capturedPiecesMe}
     />
   </div>
 </div>

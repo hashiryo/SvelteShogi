@@ -33,10 +33,13 @@
     { piece: "銀", num: 2 },
     { piece: "角", num: 1 }
   ];
+
+// let reverse = false; // 盤の向きを反転するかどうか
+  let reverse = true; // 盤の向きを反転するかどうか
 </script>
 
 <main>
-  <GameBoard {piecesOnBoard} {capturedPiecesMe} {capturedPiecesOpponent} />
+  <GameBoard {piecesOnBoard} {capturedPiecesMe} {capturedPiecesOpponent} {reverse} />
 </main>
 
 <style>
