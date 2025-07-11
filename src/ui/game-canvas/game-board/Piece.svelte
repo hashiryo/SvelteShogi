@@ -60,7 +60,6 @@
     height: var(--piece-height);
     cursor: pointer;
     user-select: none;
-    z-index: 10; /* ボードの上に表示 */
     border: 1px solid transparent; /* 駒の境界線 */
   }
 
@@ -103,7 +102,6 @@
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
     font-family: 'MS Mincho', 'Yu Mincho', serif;
     line-height: 1;
-    z-index: 10;
     transition: all 0.2s ease;
   }
 

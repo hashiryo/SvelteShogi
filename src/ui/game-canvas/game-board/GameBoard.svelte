@@ -76,6 +76,7 @@
               left: {relativeSquarePositions[index]?.x}px;
               width: {SQUARE_WIDTH}px;
               height: {SQUARE_HEIGHT}px;
+              z-index: {reverse? 10-piece.row: piece.row+1};
             "
           >
             <Piece 
