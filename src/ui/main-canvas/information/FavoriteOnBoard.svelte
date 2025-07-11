@@ -42,7 +42,6 @@
   ];
 
   let selected = $state(0);
-  let isVisible = $state(true);
   let selectedArrow = $derived(arrows[selected]);
 
   let startX = $derived(relativeSquarePositions[selectedArrow.startRow * 9 + selectedArrow.startCol].x);
@@ -50,17 +49,12 @@
   let endX = $derived(relativeSquarePositions[selectedArrow.endRow * 9 + selectedArrow.endCol].x);
   let endY = $derived(relativeSquarePositions[selectedArrow.endRow * 9 + selectedArrow.endCol].y);
 
+  const visibleDuration = 3000; // 矢印が表示される時間（ミリ秒）
+
   $effect(() => {
     const interval = setInterval(() => {
-      // フェードアウト開始
-      isVisible = false;
-      
-      // フェードアウト完了後に次の矢印に切り替えてフェードイン
-      setTimeout(() => {
         selected = (selected + 1) % arrows.length;
-        isVisible = true;
-      }, 500); // フェードアウト時間（0.5秒）
-    }, 3000);
+    }, visibleDuration);
     return () => clearInterval(interval);
   });
 
@@ -69,8 +63,8 @@
 
 
 <div class="favorite-on-board">
-  {#if arrows.length > 0 && isVisible}
-    <div transition:fade={{ duration: 500 }}>
+  {#if arrows.length > 0}
+    <div>
       <FavoriteArrow
         startX={startX}
         startY={startY}
