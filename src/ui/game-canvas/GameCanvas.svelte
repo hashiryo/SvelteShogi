@@ -17,8 +17,8 @@
         return squareElements.map(el => {
           const pos = el.getBoundingClientRect();
           return {
-            x: pos.left - canvasRect.left,
-            y: pos.top - canvasRect.top
+            x: pos.left - canvasRect.left + pos.width / 2, // 中心位置に調整
+            y: pos.top - canvasRect.top + pos.height / 2 // 中心位置に調整
           };
         });
       }
@@ -60,15 +60,25 @@
 // let reverse = false; // 盤の向きを反転するかどうか
   let reverse = true; // 盤の向きを反転するかどうか
 
+  let arrows = [
+    {
+      startRow: 8,
+      startCol: 0,
+      endRow: 0,
+      endCol: 0,
+      color: { r: 0, g: 0, b: 255 },
+      width: 30
+    },
+    {
+      startRow: 5,
+      startCol: 0,
+      endRow: 5,
+      endCol: 8,
+      color: { r: 255, g: 0, b: 0 },
+      width: 30
+    }
+  ]
 
-  // 矢印
-  let arrows = [{
-    start: { row: 6, col: 0 },
-    end: { row: 5, col: 0 },
-    length: 50,
-    winningRate: 0.5,
-    appearanceRate: 0.5,
-  }]
 </script>
 
 <div class="canvas" bind:this={canvasElement}>
@@ -77,9 +87,22 @@
              {capturedPiecesOpponent} 
              {reverse} 
              bind:squareElements={squareElements} />
-  {#each arrows as arrow}
-    <Arrow winningRate={arrow.winningRate} appearanceRate={arrow.appearanceRate} strokeLength={arrow.length} maxWidth={50} />
-  {/each}
+  {#if squareElements.length > 0 && canvasElement}
+    <div class="arrows-layer">
+      {#each arrows as arrow}
+        {@const startX = relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].x}
+        {@const startY = relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].y}
+        {@const endX = relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x}
+        {@const endY = relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y}
+        <Arrow startX={startX} 
+               startY={startY} 
+               endX={endX} 
+               endY={endY}
+               color={arrow.color}
+               width={arrow.width} />
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -87,5 +110,10 @@
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.arrows-layer {
+  pointer-events: none; /* 矢印のクリックイベントを無効化 */
+  z-index: 1000; /* 矢印のレイヤーを上に */
 }
 </style>
