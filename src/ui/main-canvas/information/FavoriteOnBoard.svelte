@@ -1,5 +1,6 @@
 <script lang="ts">
   import FavoriteArrow from './FavoriteArrow.svelte';
+  import { fade } from 'svelte/transition';
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
@@ -41,6 +42,7 @@
   ];
 
   let selected = $state(0);
+  let isVisible = $state(true);
   let selectedArrow = $derived(arrows[selected]);
 
   let startX = $derived(relativeSquarePositions[selectedArrow.startRow * 9 + selectedArrow.startCol].x);
@@ -50,7 +52,14 @@
 
   $effect(() => {
     const interval = setInterval(() => {
-      selected = (selected + 1) % arrows.length;
+      // フェードアウト開始
+      isVisible = false;
+      
+      // フェードアウト完了後に次の矢印に切り替えてフェードイン
+      setTimeout(() => {
+        selected = (selected + 1) % arrows.length;
+        isVisible = true;
+      }, 500); // フェードアウト時間（0.5秒）
     }, 3000);
     return () => clearInterval(interval);
   });
@@ -60,13 +69,15 @@
 
 
 <div class="favorite-on-board">
-  {#if arrows.length > 0}
-    <FavoriteArrow
-      startX={startX}
-      startY={startY}
-      endX={endX}
-      endY={endY}
-    />
+  {#if arrows.length > 0 && isVisible}
+    <div transition:fade={{ duration: 500 }}>
+      <FavoriteArrow
+        startX={startX}
+        startY={startY}
+        endX={endX}
+        endY={endY}
+      />
+    </div>
   {/if}
 </div>
 
