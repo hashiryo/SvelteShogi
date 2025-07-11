@@ -31,29 +31,17 @@
   transform-origin: left center;
   /* より金ピカなグラデーション（透明度を追加） */
   background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.8) 0%, 
-    rgba(255, 239, 148, 0.8) 25%, 
-    rgba(255, 215, 0, 0.8) 50%, 
-    rgba(255, 140, 0, 0.8) 75%, 
-    rgba(255, 215, 0, 0.8) 100%);
+    rgba(255, 215, 0, 1) 0%, 
+    rgba(255, 239, 148, 1) 25%, 
+    rgba(255, 215, 0, 1) 50%, 
+    rgba(255, 239, 148, 1) 75%, 
+    rgba(255, 215, 0, 1) 100%);
   /* 光沢効果を追加（透明度調整） */
   box-shadow: 
     0 0 10px rgba(255, 215, 0, 0.4),
     inset 0 2px 4px rgba(255, 255, 255, 0.2),
     inset 0 -2px 4px rgba(0, 0, 0, 0.1);
   z-index: 20;
-  animation: shine 2s infinite;
-  /* 透過効果 */
-  opacity: 0.85;
 }
 
-/* 光る効果のアニメーション */
-@keyframes shine {
-  0%, 100% { 
-    filter: brightness(1) saturate(1); 
-  }
-  50% { 
-    filter: brightness(1.3) saturate(1.5); 
-  }
-}
 </style>
