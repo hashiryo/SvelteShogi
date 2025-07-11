@@ -10,7 +10,7 @@
   let length = $derived(Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2));
   let angle = $derived(Math.atan2(endY - startY, endX - startX) * (180 / Math.PI));
   let marker = $derived(100 - 30 * 100 / length);
-  $inspect({ startX, startY, endX, endY, length, angle, marker });  
+  // $inspect({ startX, startY, endX, endY, length, angle, marker });  
 </script>
 
 <div 
@@ -35,7 +35,6 @@
     rgba(255, 239, 148, 1) 25%, 
     rgba(255, 215, 0, 1) 100%);
   opacity: 0.8; /* 半透明にして光沢感を強調 */
-  z-index: 20;
 }
 
 </style>

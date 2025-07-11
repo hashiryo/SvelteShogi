@@ -17,6 +17,8 @@
   {relativeCapturedMePositions}
   {relativeCapturedOpponentPositions}
 />
-<!-- <StatisticsOnBoard
+<StatisticsOnBoard
   {relativeSquarePositions}
-/> -->
+  {relativeCapturedMePositions}
+  {relativeCapturedOpponentPositions}
+/>

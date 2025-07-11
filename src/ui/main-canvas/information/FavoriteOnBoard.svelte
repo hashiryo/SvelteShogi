@@ -109,6 +109,9 @@
 
     const timerId = setTimeout(() => {
       isVisible = !isVisible;
+      if (isVisible) {
+        selected = (selected + 1) % arrows.length;
+      }
     }, delay);
 
     return () => {
@@ -123,7 +126,7 @@
 <div class="favorite-on-board">
   {#if arrows.length > 0}
     {#if isVisible}
-      <div class="favorite-arrow" transition:fade={{ delay: 500, duration: 1000 }}>
+      <div transition:fade={{ delay: 500, duration: 1000 }}>
         <FavoriteArrow
           startX={startX}
           startY={startY}
