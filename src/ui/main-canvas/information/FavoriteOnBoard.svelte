@@ -54,18 +54,18 @@
     //   endRow: 1,
     //   endCol: 2,
     // },
-    {
-      startRow: 0,
-      startCol: 4,
-      endRow: 6,
-      endCol: 0,
-    },
-    {
-      piece: "歩",
-      is_sente: true,
-      endRow: 6,
-      endCol: 0,
-    },
+    // {
+    //   startRow: 0,
+    //   startCol: 4,
+    //   endRow: 6,
+    //   endCol: 0,
+    // },
+    // {
+    //   piece: "歩",
+    //   is_sente: true,
+    //   endRow: 6,
+    //   endCol: 0,
+    // },
     {
       piece: "銀",
       is_sente: false,
@@ -100,14 +100,20 @@
 
   let selected = $state(0);
   let selectedArrow = $derived(arrows[selected]);
+  let isVisible = $state(true);
 
   let { startX, startY, endX, endY } = $derived(getStartEndPositions(selectedArrow));
 
   $effect(() => {
-    const interval = setInterval(() => {
-        selected = (selected + 1) % arrows.length;
-    }, 5000);
-    return () => clearInterval(interval);
+    const delay = isVisible ? 3000 : 3000;
+
+    const timerId = setTimeout(() => {
+      isVisible = !isVisible;
+    }, delay);
+
+    return () => {
+      clearTimeout(timerId);
+    };
   });
 
   $inspect(selected);
@@ -116,8 +122,8 @@
 
 <div class="favorite-on-board">
   {#if arrows.length > 0}
-    {#key selected}
-      <div transition:fade={{ delay: 500, duration: 1000 }}>
+    {#if isVisible}
+      <div class="favorite-arrow" transition:fade={{ delay: 500, duration: 1000 }}>
         <FavoriteArrow
           startX={startX}
           startY={startY}
@@ -125,7 +131,7 @@
           endY={endY}
         />
       </div>
-    {/key}
+    {/if}
   {/if}
 </div>
 
@@ -133,6 +139,5 @@
 <style>
   .favorite-on-board {
     pointer-events: none; /* 矢印のクリックイベントを無効化 */
-    z-index: 20; /* 矢印のレイヤーを上に */
   }
 </style>

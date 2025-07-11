@@ -85,16 +85,20 @@
 </script>
 
 <div class="canvas" bind:this={canvasElement}>
-  <GameBoard {piecesOnBoard} 
-             {capturedPiecesMe} 
-             {capturedPiecesOpponent} 
-             {reverse} 
-             bind:squareElements={squareElements}
-             bind:capturedMeElements={capturedMeElements}
-             bind:capturedOpponentElements={capturedOpponentElements}
-              />
+  <div class="game-board">
+    <GameBoard {piecesOnBoard} 
+              {capturedPiecesMe} 
+              {capturedPiecesOpponent} 
+              {reverse} 
+              bind:squareElements={squareElements}
+              bind:capturedMeElements={capturedMeElements}
+              bind:capturedOpponentElements={capturedOpponentElements}
+                />
+  </div>
   {#if squareElements.length > 0 && canvasElement}
+    <div class="information">
       <Information {relativeSquarePositions} {relativeCapturedMePositions} {relativeCapturedOpponentPositions} />
+    </div>
   {/if}
 </div>
 
@@ -103,5 +107,11 @@
   position: relative;
   width: 100%;
   height: 100%;
+}
+.information {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20; /* 情報レイヤーを上に */
 }
 </style>
