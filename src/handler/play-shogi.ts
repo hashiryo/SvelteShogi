@@ -132,10 +132,10 @@ export function clickSquareHandler(row: number, col: number) {
 
   const fromSquare = getSquare(handPiece.row, handPiece.col);
   if (!fromSquare) throw new Error(`Square at (${handPiece.row}, ${handPiece.col}) does not exist.`);
-  resetSquare(handPiece.row, handPiece.col);
   if (square) {
     incrementCaptured(square.piece, !square.isSente);
   }
+  resetSquare(handPiece.row, handPiece.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
   turnEnd();
   return;

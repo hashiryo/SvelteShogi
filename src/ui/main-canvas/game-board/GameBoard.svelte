@@ -54,7 +54,7 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={getCaptured(true).reverse()}
+        capturedPieces={[...getCaptured(true)].reverse()}
         reverse={true}
         handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
         clickHandler={clickCapturedSenteHandler}
@@ -66,7 +66,7 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={getCaptured(false).reverse()}
+        capturedPieces={[...getCaptured(false)].reverse()}
         reverse={true}
         handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
         clickHandler={clickCapturedGoteHandler}
