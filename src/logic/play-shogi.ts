@@ -1,14 +1,24 @@
-import {getSquare, 
-        setSquare, 
-        resetSquare, 
-        getNumCaptured, 
-        incrementCaptured, 
-        decrementCaptured, 
-        getHandPiece,
-        setHandPieceFromSquare,
-        setHandPieceFromCaptured,
-        resetHandPiece
+import { getSquare, 
+         setSquare, 
+         resetSquare, 
+         getNumCaptured, 
+         incrementCaptured, 
+         decrementCaptured, 
+         getHandPiece,
+         setHandPieceFromSquare,
+         setHandPieceFromCaptured,
+         resetHandPiece
        } from '../store/game-board-store.svelte';
+
+import { getCanMove, 
+         setCanMoveSquare, 
+         setCanMoveAll, 
+         resetCanMoveSquare,
+         resetCanMoveAll,
+         getPromotionPos, 
+         setPromotionPos, 
+         resetPromotionPos 
+        } from '../store/play-game-store.svelte';
 
 export function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);

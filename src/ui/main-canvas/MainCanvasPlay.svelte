@@ -3,6 +3,7 @@
   import Information from './information/Information.svelte';
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
 
+  import { getCanMove, getPromotionPos } from '../../store/play-game-store.svelte';
   import { clickSquareHandler } from '../../logic/play-shogi';
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
@@ -45,6 +46,22 @@
       position: getRelativePosition(element)
     }));
   })());
+
+  let relativeSquareRect = $derived(
+    (() => {
+      const canvasRect = canvasElement?.getBoundingClientRect();
+      return squareElements.map(el => {
+        const pos = el.getBoundingClientRect();
+        if (!canvasRect) return { x: 0, y: 0, width: 0, height: 0 };
+        return {
+          x: pos.left - canvasRect.left,
+          y: pos.top - canvasRect.top,
+          width: pos.width,
+          height: pos.height
+        };
+      });
+    })()
+  );
 
   let favoriteArrows: (FavoriteFrom)[] = [
     // {
@@ -175,14 +192,28 @@
 
 <div class="canvas" bind:this={canvasElement}>
   <div class="game-board">
-    <GameBoard 
-              clickSquareHandler={clickSquareHandler}
-              bind:squareElements={squareElements}
-              bind:capturedSenteElements={capturedSenteElements}
-              bind:capturedGoteElements={capturedGoteElements}
-                />
+    <GameBoard clickSquareHandler={clickSquareHandler}
+               bind:squareElements={squareElements}
+               bind:capturedSenteElements={capturedSenteElements}
+               bind:capturedGoteElements={capturedGoteElements}
+    />
   </div>
   {#if squareElements.length > 0 && canvasElement}
+    <div class="can-move">
+      {#each {length: 9}, row}
+        {#each {length: 9}, col}
+          {#if !getCanMove(row, col)}
+            {@const index = row * 9 + col}
+            <div class="cannot-move-square" 
+                style="top: {relativeSquareRect[index].y}px;
+                        left: {relativeSquareRect[index].x}px;
+                        width: {relativeSquareRect[index].width}px;
+                        height: {relativeSquareRect[index].height}px;">
+            </div>
+          {/if}
+        {/each}
+      {/each}
+    </div>
     <div class="information">
       <Information {relativeSquarePositions}
                    {relativeCapturedSentePositions}
@@ -199,6 +230,19 @@
   width: 100%;
   height: 100%;
 }
+.can-move {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* クリックイベントを無視 */
+  z-index: 150; /* 他の要素の上に表示 */
+}
+
+.cannot-move-square {
+  position: absolute;
+  background-color: rgba(30, 0, 0, 0.5); /* 半透明 */
+}
+
 .information {
   position: absolute;
   top: 0;

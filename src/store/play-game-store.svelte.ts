@@ -20,3 +20,16 @@ export function resetCanMoveAll() {
   canMove.fill(false);
 }
 
+let promotionPos = $state(null) as {row: number, col: number} | null;
+
+export function getPromotionPos(): {row: number, col: number} | null {
+  return promotionPos;
+}
+
+export function setPromotionPos(row: number, col: number) {
+  promotionPos = {row, col};
+}
+
+export function resetPromotionPos() {
+  promotionPos = null;
+}
