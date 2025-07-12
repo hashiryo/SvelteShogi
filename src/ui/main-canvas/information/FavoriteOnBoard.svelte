@@ -12,7 +12,7 @@
 
   function getStartEndPositions(arrow: FavoriteFrom) {
     if ('startRow' in arrow && 'startCol' in arrow) {
-      // FromBoard
+      // FromSquare
       return {
         startX: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].x,
         startY: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].y,

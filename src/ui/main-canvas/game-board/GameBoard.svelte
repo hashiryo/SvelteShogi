@@ -4,7 +4,7 @@
   import Captured from './Captured.svelte';
   import type { PieceType} from '../../../types/shogi.d.ts';
 
-  import { getSquare, getCapturedSente, getCapturedGote, getHandPiece } from '../../../store/game-board-store.svelte';
+  import { getSquare, getCaptured, getHandPiece } from '../../../store/game-board-store.svelte';
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -17,9 +17,9 @@
     squareElements = $bindable([]) as HTMLDivElement[],
     capturedSenteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     capturedGoteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
-    clickHandlerSquare = (row: number, col: number) => { console.log(`Clicked on square at row ${row}, col ${col}`); },
-    clickHandlerCapturedSente = (piece: PieceType) => { console.log(`Clicked on captured piece: ${piece}`); },
-    clickHandlerCapturedGote = (piece: PieceType) => { console.log(`Clicked on captured piece: ${piece}`); },
+    clickSquareHandler = (row: number, col: number) => { console.log(`Clicked on square at row ${row}, col ${col}`); },
+    clickCapturedSenteHandler = (piece: PieceType) => { console.log(`Clicked on captured piece: ${piece}`); },
+    clickCapturedGoteHandler = (piece: PieceType) => { console.log(`Clicked on captured piece: ${piece}`); },
   } = $props();
 
   let reverse = $state(false); // 盤の向きを反転するかどうか
@@ -54,10 +54,10 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={getCapturedSente().reverse()}
+        capturedPieces={getCaptured(true).reverse()}
         reverse={true}
         handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
-        clickHandler={clickHandlerCapturedSente}
+        clickHandler={clickCapturedSenteHandler}
         bind:capturedElements={capturedSenteElements}
       />
     {:else}
@@ -66,10 +66,10 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={getCapturedGote().reverse()}
+        capturedPieces={getCaptured(false).reverse()}
         reverse={true}
         handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
-        clickHandler={clickHandlerCapturedGote}
+        clickHandler={clickCapturedGoteHandler}
         bind:capturedElements={capturedGoteElements}
       />
     {/if}
@@ -81,7 +81,7 @@
         squareWidth={SQUARE_WIDTH} 
         squareHeight={SQUARE_HEIGHT} 
         reverse={reverse}
-        clickHandler={clickHandlerSquare}
+        clickHandler={clickSquareHandler}
         bind:squareElements={squareElements}
       />
 
@@ -131,9 +131,9 @@
           squareWidth={SQUARE_WIDTH}
           squareHeight={SQUARE_HEIGHT}
           pieceScale={PIECE_SCALE}
-          capturedPieces={getCapturedGote()}
+          capturedPieces={getCaptured(false)}
           handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
-          clickHandler={clickHandlerCapturedGote}
+          clickHandler={clickCapturedGoteHandler}
           bind:capturedElements={capturedGoteElements}
         />
       {:else}      
@@ -142,9 +142,9 @@
           squareWidth={SQUARE_WIDTH}
           squareHeight={SQUARE_HEIGHT}
           pieceScale={PIECE_SCALE}
-          capturedPieces={getCapturedSente()}
+          capturedPieces={getCaptured(true)}
           handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
-          clickHandler={clickHandlerCapturedSente}
+          clickHandler={clickCapturedSenteHandler}
           bind:capturedElements={capturedSenteElements}
         />
       {/if}

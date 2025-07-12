@@ -40,11 +40,6 @@ function initGrid(): (Square | null)[] {
 
 let grid: (Square | null)[] = $state(initGrid());
 
-let capturedSente: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
-let capturedGote: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
-
-let handPiece: HandPieceFrom = $state(null);
-
 export function getSquare(row: number, col: number): Square | null {
   return grid[row * 9 + col];
 }
@@ -57,43 +52,40 @@ export function resetSquare(row: number, col: number) {
   grid[row * 9 + col] = null;
 }
 
-export function getNumCapturedSente(piece: PieceType): number {
-  const found = capturedSente.find(p => p.piece === piece);
+let capturedSente: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
+let capturedGote: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
+
+export function getNumCaptured(piece: PieceType, isSente: boolean): number {
+  const found = isSente ? capturedSente.find(p => p.piece === piece) : capturedGote.find(p => p.piece === piece);
   return found ? found.num : 0;
 }
 
-export function getCapturedSente(): {piece: PieceType, num: number}[] {
-  return capturedSente;
+export function getCaptured(isSente: boolean): {piece: PieceType, num: number}[] {
+  return isSente ? capturedSente : capturedGote;
 }
 
-export function getNumCapturedGote(piece: PieceType): number {
-  const found = capturedGote.find(p => p.piece === piece);
-  return found ? found.num : 0;
-}
-
-export function getCapturedGote(): {piece: PieceType, num: number}[] {
-  return capturedGote;
-}
-
-export function addCapturedSente(piece: PieceType, num: number) {
-  const found = capturedSente.find(p => p.piece === piece);
+export function incrementCaptured(piece: PieceType, isSente: boolean) {
+  const found = isSente ? capturedSente.find(p => p.piece === piece) : capturedGote.find(p => p.piece === piece);
   if (found) {
-    found.num += num;
+    found.num += 1;
   } else {
-    capturedSente.push({ piece, num });
+    (isSente ? capturedSente : capturedGote).push({ piece, num: 1 });
   }
 }
 
-export function addCapturedGote(piece: PieceType, num: number) {
-  const found = capturedGote.find(p => p.piece === piece);
-  if (found) {
-    found.num += num;
-  } else {
-    capturedGote.push({ piece, num });
+export function decrementCaptured(piece: PieceType, isSente: boolean) {
+  const index = isSente ? capturedSente.findIndex(p => p.piece === piece) : capturedGote.findIndex(p => p.piece === piece);
+  if (index !== -1) {
+    (isSente ? capturedSente : capturedGote)[index].num -= 1;
+    if ((isSente ? capturedSente : capturedGote)[index].num <= 0) {
+      (isSente ? capturedSente : capturedGote).splice(index, 1);
+    }
   }
 }
 
-export function setHandPieceFromBoard(row: number, col: number){
+let handPiece: HandPieceFrom = $state(null);
+
+export function setHandPieceFromSquare(row: number, col: number){
   handPiece = { row, col };
 }
 

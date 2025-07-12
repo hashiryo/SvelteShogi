@@ -3,6 +3,8 @@
   import Information from './information/Information.svelte';
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
 
+  import { clickSquareHandler } from '../../logic/play-shogi';
+
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
 
@@ -174,6 +176,7 @@
 <div class="canvas" bind:this={canvasElement}>
   <div class="game-board">
     <GameBoard 
+              clickSquareHandler={clickSquareHandler}
               bind:squareElements={squareElements}
               bind:capturedSenteElements={capturedSenteElements}
               bind:capturedGoteElements={capturedGoteElements}
