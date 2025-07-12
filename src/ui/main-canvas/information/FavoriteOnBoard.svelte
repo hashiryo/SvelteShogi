@@ -1,6 +1,6 @@
 <script lang="ts">
   import FavoriteArrow from './FavoriteArrow.svelte';
-  import { fade } from 'svelte/transition';
+  import { fade} from 'svelte/transition';
   import type { PieceType, FavoriteFrom } from '../../../types/shogi.d.ts';
 
   let {
@@ -61,7 +61,7 @@
 <div class="favorite-on-board">
   {#if arrows.length > 0}
     {#if isVisible}
-      <div transition:fade={{ delay: 500, duration: 1000 }}>
+      <div out:fade={{ delay: 50, duration: 100 }} in:fade={{ delay: 500, duration: 1000 }}>
         <FavoriteArrow
           startX={startX}
           startY={startY}

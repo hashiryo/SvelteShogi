@@ -1,6 +1,6 @@
 <script lang="ts">
   import StatisticsArrow from './StatisticsArrow.svelte';
-  import { fade } from 'svelte/transition';
+  import { fade} from 'svelte/transition';
   import type { PieceType, StatisticsFrom } from '../../../types/shogi.d.ts';
 
   let {
@@ -80,7 +80,7 @@
 <div class="statistics-on-board">
   {#if arrows.length > 0}
     {#if isVisible}
-      <div transition:fade={{ delay: 500, duration: 1000 }}>
+      <div out:fade={{ delay: 50, duration: 100 }} in:fade={{ delay: 500, duration: 1000 }}>
         <StatisticsArrow
           startX={startX}
           startY={startY}
