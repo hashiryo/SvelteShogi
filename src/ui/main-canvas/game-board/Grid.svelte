@@ -4,6 +4,7 @@
     squareHeight = 44,
     squareElements = $bindable([]),
     reverse = false,
+    clickHandler = (row: number, col: number) => {console.log(`Clicked on square at row ${row}, col ${col}`);},
   } = $props();
   const KANJI_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
   const ZENKAKU_NUM = ['１', '２', '３', '４', '５', '６', '７', '８', '９'];
@@ -32,6 +33,15 @@
             data-row={row} 
             data-col={col}
             style="--width: {squareWidth}px; --height: {squareHeight}px;"
+            role="button"
+            tabindex="0"
+            onclick={() => clickHandler(row, col)}
+            onkeydown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                clickHandler(row, col);
+              }
+            }}
+            aria-label={`Row ${row + 1}, Column ${col + 1}`}
             bind:this={squareElements[row * 9 + col]}
           >
           </div>
