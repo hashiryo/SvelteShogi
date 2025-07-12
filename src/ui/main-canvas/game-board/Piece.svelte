@@ -17,7 +17,7 @@
 <div class="square {isHanded ? 'handed' : ''}"
   style="--square-width: {width}px; --square-height: {height}px;">
   <div 
-    class="piece {reverse ? 'reversed' : ''} {isHanded ? 'handed' : ''}"
+    class="piece {reverse ? 'reversed' : ''}"
     role="button"
     tabindex="0"
     onclick={toggleHighlight}
@@ -43,10 +43,12 @@
     border: 1px solid transparent;
     transition: all 0.2s ease;
     filter: drop-shadow(3px 4px 2px rgba(0, 0, 0, 0.7));
+    transition: all 0.2s ease;
   }
 
   .square.handed {
     filter: drop-shadow(4px 8px 3px rgba(0, 0, 0, 0.7));
+    transform: scale(1.02) translateY(-8px);
   }
 
   .piece {
@@ -73,7 +75,6 @@
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(50% 0%, 90% 20%, 100% 100%, 0% 100%, 10% 20%);
-    transition: transform 0.2s ease;
   }
 
   .piece.reversed::before{
@@ -85,27 +86,18 @@
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(0% 0%, 100% 0%, 90% 80%, 50% 100%, 10% 80%);
-    transition: transform 0.2s ease;
-  }
-
-  .piece.handed::before {
-    transform: scale(1.02) translateY(-8px);
   }
 
   .piece-character {
     position: absolute;
     top: var(--piece-top);
-    transform: translate(-50%, 0%) rotate(var(--piece-rotate));
+    left: 12%;
+    transform: rotate(var(--piece-rotate));
     font-size: var(--font-size);
     font-weight: bold;
     color: #2c1810;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
     font-family: 'MS Mincho', 'Yu Mincho', serif;
     line-height: 1;
-    transition: transform 0.2s ease;
-  }
-
-  .piece.handed .piece-character {
-    transform: translate(-50%, calc(0% - 8px)) scale(1.02) rotate(var(--piece-rotate));
   }
 </style>
