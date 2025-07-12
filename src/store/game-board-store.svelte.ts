@@ -1,9 +1,4 @@
-import type { PieceType, HandPieceFrom } from '../types/shogi';
-
-type Square = {
-  piece: PieceType;
-  isSente: boolean;
-}
+import type { PieceType, Square, HandPieceFrom } from '../types/shogi';
 
 function initGrid(): (Square | null)[] {
   let grid: (Square | null)[] = Array(81).fill(null);
@@ -99,4 +94,14 @@ export function resetHandPiece() {
 
 export function getHandPiece(): HandPieceFrom {
   return handPiece;
+}
+
+let isSenteTurn = $state(true);
+
+export function getIsSenteTurn(): boolean {
+  return isSenteTurn;
+}
+
+export function toggleTurn() {
+  isSenteTurn = !isSenteTurn;
 }

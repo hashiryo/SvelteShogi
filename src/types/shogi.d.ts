@@ -1,5 +1,10 @@
 export type PieceType = "歩" | "香" | "桂" | "銀" | "金" | "角" | "飛" | "玉" | "と" | "杏" | "圭" | "全"  | "馬" | "龍";
 
+export type Square = {
+  piece: PieceType;
+  isSente: boolean;
+};
+
 type FavoriteFromSquare = {
   startRow: number;
   startCol: number;

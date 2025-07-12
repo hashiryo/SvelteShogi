@@ -4,7 +4,8 @@
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
 
   import { getCanMove, getPromotionPos } from '../../store/play-game-store.svelte';
-  import { clickSquareHandler } from '../../logic/play-shogi';
+  import { clickSquareHandler } from '../../handler/play-shogi';
+  import { getHandPiece } from '../../store/game-board-store.svelte';
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -199,21 +200,23 @@
     />
   </div>
   {#if squareElements.length > 0 && canvasElement}
-    <div class="can-move">
-      {#each {length: 9}, row}
-        {#each {length: 9}, col}
-          {#if !getCanMove(row, col)}
-            {@const index = row * 9 + col}
-            <div class="cannot-move-square" 
-                style="top: {relativeSquareRect[index].y}px;
-                        left: {relativeSquareRect[index].x}px;
-                        width: {relativeSquareRect[index].width}px;
-                        height: {relativeSquareRect[index].height}px;">
-            </div>
-          {/if}
+    {#if getHandPiece()}
+      <div class="can-move">
+        {#each {length: 9}, row}
+          {#each {length: 9}, col}
+            {#if !getCanMove(row, col)}
+              {@const index = row * 9 + col}
+              <div class="cannot-move-square" 
+                  style="top: {relativeSquareRect[index].y}px;
+                          left: {relativeSquareRect[index].x}px;
+                          width: {relativeSquareRect[index].width}px;
+                          height: {relativeSquareRect[index].height}px;">
+              </div>
+            {/if}
+          {/each}
         {/each}
-      {/each}
-    </div>
+      </div>
+    {/if}
     <div class="information">
       <Information {relativeSquarePositions}
                    {relativeCapturedSentePositions}
@@ -240,7 +243,7 @@
 
 .cannot-move-square {
   position: absolute;
-  background-color: rgba(30, 0, 0, 0.5); /* 半透明 */
+  background-color: rgba(30, 0, 0, 0.2); /* 半透明 */
 }
 
 .information {
