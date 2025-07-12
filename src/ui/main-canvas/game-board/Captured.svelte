@@ -10,7 +10,7 @@
     capturedPieces = [] as { piece: PieceType; num: number }[],
     handPiece = null as PieceType | null,
     reverse = false,
-    capturedElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
+    capturedElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
   } = $props();
 
   let elements = $state([]) as HTMLDivElement[];
@@ -18,10 +18,9 @@
     if(elements.length == capturedPieces.length) {
       elements.forEach((element, index) => {
         if (element) {
-          capturedElements.set(capturedPieces[index].piece, element);
+          capturedElements[index] = { piece: capturedPieces[index].piece, element };
         }
       });
-      capturedElements = capturedElements; // Trigger reactivity
     }
   });
 </script>

@@ -5,11 +5,10 @@
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
-    relativeCapturedSentePositions = new Map<PieceType, { x: number; y: number }>(),
-    relativeCapturedGotePositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedSentePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
+    relativeCapturedGotePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
     arrows = [] as FavoriteFrom[],
-  }
-  = $props();
+  } = $props();
 
   function getStartEndPositions(arrow: FavoriteFrom) {
     if ('startRow' in arrow && 'startCol' in arrow) {
@@ -22,11 +21,11 @@
       };
     } else {
       // FromCaptured
-      const position = arrow.is_sente ? relativeCapturedSentePositions.get(arrow.piece) : relativeCapturedGotePositions.get(arrow.piece);
+      const position = arrow.is_sente ? relativeCapturedSentePositions.find(p => p.piece === arrow.piece) : relativeCapturedGotePositions.find(p => p.piece === arrow.piece);
       if (position) {
         return {
-          startX: position.x,
-          startY: position.y,
+          startX: position.position.x,
+          startY: position.position.y,
           endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
           endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
         };

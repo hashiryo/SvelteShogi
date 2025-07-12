@@ -5,12 +5,11 @@
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
-    relativeCapturedSentePositions = new Map<PieceType, { x: number; y: number }>(),
-    relativeCapturedGotePositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedSentePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
+    relativeCapturedGotePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
     favoriteArrows = [] as FavoriteFrom[],
     statisticsArrows = [] as StatisticsFrom[],
-  }
-  = $props();
+  } = $props();
 </script>
 
 

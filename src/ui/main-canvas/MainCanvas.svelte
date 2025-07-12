@@ -7,9 +7,9 @@
   let squareElements: HTMLDivElement[] = $state([]);
 
   // 先手の持ち駒のDOM情報を格納する配列 (Boardコンポーネントから受け取る)
-  let capturedSenteElements: Map<PieceType,HTMLDivElement> = $state(new Map());
+  let capturedSenteElements: { piece: PieceType; element: HTMLDivElement }[] = $state([]);
   // 後手の持ち駒のDOM情報を格納する配列
-  let capturedGoteElements: Map<PieceType,HTMLDivElement> = $state(new Map());
+  let capturedGoteElements: { piece: PieceType; element: HTMLDivElement }[] = $state([]);
 
   // キャンバス全体のコンテナ要素とその座標
   let canvasElement: HTMLDivElement | undefined = $state();
@@ -30,18 +30,18 @@
     return squareElements.map(el => getRelativePosition(el));
   })());
 
-  let relativeCapturedSentePositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
-    return Array.from(capturedSenteElements.entries()).reduce((acc, [piece, el]) => {
-      acc.set(piece, getRelativePosition(el));
-      return acc;
-    }, new Map<PieceType, { x: number; y: number }>());
+  let relativeCapturedSentePositions: { piece: PieceType; position: { x: number; y: number } }[] = $derived((() => {
+    return capturedSenteElements.map(({ piece, element }) => ({
+      piece,
+      position: getRelativePosition(element)
+    }));
   })());
 
-  let relativeCapturedGotePositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
-    return Array.from(capturedGoteElements.entries()).reduce((acc, [piece, el]) => {
-      acc.set(piece, getRelativePosition(el));
-      return acc;
-    }, new Map<PieceType, { x: number; y: number }>());
+  let relativeCapturedGotePositions: { piece: PieceType; position: { x: number; y: number } }[] = $derived((() => {
+    return capturedGoteElements.map(({ piece, element }) => ({
+      piece,
+      position: getRelativePosition(element)
+    }));
   })());
 
   // 仮の盤上の駒データ

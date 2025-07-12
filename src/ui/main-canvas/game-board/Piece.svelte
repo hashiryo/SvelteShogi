@@ -73,7 +73,7 @@
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(50% 0%, 90% 20%, 100% 100%, 0% 100%, 10% 20%);
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
   }
 
   .piece.reversed::before{
@@ -85,7 +85,7 @@
     height: 100%;
     background: linear-gradient(135deg, #f0e68c, #b88400);
     clip-path: polygon(0% 0%, 100% 0%, 90% 80%, 50% 100%, 10% 80%);
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
   }
 
   .piece.handed::before {
@@ -102,7 +102,7 @@
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
     font-family: 'MS Mincho', 'Yu Mincho', serif;
     line-height: 1;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
   }
 
   .piece.handed .piece-character {

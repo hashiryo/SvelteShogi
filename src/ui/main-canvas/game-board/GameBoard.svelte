@@ -16,8 +16,8 @@
     capturedPiecesSente = [] as { piece: PieceType; num: number }[],
     capturedPiecesGote = [] as { piece: PieceType; num: number }[],
     squareElements = $bindable([]) as HTMLDivElement[],
-    capturedSenteElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
-    capturedGoteElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
+    capturedSenteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
+    capturedGoteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
   } = $props();
 
   let reverse = $state(false); // 盤の向きを反転するかどうか
