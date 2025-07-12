@@ -42,3 +42,16 @@ type StatisticsFromCaptured = {
 };
 
 export type StatisticsFrom = StatisticsFromSquare | StatisticsFromCaptured;
+
+
+type HandPieceFromBoard = {
+  row: number;
+  col: number;
+}
+
+type HandPieceFromCaptured = {
+  piece: PieceType;
+  isSente: boolean;
+}
+
+export type HandPieceFrom = HandPieceFromBoard | HandPieceFromCaptured | null;

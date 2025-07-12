@@ -205,9 +205,7 @@
 
 <div class="canvas" bind:this={canvasElement}>
   <div class="game-board">
-    <GameBoard {piecesOnBoard} 
-              {capturedPiecesSente} 
-              {capturedPiecesGote} 
+    <GameBoard 
               bind:squareElements={squareElements}
               bind:capturedSenteElements={capturedSenteElements}
               bind:capturedGoteElements={capturedGoteElements}
@@ -234,6 +232,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 20; /* 情報レイヤーを上に */
+  z-index: 200; /* 情報レイヤーを上に */
 }
 </style>

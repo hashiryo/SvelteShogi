@@ -47,9 +47,7 @@
 
 <div class="canvas">
   <div class="game-board">
-    <GameBoard {piecesOnBoard} 
-              {capturedPiecesSente} 
-              {capturedPiecesGote} 
+    <GameBoard 
               bind:squareElements={squareElements}
               bind:capturedSenteElements={capturedSenteElements}
               bind:capturedGoteElements={capturedGoteElements}

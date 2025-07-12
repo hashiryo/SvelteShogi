@@ -4,6 +4,9 @@
   import Captured from './Captured.svelte';
   import type { PieceType, PieceOnSquare } from '../../../types/shogi.d.ts';
 
+  import { getSquare, getNumCapturedSente, getCapturedSente, getNumCapturedGote, getCapturedGote, getHandPiece } from '../../../store/game-board-store.svelte';
+  import { get } from 'svelte/store';
+
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
   const SQUARE_HEIGHT = 60;
@@ -12,9 +15,6 @@
 
   // --- 状態 (State) ---
   let {
-    piecesOnBoard = [] as PieceOnSquare[],
-    capturedPiecesSente = [] as { piece: PieceType; num: number }[],
-    capturedPiecesGote = [] as { piece: PieceType; num: number }[],
     squareElements = $bindable([]) as HTMLDivElement[],
     capturedSenteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     capturedGoteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
@@ -50,7 +50,7 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={[...capturedPiecesSente].reverse()}
+        capturedPieces={getCapturedSente().reverse()}
         reverse={true}
         bind:capturedElements={capturedSenteElements}
       />
@@ -60,7 +60,7 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={[...capturedPiecesGote].reverse()}
+        capturedPieces={getCapturedGote().reverse()}
         reverse={true}
         bind:capturedElements={capturedGoteElements}
       />
@@ -80,29 +80,35 @@
     <!-- squareElements と gameBoardElement の両方が準備できてから描画 -->
     {#if squareElements.length > 0 && gameBoardElement}
       <div class="pieces-layer">
-        {#each piecesOnBoard as piece}
-          {@const index = piece.row * 9 + piece.col}
-          <!-- 駒を配置するためのラッパー -->
-          <div 
-            class="piece-wrapper"
-            style="
-              position: absolute;
-              top: {relativeSquarePositions[index]?.y}px;
-              left: {relativeSquarePositions[index]?.x}px;
-              width: {SQUARE_WIDTH}px;
-              height: {SQUARE_HEIGHT}px;
-              z-index: {reverse? 10-piece.row: piece.row+1};
-            "
-          >
-            <Piece 
-              fontSize={FONT_SIZE} 
-              width={SQUARE_WIDTH}  
-              height={SQUARE_HEIGHT} 
-              scale={PIECE_SCALE} 
-              reverse={reverse? piece.is_sente: !piece.is_sente}
-              character={piece.piece}
-            />
-          </div>
+        {#each {length: 9}, row}
+          {#each {length: 9}, col}
+            {@const index = row * 9 + col}
+            {@const square = getSquare(row, col)}
+            {#if square}
+              <!-- 駒が存在する場合のみ表示 -->
+              <!-- 駒を配置するためのラッパー -->
+              <div 
+                class="piece-wrapper"
+                style="
+                  position: absolute;
+                  top: {relativeSquarePositions[index]?.y}px;
+                  left: {relativeSquarePositions[index]?.x}px;
+                  width: {SQUARE_WIDTH}px;
+                  height: {SQUARE_HEIGHT}px;
+                  z-index: {reverse? (10-row)* 10 + 10-col: (row+1) * 10 + col + 1};
+                "
+              >
+                <Piece 
+                  fontSize={FONT_SIZE} 
+                  width={SQUARE_WIDTH}  
+                  height={SQUARE_HEIGHT} 
+                  scale={PIECE_SCALE} 
+                  reverse={reverse? square.isSente: !square.isSente}
+                  character={square.piece}
+                />
+              </div>
+            {/if}
+          {/each}
         {/each}
       </div>
     {/if}
@@ -115,7 +121,7 @@
           squareWidth={SQUARE_WIDTH}
           squareHeight={SQUARE_HEIGHT}
           pieceScale={PIECE_SCALE}
-          capturedPieces={capturedPiecesGote}
+          capturedPieces={getCapturedGote()}
           bind:capturedElements={capturedGoteElements}
         />
       {:else}      
@@ -124,7 +130,7 @@
           squareWidth={SQUARE_WIDTH}
           squareHeight={SQUARE_HEIGHT}
           pieceScale={PIECE_SCALE}
-          capturedPieces={capturedPiecesSente}
+          capturedPieces={getCapturedSente()}
           bind:capturedElements={capturedSenteElements}
         />
       {/if}
