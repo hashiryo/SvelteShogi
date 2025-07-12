@@ -5,8 +5,8 @@
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
-    relativeCapturedMePositions = new Map<PieceType, { x: number; y: number }>(),
-    relativeCapturedOpponentPositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedSentePositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedGotePositions = new Map<PieceType, { x: number; y: number }>(),
     arrows = [] as StatisticsFrom[],
   }
   = $props();
@@ -37,7 +37,7 @@
       };
     } else {
       // FromCaptured
-      const position = arrow.is_sente ? relativeCapturedMePositions.get(arrow.piece) : relativeCapturedOpponentPositions.get(arrow.piece);
+      const position = arrow.is_sente ? relativeCapturedSentePositions.get(arrow.piece) : relativeCapturedGotePositions.get(arrow.piece);
       if (position) {
         return {
           startX: position.x,

@@ -5,8 +5,8 @@
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],
-    relativeCapturedMePositions = new Map<PieceType, { x: number; y: number }>(),
-    relativeCapturedOpponentPositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedSentePositions = new Map<PieceType, { x: number; y: number }>(),
+    relativeCapturedGotePositions = new Map<PieceType, { x: number; y: number }>(),
     favoriteArrows = [] as FavoriteFrom[],
     statisticsArrows = [] as StatisticsFrom[],
   }
@@ -16,13 +16,13 @@
 
 <FavoriteOnBoard
   {relativeSquarePositions}
-  {relativeCapturedMePositions}
-  {relativeCapturedOpponentPositions}
+  {relativeCapturedSentePositions}
+  {relativeCapturedGotePositions}
   arrows={favoriteArrows}
 />
 <StatisticsOnBoard
   {relativeSquarePositions}
-  {relativeCapturedMePositions}
-  {relativeCapturedOpponentPositions}
+  {relativeCapturedSentePositions}
+  {relativeCapturedGotePositions}
   arrows={statisticsArrows}
 />

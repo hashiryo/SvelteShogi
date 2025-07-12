@@ -8,8 +8,8 @@
   const KANJI_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
   const ZENKAKU_NUM = ['１', '２', '３', '４', '５', '６', '７', '８', '９'];
 
-  let cols = reverse?  [0,1,2,3,4,5,6,7,8]: [8,7,6,5,4,3,2,1,0];
-  let rows = reverse? [8,7,6,5,4,3,2,1,0]: [0,1,2,3,4,5,6,7,8];
+  let cols = $derived(reverse?  [0,1,2,3,4,5,6,7,8]: [8,7,6,5,4,3,2,1,0]);
+  let rows = $derived(reverse? [8,7,6,5,4,3,2,1,0]: [0,1,2,3,4,5,6,7,8]);
 </script>
 
 <div class="grid-container">

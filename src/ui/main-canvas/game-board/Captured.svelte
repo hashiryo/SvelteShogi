@@ -14,9 +14,6 @@
   } = $props();
 
   let elements = $state([]) as HTMLDivElement[];
-  if (reverse) {
-    capturedPieces = capturedPieces.reverse();
-  }
   $effect(() => {
     if(elements.length == capturedPieces.length) {
       elements.forEach((element, index) => {
@@ -24,6 +21,7 @@
           capturedElements.set(capturedPieces[index].piece, element);
         }
       });
+      capturedElements = capturedElements; // Trigger reactivity
     }
   });
 </script>

@@ -30,14 +30,14 @@
     return squareElements.map(el => getRelativePosition(el));
   })());
 
-  let relativeCapturedMePositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
+  let relativeCapturedSentePositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
     return Array.from(capturedSenteElements.entries()).reduce((acc, [piece, el]) => {
       acc.set(piece, getRelativePosition(el));
       return acc;
     }, new Map<PieceType, { x: number; y: number }>());
   })());
 
-  let relativeCapturedOpponentPositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
+  let relativeCapturedGotePositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
     return Array.from(capturedGoteElements.entries()).reduce((acc, [piece, el]) => {
       acc.set(piece, getRelativePosition(el));
       return acc;
@@ -76,12 +76,7 @@
     { piece: "角", num: 1 }
   ];
 
-  // let reverse = false; // 盤の向きを反転するかどうか
-  let reverse = true; // 盤の向きを反転するかどうか
-
-
-
-    let favoriteArrows: (FavoriteFrom)[] = [
+  let favoriteArrows: (FavoriteFrom)[] = [
     // {
     //   startRow: 8,
     //   startCol: 0,
@@ -206,7 +201,6 @@
       winRate: 0.65,
     }
   ];
-
 </script>
 
 <div class="canvas" bind:this={canvasElement}>
@@ -214,7 +208,6 @@
     <GameBoard {piecesOnBoard} 
               {capturedPiecesSente} 
               {capturedPiecesGote} 
-              {reverse} 
               bind:squareElements={squareElements}
               bind:capturedSenteElements={capturedSenteElements}
               bind:capturedGoteElements={capturedGoteElements}
@@ -223,8 +216,8 @@
   {#if squareElements.length > 0 && canvasElement}
     <div class="information">
       <Information {relativeSquarePositions}
-                   {relativeCapturedMePositions}
-                   {relativeCapturedOpponentPositions} 
+                   {relativeCapturedSentePositions}
+                   {relativeCapturedGotePositions} 
                    {favoriteArrows} 
                    {statisticsArrows} />
     </div>

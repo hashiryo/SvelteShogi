@@ -18,8 +18,9 @@
     squareElements = $bindable([]) as HTMLDivElement[],
     capturedSenteElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
     capturedGoteElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
-    reverse = false
   } = $props();
+
+  let reverse = $state(false); // 盤の向きを反転するかどうか
 
   // 3. ボード全体のコンテナ要素とその座標
   let gameBoardElement: HTMLDivElement | undefined = $state();
@@ -39,7 +40,6 @@
       }
       return squareElements.map(() => ({ x: 0, y: 0 }));
   })());
-
 </script>
 
 <div class="canvas">
@@ -50,7 +50,7 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesSente}
+        capturedPieces={[...capturedPiecesSente].reverse()}
         reverse={true}
         bind:capturedElements={capturedSenteElements}
       />
@@ -60,8 +60,8 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesGote}
-        reverse={false}
+        capturedPieces={[...capturedPiecesGote].reverse()}
+        reverse={true}
         bind:capturedElements={capturedGoteElements}
       />
     {/if}
@@ -69,12 +69,12 @@
 
   <!-- position: relative を設定して、中の駒の配置基準にする -->
   <div class="game-board" bind:this={gameBoardElement}>
-    <Grid 
-      squareWidth={SQUARE_WIDTH} 
-      squareHeight={SQUARE_HEIGHT} 
-      reverse={reverse}
-      bind:squareElements={squareElements}
-    />
+      <Grid
+        squareWidth={SQUARE_WIDTH} 
+        squareHeight={SQUARE_HEIGHT} 
+        reverse={reverse}
+        bind:squareElements={squareElements}
+      />
 
     <!-- 盤上の駒を配置するレイヤー -->
     <!-- squareElements と gameBoardElement の両方が準備できてから描画 -->
@@ -107,27 +107,31 @@
       </div>
     {/if}
   </div>
-
-  <div class="captured-me">
-    {#if reverse}
-      <Captured
-        fontSize={FONT_SIZE}
-        squareWidth={SQUARE_WIDTH}
-        squareHeight={SQUARE_HEIGHT}
-        pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesGote}
-        bind:capturedElements={capturedGoteElements}
-      />
-    {:else}      
-      <Captured
-        fontSize={FONT_SIZE}
-        squareWidth={SQUARE_WIDTH}
-        squareHeight={SQUARE_HEIGHT}
-        pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesSente}
-        bind:capturedElements={capturedSenteElements}
-      />
-    {/if}
+  <div class="front-layer">
+    <div class="captured-me">
+      {#if reverse}
+        <Captured
+          fontSize={FONT_SIZE}
+          squareWidth={SQUARE_WIDTH}
+          squareHeight={SQUARE_HEIGHT}
+          pieceScale={PIECE_SCALE}
+          capturedPieces={capturedPiecesGote}
+          bind:capturedElements={capturedGoteElements}
+        />
+      {:else}      
+        <Captured
+          fontSize={FONT_SIZE}
+          squareWidth={SQUARE_WIDTH}
+          squareHeight={SQUARE_HEIGHT}
+          pieceScale={PIECE_SCALE}
+          capturedPieces={capturedPiecesSente}
+          bind:capturedElements={capturedSenteElements}
+        />
+      {/if}
+    </div>
+    <button class="reverse-button" onclick={() => reverse = !reverse}>
+      {reverse ? '反転解除' : '盤を反転'}
+    </button>
   </div>
 </div>
 
@@ -172,6 +176,14 @@
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: right;
+  }
+
+  .front-layer {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   .captured-me {
