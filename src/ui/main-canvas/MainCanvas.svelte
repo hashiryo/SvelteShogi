@@ -7,9 +7,9 @@
   let squareElements: HTMLDivElement[] = $state([]);
 
   // 先手の持ち駒のDOM情報を格納する配列 (Boardコンポーネントから受け取る)
-  let capturedMeElements: Map<PieceType,HTMLDivElement> = $state(new Map());
+  let capturedSenteElements: Map<PieceType,HTMLDivElement> = $state(new Map());
   // 後手の持ち駒のDOM情報を格納する配列
-  let capturedOpponentElements: Map<PieceType,HTMLDivElement> = $state(new Map());
+  let capturedGoteElements: Map<PieceType,HTMLDivElement> = $state(new Map());
 
   // キャンバス全体のコンテナ要素とその座標
   let canvasElement: HTMLDivElement | undefined = $state();
@@ -31,14 +31,14 @@
   })());
 
   let relativeCapturedMePositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
-    return Array.from(capturedMeElements.entries()).reduce((acc, [piece, el]) => {
+    return Array.from(capturedSenteElements.entries()).reduce((acc, [piece, el]) => {
       acc.set(piece, getRelativePosition(el));
       return acc;
     }, new Map<PieceType, { x: number; y: number }>());
   })());
 
   let relativeCapturedOpponentPositions: Map<PieceType, { x: number; y: number }> = $derived((() => {
-    return Array.from(capturedOpponentElements.entries()).reduce((acc, [piece, el]) => {
+    return Array.from(capturedGoteElements.entries()).reduce((acc, [piece, el]) => {
       acc.set(piece, getRelativePosition(el));
       return acc;
     }, new Map<PieceType, { x: number; y: number }>());
@@ -67,11 +67,11 @@
   ];
 
   // 仮の持ち駒データ
-  let capturedPiecesMe: { piece: PieceType; num: number }[] = [
+  let capturedPiecesSente: { piece: PieceType; num: number }[] = [
     { piece: "歩", num: 10 },
     { piece: "香", num: 1 }
   ];
-  let capturedPiecesOpponent: { piece: PieceType; num: number }[] = [
+  let capturedPiecesGote: { piece: PieceType; num: number }[] = [
     { piece: "銀", num: 2 },
     { piece: "角", num: 1 }
   ];
@@ -212,12 +212,12 @@
 <div class="canvas" bind:this={canvasElement}>
   <div class="game-board">
     <GameBoard {piecesOnBoard} 
-              {capturedPiecesMe} 
-              {capturedPiecesOpponent} 
+              {capturedPiecesSente} 
+              {capturedPiecesGote} 
               {reverse} 
               bind:squareElements={squareElements}
-              bind:capturedMeElements={capturedMeElements}
-              bind:capturedOpponentElements={capturedOpponentElements}
+              bind:capturedSenteElements={capturedSenteElements}
+              bind:capturedGoteElements={capturedGoteElements}
                 />
   </div>
   {#if squareElements.length > 0 && canvasElement}

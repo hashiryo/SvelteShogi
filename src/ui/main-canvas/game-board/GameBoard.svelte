@@ -13,11 +13,11 @@
   // --- 状態 (State) ---
   let {
     piecesOnBoard = [] as PieceOnSquare[],
-    capturedPiecesMe = [] as { piece: PieceType; num: number }[],
-    capturedPiecesOpponent = [] as { piece: PieceType; num: number }[],
+    capturedPiecesSente = [] as { piece: PieceType; num: number }[],
+    capturedPiecesGote = [] as { piece: PieceType; num: number }[],
     squareElements = $bindable([]) as HTMLDivElement[],
-    capturedMeElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
-    capturedOpponentElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
+    capturedSenteElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
+    capturedGoteElements = $bindable(new Map<PieceType, HTMLDivElement>()) as Map<PieceType, HTMLDivElement>,
     reverse = false
   } = $props();
 
@@ -43,16 +43,16 @@
 </script>
 
 <div class="canvas">
-  <div class="captured-opponent" style="width: {SQUARE_WIDTH * 9}px;">
+  <div class="captured-opponent">
     {#if reverse}
       <Captured
         fontSize={FONT_SIZE}
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesMe}
+        capturedPieces={capturedPiecesSente}
         reverse={true}
-        bind:capturedElements={capturedMeElements}
+        bind:capturedElements={capturedSenteElements}
       />
     {:else}
       <Captured
@@ -60,9 +60,9 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesOpponent}
+        capturedPieces={capturedPiecesGote}
         reverse={false}
-        bind:capturedElements={capturedOpponentElements}
+        bind:capturedElements={capturedGoteElements}
       />
     {/if}
   </div>
@@ -108,15 +108,15 @@
     {/if}
   </div>
 
-  <div class="captured-me" style="width: {SQUARE_WIDTH * 9}px;">
+  <div class="captured-me">
     {#if reverse}
       <Captured
         fontSize={FONT_SIZE}
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesOpponent}
-        bind:capturedElements={capturedOpponentElements}
+        capturedPieces={capturedPiecesGote}
+        bind:capturedElements={capturedGoteElements}
       />
     {:else}      
       <Captured
@@ -124,8 +124,8 @@
         squareWidth={SQUARE_WIDTH}
         squareHeight={SQUARE_HEIGHT}
         pieceScale={PIECE_SCALE}
-        capturedPieces={capturedPiecesMe}
-        bind:capturedElements={capturedMeElements}
+        capturedPieces={capturedPiecesSente}
+        bind:capturedElements={capturedSenteElements}
       />
     {/if}
   </div>
@@ -168,6 +168,7 @@
 
   .captured-opponent {
     display: flex;
+    width: 100%;
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: right;
@@ -175,6 +176,7 @@
   
   .captured-me {
     display: flex;
+    width: 100%;
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: left;
