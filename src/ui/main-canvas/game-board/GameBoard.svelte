@@ -9,8 +9,8 @@
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
   const SQUARE_HEIGHT = 60;
-  const FONT_SIZE = 40;
-  const PIECE_SCALE = 0.95;
+  const FONT_SIZE = 38;
+  const PIECE_SCALE = 0.9;
 
   // --- 状態 (State) ---
   let {

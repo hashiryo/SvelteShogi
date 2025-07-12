@@ -61,7 +61,15 @@
 <style>
   .grid-container {
     display: inline-block;
-    background: linear-gradient(135deg, #f0e68c, #daa520);
+    /* background: linear-gradient(135deg, #f0e68c, #daa520); */
+    /* background: #e8e2ce; */
+    /* background: #e9e5a7; */
+    /* backgrounrgb(33, 29, 24)55); */
+    /* background: rgb(202, 178, 134); */
+    /* background: white; */
+    background-color: #ffd760;
+    background-image: url("https://www.transparenttextures.com/patterns/retina-wood.png");
+    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
     padding-left: 10px;
     padding-bottom: 10px;

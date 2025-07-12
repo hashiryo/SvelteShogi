@@ -35,9 +35,11 @@
     align-items: center;
     justify-content: center;
     border: 1px solid transparent;
-    transition: all 0.2s ease;
-    filter: drop-shadow(3px 4px 2px rgba(0, 0, 0, 0.7));
-    transition: all 0.2s ease;
+    transition: all 0.1s ease;
+    /* filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.7)); */
+    /* filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.7)); */
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7));
+    /* filter: drop-shadow(1px 0px 1px rgba(0, 0, 0, 0.7)); */
   }
 
   .square.handed {
@@ -67,7 +69,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #f0e68c, #b88400);
+    /* background: linear-gradient(135deg, #f0e68c, #b88400); */
+    /* background: #ecd25e; */
+    /* background: white; */
+    /* background: #e4e0a0; */
+    background-color: #f7ecb7;
+    background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
     clip-path: polygon(50% 0%, 90% 20%, 100% 100%, 0% 100%, 10% 20%);
   }
 
@@ -78,15 +86,18 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #f0e68c, #b88400);
+    /* background: linear-gradient(135deg, #f0e68c, #b88400); */
+    /* background: #ecde5e; */
+    /* background: rgb(255, 255, 255); */
+    background-color: #f7ecb7;
+    background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
     clip-path: polygon(0% 0%, 100% 0%, 90% 80%, 50% 100%, 10% 80%);
   }
 
   .piece-character {
     position: absolute;
     top: var(--piece-top);
-    left: 12%;
-    transform: rotate(var(--piece-rotate));
+    transform: translate(-50%, 0) rotate(var(--piece-rotate));
     font-size: var(--font-size);
     font-weight: bold;
     color: #2c1810;

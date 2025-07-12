@@ -1,0 +1,10 @@
+ディレクトリのメモ
+* types: 型 (.d.ts)
+* store: ストア (.svelte.ts)
+  * typesに依存
+* domain: ドメイン (.ts)
+  * typesに依存
+* handler: ハンドラ (.ts)
+  * types,store,domainに依存
+* ui: UIコンポーネント (.svelte)
+  * types,store,handlerに依存

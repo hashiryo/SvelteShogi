@@ -90,6 +90,13 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
+function turnEnd() {
+  toggleTurn();
+  resetCanMoveAll();
+  resetPromotionPos();
+  resetHandPiece();
+}
+
 export function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);
   const square = getSquare(row, col);
@@ -106,4 +113,30 @@ export function clickSquareHandler(row: number, col: number) {
     resetHandPiece();
     return;
   }
+  if(!getCanMove(row, col)) {
+    if (square && square.isSente === isSenteTurn) {
+      setHandPieceFromSquare(row, col);
+      setCanMoveFromSquare(row, col);
+    } else {
+      resetHandPiece();
+    }
+    return;
+  }
+
+  if('piece' in handPiece) {
+    setSquare(row, col, handPiece.piece, handPiece.isSente);
+    decrementCaptured(handPiece.piece, handPiece.isSente);  
+    turnEnd();
+    return;  
+  }
+
+  const fromSquare = getSquare(handPiece.row, handPiece.col);
+  if (!fromSquare) throw new Error(`Square at (${handPiece.row}, ${handPiece.col}) does not exist.`);
+  resetSquare(handPiece.row, handPiece.col);
+  if (square) {
+    incrementCaptured(square.piece, !square.isSente);
+  }
+  setSquare(row, col, fromSquare.piece, fromSquare.isSente);
+  turnEnd();
+  return;
 }        
