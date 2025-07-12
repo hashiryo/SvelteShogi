@@ -5,7 +5,6 @@
   import type { PieceType, PieceOnSquare } from '../../../types/shogi.d.ts';
 
   import { getSquare, getNumCapturedSente, getCapturedSente, getNumCapturedGote, getCapturedGote, getHandPiece } from '../../../store/game-board-store.svelte';
-  import { get } from 'svelte/store';
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -21,6 +20,8 @@
   } = $props();
 
   let reverse = $state(false); // 盤の向きを反転するかどうか
+
+  let handPiece = $derived(getHandPiece());
 
   // 3. ボード全体のコンテナ要素とその座標
   let gameBoardElement: HTMLDivElement | undefined = $state();
@@ -52,6 +53,7 @@
         pieceScale={PIECE_SCALE}
         capturedPieces={getCapturedSente().reverse()}
         reverse={true}
+        handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
         bind:capturedElements={capturedSenteElements}
       />
     {:else}
@@ -62,6 +64,7 @@
         pieceScale={PIECE_SCALE}
         capturedPieces={getCapturedGote().reverse()}
         reverse={true}
+        handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
         bind:capturedElements={capturedGoteElements}
       />
     {/if}
@@ -95,7 +98,7 @@
                   left: {relativeSquarePositions[index]?.x}px;
                   width: {SQUARE_WIDTH}px;
                   height: {SQUARE_HEIGHT}px;
-                  z-index: {reverse? (10-row)* 10 + 10-col: (row+1) * 10 + col + 1};
+                  z-index: {reverse? (10-row)* 10 + col + 1: (row+1) * 10 + 10 - col};
                 "
               >
                 <Piece 
@@ -105,6 +108,7 @@
                   scale={PIECE_SCALE} 
                   reverse={reverse? square.isSente: !square.isSente}
                   character={square.piece}
+                  isHanded={handPiece && 'row' in handPiece ? handPiece.row === row && handPiece.col === col : false}
                 />
               </div>
             {/if}
@@ -122,6 +126,7 @@
           squareHeight={SQUARE_HEIGHT}
           pieceScale={PIECE_SCALE}
           capturedPieces={getCapturedGote()}
+          handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
           bind:capturedElements={capturedGoteElements}
         />
       {:else}      
@@ -131,6 +136,7 @@
           squareHeight={SQUARE_HEIGHT}
           pieceScale={PIECE_SCALE}
           capturedPieces={getCapturedSente()}
+          handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
           bind:capturedElements={capturedSenteElements}
         />
       {/if}
@@ -174,6 +180,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none; 
   }
 
   .captured-opponent {

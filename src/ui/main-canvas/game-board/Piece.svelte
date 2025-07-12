@@ -8,10 +8,6 @@
     height = 44,
     fontSize = 30
   } = $props();
-  
-  function toggleHighlight() {
-    isHanded = !isHanded;
-  }
 </script>
 
 <div class="square {isHanded ? 'handed' : ''}"
@@ -20,8 +16,6 @@
     class="piece {reverse ? 'reversed' : ''}"
     role="button"
     tabindex="0"
-    onclick={toggleHighlight}
-    onkeydown={(e) => e.key === 'Enter' && toggleHighlight()}
     style="--font-size: {fontSize}px; 
            --piece-scale: {scale}; 
            --piece-top: {reverse ? '5%' : '25%'};
