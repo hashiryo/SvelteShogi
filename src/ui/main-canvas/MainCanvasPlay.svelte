@@ -1,7 +1,7 @@
 <script lang="ts">
   import GameBoard from './game-board/GameBoard.svelte';
   import Information from './information/Information.svelte';
-  import type { PieceType, PieceOnSquare, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
+  import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -43,38 +43,6 @@
       position: getRelativePosition(element)
     }));
   })());
-
-  // 仮の盤上の駒データ
-  let piecesOnBoard: PieceOnSquare[] = [
-    {
-      piece: "歩",
-      is_sente: true,
-      row: 6,
-      col: 0
-    },
-    {
-      piece: "香",
-      is_sente: true,
-      row: 7,
-      col: 0
-    },
-    {
-      piece: "玉",
-      is_sente: false,
-      row: 0,
-      col: 4
-    }
-  ];
-
-  // 仮の持ち駒データ
-  let capturedPiecesSente: { piece: PieceType; num: number }[] = [
-    { piece: "歩", num: 10 },
-    { piece: "香", num: 1 }
-  ];
-  let capturedPiecesGote: { piece: PieceType; num: number }[] = [
-    { piece: "銀", num: 2 },
-    { piece: "角", num: 1 }
-  ];
 
   let favoriteArrows: (FavoriteFrom)[] = [
     // {

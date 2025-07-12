@@ -10,6 +10,7 @@
     capturedPieces = [] as { piece: PieceType; num: number }[],
     handPiece = null as PieceType | null,
     reverse = false,
+    clickHandler = (piece: PieceType) => { console.log(`Clicked on piece: ${piece}`); },
     capturedElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
   } = $props();
 
@@ -28,7 +29,17 @@
 <div class="captured">
   {#each capturedPieces as {piece, num}, index}
     <div class="piece-container" style="width: {squareWidth}px;">
-      <div class="piece-top" bind:this={elements[index]}>
+      <div class="piece-top"
+           role="button"
+           tabindex="0"
+           onclick={() => clickHandler(piece)}
+           onkeydown={(e) => {
+             if (e.key === 'Enter' || e.key === ' ') {
+              clickHandler(piece);
+             }
+           }}
+           bind:this={elements[index]}
+      >
         <Piece
           width={squareWidth}
           height={squareHeight}

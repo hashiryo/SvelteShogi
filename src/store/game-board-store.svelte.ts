@@ -1,4 +1,4 @@
-import type { PieceType, PieceOnSquare, HandPieceFrom } from '../types/shogi';
+import type { PieceType, HandPieceFrom } from '../types/shogi';
 
 type Square = {
   piece: PieceType;
@@ -40,8 +40,8 @@ function initGrid(): (Square | null)[] {
 
 let grid: (Square | null)[] = $state(initGrid());
 
-let capturedSente: {piece: PieceType, num: number}[] = $state([]);
-let capturedGote: {piece: PieceType, num: number}[] = $state([]);
+let capturedSente: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
+let capturedGote: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
 
 let handPiece: HandPieceFrom = $state(null);
 
