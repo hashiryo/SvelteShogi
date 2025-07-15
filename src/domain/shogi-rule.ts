@@ -79,3 +79,28 @@ export function getPieceMoveVec(piece: PieceType): {r: number, c: number, slide:
       return getGoldMoveVec();
   }
 }
+
+export function promotePiece(piece: PieceType): PieceType {
+  switch (piece) {
+    case "歩": return "と";
+    case "香": return "杏";
+    case "桂": return "圭";
+    case "銀": return "全";
+    case "角": return "馬";
+    case "飛": return "龍";
+    default: return piece; // 金、玉はプロモートしない
+  }
+}
+
+export function originalPiece(piece: PieceType): PieceType {
+  switch (piece) {
+    case "と": return "歩";
+    case "杏": return "香";
+    case "圭": return "桂";
+    case "全": return "銀";
+    case "馬": return "角";
+    case "龍": return "飛";
+    default: return piece; // 金、玉は元の駒
+  }
+}
+

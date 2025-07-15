@@ -11,7 +11,8 @@ function initGrid(): (Square | null)[] {
   grid[6] = { piece: "銀", isSente: false };
   grid[7] = { piece: "桂", isSente: false };
   grid[8] = { piece: "香", isSente: false };
-  grid[9 + 1] = { piece: "角", isSente: false };
+  // grid[9 + 1] = { piece: "角", isSente: false };
+  grid[9 + 1] = { piece: "馬", isSente: false };
   grid[9 + 7] = { piece: "飛", isSente: false };
   for (let i = 0; i < 9; i++) {
     grid[9 * 2 + i] = { piece: "歩", isSente: false };
@@ -50,6 +51,23 @@ export function resetSquare(row: number, col: number) {
 let capturedSente: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
 let capturedGote: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
 
+const TYPE_ORDER: Record<PieceType, number> = {
+  "歩": 1,
+  "香": 2,
+  "桂": 3,
+  "銀": 4,
+  "金": 5,
+  "角": 6,
+  "飛": 7,
+  "玉": 8,
+  "と": 9,
+  "杏": 10,
+  "圭": 11,
+  "全": 12,
+  "馬": 13,
+  "龍": 14,
+};
+
 export function getNumCaptured(piece: PieceType, isSente: boolean): number {
   const found = isSente ? capturedSente.find(p => p.piece === piece) : capturedGote.find(p => p.piece === piece);
   return found ? found.num : 0;
@@ -66,6 +84,7 @@ export function incrementCaptured(piece: PieceType, isSente: boolean) {
   } else {
     (isSente ? capturedSente : capturedGote).push({ piece, num: 1 });
   }
+  (isSente ? capturedSente : capturedGote).sort((a, b) => TYPE_ORDER[a.piece] - TYPE_ORDER[b.piece]);
 }
 
 export function decrementCaptured(piece: PieceType, isSente: boolean) {

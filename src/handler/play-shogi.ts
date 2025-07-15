@@ -24,7 +24,7 @@ import { getCanMove,
          resetPromotionPos 
         } from '../store/play-game-store.svelte';
 
-import { getPieceMoveVec } from '../domain/shogi-move';
+import { getPieceMoveVec, promotePiece, originalPiece } from '../domain/shogi-rule';
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -133,7 +133,7 @@ export function clickSquareHandler(row: number, col: number) {
   const fromSquare = getSquare(handPiece.row, handPiece.col);
   if (!fromSquare) throw new Error(`Square at (${handPiece.row}, ${handPiece.col}) does not exist.`);
   if (square) {
-    incrementCaptured(square.piece, !square.isSente);
+    incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
   resetSquare(handPiece.row, handPiece.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
