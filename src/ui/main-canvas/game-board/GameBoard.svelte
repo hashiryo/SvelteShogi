@@ -18,8 +18,7 @@
     capturedSenteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     capturedGoteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     clickSquareHandler = (row: number, col: number) => { console.log(`Clicked on square at row ${row}, col ${col}`); },
-    clickCapturedSenteHandler = (piece: PieceType) => { console.log(`Clicked on captured piece: ${piece}`); },
-    clickCapturedGoteHandler = (piece: PieceType) => { console.log(`Clicked on captured piece: ${piece}`); },
+    clickCapturedHandler = (piece: PieceType, isSente: boolean) => { console.log(`Clicked on captured piece: ${piece}, isSente: ${isSente}`); },
   } = $props();
 
   let reverse = $state(false); // 盤の向きを反転するかどうか
@@ -57,7 +56,7 @@
         capturedPieces={[...getCaptured(true)].reverse()}
         reverse={true}
         handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
-        clickHandler={clickCapturedSenteHandler}
+        clickHandler={(piece: PieceType) => clickCapturedHandler(piece, true)}
         bind:capturedElements={capturedSenteElements}
       />
     {:else}
@@ -69,7 +68,7 @@
         capturedPieces={[...getCaptured(false)].reverse()}
         reverse={true}
         handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
-        clickHandler={clickCapturedGoteHandler}
+        clickHandler={(piece: PieceType) => clickCapturedHandler(piece, false)}
         bind:capturedElements={capturedGoteElements}
       />
     {/if}
@@ -133,7 +132,7 @@
           pieceScale={PIECE_SCALE}
           capturedPieces={getCaptured(false)}
           handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
-          clickHandler={clickCapturedGoteHandler}
+          clickHandler={(piece: PieceType) => clickCapturedHandler(piece, false)}
           bind:capturedElements={capturedGoteElements}
         />
       {:else}      
@@ -144,7 +143,7 @@
           pieceScale={PIECE_SCALE}
           capturedPieces={getCaptured(true)}
           handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
-          clickHandler={clickCapturedSenteHandler}
+          clickHandler={(piece: PieceType) => clickCapturedHandler(piece, true)}
           bind:capturedElements={capturedSenteElements}
         />
       {/if}

@@ -139,4 +139,21 @@ export function clickSquareHandler(row: number, col: number) {
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
   turnEnd();
   return;
-}        
+}
+
+export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
+  console.log(`clickCapturedHandler: piece=${piece}, isSente=${isSente}`);
+  const handPiece = getHandPiece();
+  const isSenteTurn = getIsSenteTurn();
+  if (isSente === isSenteTurn) {
+    if (handPiece && 'piece' in handPiece && handPiece.piece === piece) {
+        resetHandPiece();
+    }else{
+        setHandPieceFromCaptured(piece, isSente);
+        setCanMoveFromCaptured(piece, isSente);
+    }
+    return;
+  }
+  resetHandPiece();
+}
+  

@@ -4,7 +4,7 @@
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
 
   import { getCanMove, getPromotionPos } from '../../store/play-game-store.svelte';
-  import { clickSquareHandler } from '../../handler/play-shogi';
+  import { clickSquareHandler, clickCapturedHandler } from '../../handler/play-shogi';
   import { getHandPiece } from '../../store/game-board-store.svelte';
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
@@ -194,6 +194,7 @@
 <div class="canvas" bind:this={canvasElement}>
   <div class="game-board">
     <GameBoard clickSquareHandler={clickSquareHandler}
+               clickCapturedHandler={clickCapturedHandler}
                bind:squareElements={squareElements}
                bind:capturedSenteElements={capturedSenteElements}
                bind:capturedGoteElements={capturedGoteElements}
