@@ -105,20 +105,23 @@ export function clickSquareHandler(row: number, col: number) {
   const isSenteTurn = getIsSenteTurn();
   if(!handPiece) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(square.piece, row, col);
+      setHandPieceFromSquare(square.piece, square.isSente, {row, col});
       setCanMoveFromSquare(row, col);
+      resetPromotionPos();
     }
     return;
   }
-  if('row' in handPiece && handPiece.row === row && handPiece.col === col) {
+  const handPiecePos = handPiece.position;
+  if(handPiecePos && handPiecePos.row === row && handPiecePos.col === col) {
     resetHandPiece();
     resetPromotionPos();
     return;
   }
   if(!getCanMove(row, col)) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(square.piece, row, col);
+      setHandPieceFromSquare(square.piece, square.isSente, {row, col});
       setCanMoveFromSquare(row, col);
+      resetPromotionPos();
     } else {
       resetHandPiece();
       resetPromotionPos();
@@ -126,14 +129,14 @@ export function clickSquareHandler(row: number, col: number) {
     return;
   }
 
-  if('isSente' in handPiece) {
+  if(!handPiecePos) {
     setSquare(row, col, handPiece.piece, handPiece.isSente);
     decrementCaptured(handPiece.piece, handPiece.isSente);  
     turnEnd();
     return;  
   }
 
-  if (isSenteTurn? (handPiece.row < 3 || row < 3) : (handPiece.row > 5 || row > 5)) {
+  if (isSenteTurn ? (handPiecePos.row < 3 || row < 3) : (handPiecePos.row > 5 || row > 5)) {
     const promotedPiece = promotePiece(handPiece.piece);
     if(promotedPiece !== handPiece.piece) {
       setPromotionPos(row, col);
@@ -141,12 +144,12 @@ export function clickSquareHandler(row: number, col: number) {
     }
   }
 
-  const fromSquare = getSquare(handPiece.row, handPiece.col);
-  if (!fromSquare) throw new Error(`Square at (${handPiece.row}, ${handPiece.col}) does not exist.`);
+  const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
+  if (!fromSquare) throw new Error(`Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`);
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
-  resetSquare(handPiece.row, handPiece.col);
+  resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
   turnEnd();
   return;
@@ -157,12 +160,13 @@ export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   const handPiece = getHandPiece();
   const isSenteTurn = getIsSenteTurn();
   if (isSente === isSenteTurn) {
-    if (handPiece && 'isSente' in handPiece && handPiece.isSente === isSente) {
+    if (handPiece && !handPiece.position && handPiece.isSente === isSente) {
         resetHandPiece();
         resetPromotionPos();
     }else{
         setHandPieceFromCaptured(piece, isSente);
         setCanMoveFromCaptured(piece, isSente);
+        resetPromotionPos();
     }
     return;
   }
@@ -170,3 +174,21 @@ export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   resetPromotionPos();
 }
   
+export function clickPromotionHandler(getPromote: boolean) {
+  console.log(`clickPromotionHandler: getPromote=${getPromote}`);
+  const handPiece = getHandPiece();
+  if (!handPiece) throw new Error("No hand piece selected for promotion.");
+  const handPiecePos = handPiece.position;
+  if (!handPiecePos) throw new Error("Hand piece is not from a square.");
+  const promotionPos = getPromotionPos();
+  if (!promotionPos) throw new Error("No promotion position set.");
+  const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
+  if (!fromSquare) throw new Error(`Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`);
+  const square = getSquare(promotionPos.row, promotionPos.col);
+  if (square) {
+    incrementCaptured(originalPiece(square.piece), !square.isSente);
+  }
+  resetSquare(handPiecePos.row, handPiecePos.col);
+  setSquare(promotionPos.row, promotionPos.col, getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece, fromSquare.isSente);
+  turnEnd();
+}

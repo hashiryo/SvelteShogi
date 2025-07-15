@@ -12,14 +12,13 @@
     squareHeight = 60,
     pieceScale = 0.9,
     fontSize = 38,
+    reverse = $bindable(false),
     squareElements = $bindable([]) as HTMLDivElement[],
     capturedSenteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     capturedGoteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     clickSquareHandler = (row: number, col: number) => { console.log(`Clicked on square at row ${row}, col ${col}`); },
     clickCapturedHandler = (piece: PieceType, isSente: boolean) => { console.log(`Clicked on captured piece: ${piece}, isSente: ${isSente}`); },
   } = $props();
-
-  let reverse = $state(false); // 盤の向きを反転するかどうか
 
   let handPiece = $derived(getHandPiece());
 
@@ -44,7 +43,7 @@
 </script>
 
 <div class="canvas">
-  <div class="captured-opponent">
+  <div class="captured-opponent" style="height: {squareHeight*1.2}px;">
     {#if reverse}
       <Captured
         fontSize={fontSize}
@@ -53,7 +52,7 @@
         pieceScale={pieceScale}
         capturedPieces={[...getCaptured(true)].reverse()}
         reverse={true}
-        handPiece={handPiece && 'isSente' in handPiece  && handPiece.isSente? handPiece.piece : null}
+        handPiece={handPiece && !handPiece.position && handPiece.isSente? handPiece.piece : null}
         clickHandler={(piece: PieceType) => clickCapturedHandler(piece, true)}
         bind:capturedElements={capturedSenteElements}
       />
@@ -65,7 +64,7 @@
         pieceScale={pieceScale}
         capturedPieces={[...getCaptured(false)].reverse()}
         reverse={true}
-        handPiece={handPiece && 'isSente' in handPiece  && !handPiece.isSente? handPiece.piece : null}
+        handPiece={handPiece && !handPiece.position && !handPiece.isSente? handPiece.piece : null}
         clickHandler={(piece: PieceType) => clickCapturedHandler(piece, false)}
         bind:capturedElements={capturedGoteElements}
       />
@@ -111,7 +110,7 @@
                   scale={pieceScale} 
                   reverse={reverse? square.isSente: !square.isSente}
                   character={square.piece}
-                  isHanded={handPiece && 'row' in handPiece ? handPiece.row === row && handPiece.col === col : false}
+                  isHanded={handPiece && handPiece.position ? handPiece.position.row === row && handPiece.position.col === col : false}
                 />
               </div>
             {/if}
@@ -129,7 +128,7 @@
           squareHeight={squareHeight}
           pieceScale={pieceScale}
           capturedPieces={getCaptured(false)}
-          handPiece={handPiece && 'isSente' in handPiece  && !handPiece.isSente? handPiece.piece : null}
+          handPiece={handPiece && !handPiece.position && !handPiece.isSente? handPiece.piece : null}
           clickHandler={(piece: PieceType) => clickCapturedHandler(piece, false)}
           bind:capturedElements={capturedGoteElements}
         />
@@ -140,7 +139,7 @@
           squareHeight={squareHeight}
           pieceScale={pieceScale}
           capturedPieces={getCaptured(true)}
-          handPiece={handPiece && 'isSente' in handPiece  && handPiece.isSente? handPiece.piece : null}
+          handPiece={handPiece && !handPiece.position && handPiece.isSente? handPiece.piece : null}
           clickHandler={(piece: PieceType) => clickCapturedHandler(piece, true)}
           bind:capturedElements={capturedSenteElements}
         />

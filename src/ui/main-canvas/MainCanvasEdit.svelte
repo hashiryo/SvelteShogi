@@ -8,6 +8,8 @@
   const FONT_SIZE = 38;
   const PIECE_SCALE = 0.9;
 
+  let reverse = $state(false); // 盤の向きを反転するかどうか
+
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
 
@@ -21,6 +23,11 @@
 <div class="canvas">
   <div class="game-board">
     <GameBoard 
+              squareWidth={SQUARE_WIDTH}
+              squareHeight={SQUARE_HEIGHT}
+              pieceScale={PIECE_SCALE}
+              fontSize={FONT_SIZE}
+              bind:reverse={reverse}
               bind:squareElements={squareElements}
               bind:capturedSenteElements={capturedSenteElements}
               bind:capturedGoteElements={capturedGoteElements}

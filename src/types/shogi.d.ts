@@ -42,15 +42,8 @@ type StatisticsFromCaptured = {
 export type StatisticsFrom = StatisticsFromSquare | StatisticsFromCaptured;
 
 
-type HandPieceFromSquare = {
-  piece: PieceType;
-  row: number;
-  col: number;
-}
-
-type HandPieceFromCaptured = {
+export type HandPieceFrom = {
   piece: PieceType;
   isSente: boolean;
+  position: {row: number, col: number} | null;
 }
-
-export type HandPieceFrom = HandPieceFromSquare | HandPieceFromCaptured | null;

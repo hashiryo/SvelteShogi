@@ -11,8 +11,7 @@ function initGrid(): (Square | null)[] {
   grid[6] = { piece: "銀", isSente: false };
   grid[7] = { piece: "桂", isSente: false };
   grid[8] = { piece: "香", isSente: false };
-  // grid[9 + 1] = { piece: "角", isSente: false };
-  grid[9 + 1] = { piece: "馬", isSente: false };
+  grid[9 + 1] = { piece: "角", isSente: false };
   grid[9 + 7] = { piece: "飛", isSente: false };
   for (let i = 0; i < 9; i++) {
     grid[9 * 2 + i] = { piece: "歩", isSente: false };
@@ -48,8 +47,8 @@ export function resetSquare(row: number, col: number) {
   grid[row * 9 + col] = null;
 }
 
-let capturedSente: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
-let capturedGote: {piece: PieceType, num: number}[] = $state([{"piece": "歩", "num": 1}]);
+let capturedSente: {piece: PieceType, num: number}[] = $state([]);
+let capturedGote: {piece: PieceType, num: number}[] = $state([]);
 
 const TYPE_ORDER: Record<PieceType, number> = {
   "歩": 1,
@@ -97,21 +96,21 @@ export function decrementCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
-let handPiece: HandPieceFrom = $state(null);
+let handPiece: HandPieceFrom | null = $state(null);
 
-export function setHandPieceFromSquare(piece: PieceType, row: number, col: number){
-  handPiece = { piece, row, col };
+export function setHandPieceFromSquare(piece: PieceType, isSente: boolean, position: {row: number, col: number} | null) {
+  handPiece = { piece, isSente, position };
 }
 
 export function setHandPieceFromCaptured(piece: PieceType, isSente: boolean) {
-  handPiece = { piece, isSente };
+  handPiece = { piece, isSente, position: null };
 }
 
 export function resetHandPiece() {
   handPiece = null;
 }
 
-export function getHandPiece(): HandPieceFrom {
+export function getHandPiece(): HandPieceFrom | null {
   return handPiece;
 }
 

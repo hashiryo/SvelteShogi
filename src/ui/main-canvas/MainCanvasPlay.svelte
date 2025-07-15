@@ -5,7 +5,7 @@
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
 
   import { getCanMove, getPromotionPos } from '../../store/play-game-store.svelte';
-  import { clickSquareHandler, clickCapturedHandler } from '../../handler/play-shogi';
+  import { clickSquareHandler, clickCapturedHandler, clickPromotionHandler } from '../../handler/play-shogi';
   import { getHandPiece } from '../../store/game-board-store.svelte';
 
   // --- 定数 ---
@@ -13,6 +13,9 @@
   const SQUARE_HEIGHT = 60;
   const FONT_SIZE = 38;
   const PIECE_SCALE = 0.9;
+
+
+  let reverse = $state(false); // 盤の向きを反転するかどうか
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -205,6 +208,7 @@
                 squareHeight={SQUARE_HEIGHT}
                 fontSize={FONT_SIZE}
                 pieceScale={PIECE_SCALE}
+                bind:reverse={reverse}
                 clickSquareHandler={clickSquareHandler}
                 clickCapturedHandler={clickCapturedHandler}
                 bind:squareElements={squareElements}
@@ -235,22 +239,20 @@
       {#if promotionPos}
         {@const index= promotionPos.row * 9 + promotionPos.col}
         {@const { x, y, width, height } = relativeSquareRect[index]}
-        <div class="can-move" style="top: {y}px;
-                                      left: {x}px;
-                                      width: {width}px;
-                                      height: {height}px;">
-          <div class="promotion-square">
-            <Promote
-              squareWidth={width}
-              squareHeight={height}
-              fontSize={FONT_SIZE}
-              pieceScale={PIECE_SCALE}
-              piece={handPiece.piece}
-              clickHandler={(getPromote: boolean) => {
-                console.log(`Promotion clicked: ${getPromote}`);
-              }}
-            />
-          </div>
+        <div class="promotion-square"
+              style="top: {y}px;
+                    left: {x}px;
+                    width: {width}px;
+                    height: {height}px;">
+          <Promote
+            squareWidth={width}
+            squareHeight={height}
+            fontSize={FONT_SIZE}
+            pieceScale={PIECE_SCALE}
+            piece={handPiece.piece}
+            reverse={handPiece.isSente? reverse : !reverse}
+            clickHandler={clickPromotionHandler}
+          />
         </div>
       {/if}
     {/if}
@@ -281,6 +283,12 @@
 .cannot-move-square {
   position: absolute;
   background-color: rgba(30, 0, 0, 0.2); /* 半透明 */
+}
+
+.promotion-square {
+  position: absolute;
+  background-color: rgba(0, 30, 0, 0.2); /* 半透明 */
+  z-index: 170;
 }
 
 .information {
