@@ -99,8 +99,8 @@ export function decrementCaptured(piece: PieceType, isSente: boolean) {
 
 let handPiece: HandPieceFrom = $state(null);
 
-export function setHandPieceFromSquare(row: number, col: number){
-  handPiece = { row, col };
+export function setHandPieceFromSquare(piece: PieceType, row: number, col: number){
+  handPiece = { piece, row, col };
 }
 
 export function setHandPieceFromCaptured(piece: PieceType, isSente: boolean) {

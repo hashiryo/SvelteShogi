@@ -2,6 +2,12 @@
   import GameBoard from './game-board/GameBoard.svelte';
   import type { PieceType} from '../../types/shogi';
 
+  // --- 定数 ---
+  const SQUARE_WIDTH = 55;
+  const SQUARE_HEIGHT = 60;
+  const FONT_SIZE = 38;
+  const PIECE_SCALE = 0.9;
+
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
 

@@ -95,6 +95,7 @@ function turnEnd() {
   resetCanMoveAll();
   resetPromotionPos();
   resetHandPiece();
+  resetPromotionPos();
 }
 
 export function clickSquareHandler(row: number, col: number) {
@@ -104,30 +105,40 @@ export function clickSquareHandler(row: number, col: number) {
   const isSenteTurn = getIsSenteTurn();
   if(!handPiece) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(row, col);
+      setHandPieceFromSquare(square.piece, row, col);
       setCanMoveFromSquare(row, col);
     }
     return;
   }
   if('row' in handPiece && handPiece.row === row && handPiece.col === col) {
     resetHandPiece();
+    resetPromotionPos();
     return;
   }
   if(!getCanMove(row, col)) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(row, col);
+      setHandPieceFromSquare(square.piece, row, col);
       setCanMoveFromSquare(row, col);
     } else {
       resetHandPiece();
+      resetPromotionPos();
     }
     return;
   }
 
-  if('piece' in handPiece) {
+  if('isSente' in handPiece) {
     setSquare(row, col, handPiece.piece, handPiece.isSente);
     decrementCaptured(handPiece.piece, handPiece.isSente);  
     turnEnd();
     return;  
+  }
+
+  if (isSenteTurn? (handPiece.row < 3 || row < 3) : (handPiece.row > 5 || row > 5)) {
+    const promotedPiece = promotePiece(handPiece.piece);
+    if(promotedPiece !== handPiece.piece) {
+      setPromotionPos(row, col);
+      return;
+    }
   }
 
   const fromSquare = getSquare(handPiece.row, handPiece.col);
@@ -146,8 +157,9 @@ export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   const handPiece = getHandPiece();
   const isSenteTurn = getIsSenteTurn();
   if (isSente === isSenteTurn) {
-    if (handPiece && 'piece' in handPiece && handPiece.piece === piece) {
+    if (handPiece && 'isSente' in handPiece && handPiece.isSente === isSente) {
         resetHandPiece();
+        resetPromotionPos();
     }else{
         setHandPieceFromCaptured(piece, isSente);
         setCanMoveFromCaptured(piece, isSente);
@@ -155,5 +167,6 @@ export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
     return;
   }
   resetHandPiece();
+  resetPromotionPos();
 }
   

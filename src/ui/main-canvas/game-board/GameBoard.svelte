@@ -6,14 +6,12 @@
 
   import { getSquare, getCaptured, getHandPiece } from '../../../store/game-board-store.svelte';
 
-  // --- 定数 ---
-  const SQUARE_WIDTH = 55;
-  const SQUARE_HEIGHT = 60;
-  const FONT_SIZE = 38;
-  const PIECE_SCALE = 0.9;
-
   // --- 状態 (State) ---
   let {
+    squareWidth = 55,
+    squareHeight = 60,
+    pieceScale = 0.9,
+    fontSize = 38,
     squareElements = $bindable([]) as HTMLDivElement[],
     capturedSenteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
     capturedGoteElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
@@ -49,25 +47,25 @@
   <div class="captured-opponent">
     {#if reverse}
       <Captured
-        fontSize={FONT_SIZE}
-        squareWidth={SQUARE_WIDTH}
-        squareHeight={SQUARE_HEIGHT}
-        pieceScale={PIECE_SCALE}
+        fontSize={fontSize}
+        squareWidth={squareWidth}
+        squareHeight={squareHeight}
+        pieceScale={pieceScale}
         capturedPieces={[...getCaptured(true)].reverse()}
         reverse={true}
-        handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
+        handPiece={handPiece && 'isSente' in handPiece  && handPiece.isSente? handPiece.piece : null}
         clickHandler={(piece: PieceType) => clickCapturedHandler(piece, true)}
         bind:capturedElements={capturedSenteElements}
       />
     {:else}
       <Captured
-        fontSize={FONT_SIZE}
-        squareWidth={SQUARE_WIDTH}
-        squareHeight={SQUARE_HEIGHT}
-        pieceScale={PIECE_SCALE}
+        fontSize={fontSize}
+        squareWidth={squareWidth}
+        squareHeight={squareHeight}
+        pieceScale={pieceScale}
         capturedPieces={[...getCaptured(false)].reverse()}
         reverse={true}
-        handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
+        handPiece={handPiece && 'isSente' in handPiece  && !handPiece.isSente? handPiece.piece : null}
         clickHandler={(piece: PieceType) => clickCapturedHandler(piece, false)}
         bind:capturedElements={capturedGoteElements}
       />
@@ -77,8 +75,8 @@
   <!-- position: relative を設定して、中の駒の配置基準にする -->
   <div class="game-board" bind:this={gameBoardElement}>
       <Grid
-        squareWidth={SQUARE_WIDTH} 
-        squareHeight={SQUARE_HEIGHT} 
+        squareWidth={squareWidth} 
+        squareHeight={squareHeight} 
         reverse={reverse}
         clickHandler={clickSquareHandler}
         bind:squareElements={squareElements}
@@ -101,16 +99,16 @@
                   position: absolute;
                   top: {relativeSquarePositions[index]?.y}px;
                   left: {relativeSquarePositions[index]?.x}px;
-                  width: {SQUARE_WIDTH}px;
-                  height: {SQUARE_HEIGHT}px;
+                  width: {squareWidth}px;
+                  height: {squareHeight}px;
                   z-index: {reverse? (10-row)* 10 + col + 1: (row+1) * 10 + 10 - col};
                 "
               >
                 <Piece 
-                  fontSize={FONT_SIZE} 
-                  width={SQUARE_WIDTH}  
-                  height={SQUARE_HEIGHT} 
-                  scale={PIECE_SCALE} 
+                  fontSize={fontSize} 
+                  width={squareWidth}  
+                  height={squareHeight} 
+                  scale={pieceScale} 
                   reverse={reverse? square.isSente: !square.isSente}
                   character={square.piece}
                   isHanded={handPiece && 'row' in handPiece ? handPiece.row === row && handPiece.col === col : false}
@@ -126,23 +124,23 @@
     <div class="captured-me">
       {#if reverse}
         <Captured
-          fontSize={FONT_SIZE}
-          squareWidth={SQUARE_WIDTH}
-          squareHeight={SQUARE_HEIGHT}
-          pieceScale={PIECE_SCALE}
+          fontSize={fontSize}
+          squareWidth={squareWidth}
+          squareHeight={squareHeight}
+          pieceScale={pieceScale}
           capturedPieces={getCaptured(false)}
-          handPiece={handPiece && 'piece' in handPiece  && !handPiece.isSente? handPiece.piece : null}
+          handPiece={handPiece && 'isSente' in handPiece  && !handPiece.isSente? handPiece.piece : null}
           clickHandler={(piece: PieceType) => clickCapturedHandler(piece, false)}
           bind:capturedElements={capturedGoteElements}
         />
       {:else}      
         <Captured
-          fontSize={FONT_SIZE}
-          squareWidth={SQUARE_WIDTH}
-          squareHeight={SQUARE_HEIGHT}
-          pieceScale={PIECE_SCALE}
+          fontSize={fontSize}
+          squareWidth={squareWidth}
+          squareHeight={squareHeight}
+          pieceScale={pieceScale}
           capturedPieces={getCaptured(true)}
-          handPiece={handPiece && 'piece' in handPiece  && handPiece.isSente? handPiece.piece : null}
+          handPiece={handPiece && 'isSente' in handPiece  && handPiece.isSente? handPiece.piece : null}
           clickHandler={(piece: PieceType) => clickCapturedHandler(piece, true)}
           bind:capturedElements={capturedSenteElements}
         />

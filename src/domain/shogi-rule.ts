@@ -103,4 +103,3 @@ export function originalPiece(piece: PieceType): PieceType {
     default: return piece; // 金、玉は元の駒
   }
 }
-

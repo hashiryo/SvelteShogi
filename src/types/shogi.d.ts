@@ -43,6 +43,7 @@ export type StatisticsFrom = StatisticsFromSquare | StatisticsFromCaptured;
 
 
 type HandPieceFromSquare = {
+  piece: PieceType;
   row: number;
   col: number;
 }
