@@ -1,7 +1,7 @@
 <script lang="ts">
   import FavoriteOnBoard from './FavoriteOnBoard.svelte';
   import StatisticsOnBoard from './StatisticsOnBoard.svelte';
-  import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../../types/shogi.d.ts';
+  import type { PieceType, FavoriteFrom, StatisticsFrom } from '@/types/shogi.d.ts';
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],

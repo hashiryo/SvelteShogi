@@ -1,6 +1,6 @@
 <script lang="ts">
   import GameBoard from './game-board/GameBoard.svelte';
-  import type { PieceType} from '../../types/shogi';
+  import type { PieceType} from '@/types/shogi';
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;

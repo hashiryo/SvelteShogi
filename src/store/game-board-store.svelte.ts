@@ -1,4 +1,4 @@
-import type { PieceType, Square, HandPieceFrom } from '../types/shogi';
+import type { PieceType, Square, HandPieceFrom } from '@/types/shogi';
 
 function initGrid(): (Square | null)[] {
   let grid: (Square | null)[] = Array(81).fill(null);

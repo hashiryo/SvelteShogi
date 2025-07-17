@@ -2,11 +2,11 @@
   import GameBoard from './game-board/GameBoard.svelte';
   import Promote from './game-board/Promote.svelte';
   import Information from './information/Information.svelte';
-  import type { PieceType, FavoriteFrom, StatisticsFrom } from '../../types/shogi';
+  import type { PieceType, FavoriteFrom, StatisticsFrom } from '@/types/shogi';
 
-  import { getCanMove, getPromotionPos } from '../../store/play-game-store.svelte';
-  import { clickSquareHandler, clickCapturedHandler, clickPromotionHandler } from '../../handler/play-shogi';
-  import { getHandPiece } from '../../store/game-board-store.svelte';
+  import { getCanMove, getPromotionPos } from '@/store/play-game-store.svelte';
+  import { clickSquareHandler, clickCapturedHandler, clickPromotionHandler } from '@/handler/play-shogi';
+  import { getHandPiece } from '@/store/game-board-store.svelte';
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;

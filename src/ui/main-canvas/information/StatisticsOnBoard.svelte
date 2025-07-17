@@ -1,7 +1,7 @@
 <script lang="ts">
   import StatisticsArrow from './StatisticsArrow.svelte';
   import { fade} from 'svelte/transition';
-  import type { PieceType, StatisticsFrom } from '../../../types/shogi.d.ts';
+  import type { PieceType, StatisticsFrom } from '@/types/shogi.d.ts';
 
   let {
     relativeSquarePositions = [] as { x: number, y: number }[],

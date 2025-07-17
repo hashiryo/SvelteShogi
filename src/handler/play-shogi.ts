@@ -1,4 +1,4 @@
-import type { PieceType } from '../types/shogi';
+import type { PieceType } from '@/types/shogi';
 
 import { getSquare, 
          setSquare, 
@@ -12,7 +12,7 @@ import { getSquare,
          resetHandPiece,
          getIsSenteTurn,
          toggleTurn
-       } from '../store/game-board-store.svelte';
+       } from '@/store/game-board-store.svelte';
 
 import { getCanMove, 
          setCanMoveSquare, 
@@ -22,9 +22,9 @@ import { getCanMove,
          getPromotionPos, 
          setPromotionPos, 
          resetPromotionPos 
-        } from '../store/play-game-store.svelte';
+        } from '@/store/play-game-store.svelte';
 
-import { getPieceMoveVec, promotePiece, originalPiece } from '../domain/shogi-rule';
+import { getPieceMoveVec, promotePiece, originalPiece } from '@/domain/shogi-rule';
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Piece from './Piece.svelte';
-  import type { PieceType } from '../../../types/shogi.d.ts';
+  import type { PieceType } from '@/types/shogi.d.ts';
 
   let {
     squareWidth = 40,

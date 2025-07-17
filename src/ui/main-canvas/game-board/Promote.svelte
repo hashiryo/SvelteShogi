@@ -1,7 +1,7 @@
 <script lang="ts">
   import Piece from './Piece.svelte';
-  import type { PieceType } from '../../../types/shogi.d.ts';
-  import { promotePiece } from '../../../domain/shogi-rule';
+  import type { PieceType } from '@/types/shogi.d.ts';
+  import { promotePiece } from '@/domain/shogi-rule';
 
   let {
     squareWidth = 40,

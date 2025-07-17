@@ -1,4 +1,4 @@
-import type { PieceType } from "../types/shogi";
+import type { PieceType } from "@/types/shogi";
 
 function getGoldMoveVec(): {r: number, c: number, slide: boolean}[] {
   return [
