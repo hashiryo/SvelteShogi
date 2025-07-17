@@ -47,3 +47,17 @@ export type HandPieceFrom = {
   isSente: boolean;
   position: {row: number, col: number} | null;
 }
+
+// 棋譜履歴のノード
+export interface HistoryNode {
+  display: string;        // 表示用の棋譜
+  sfenx: string;         // SFENのような形式の文字列
+  prev: number;          // 親のノード
+  next: number;          // 子のノード
+  br_next: number;       // 兄弟ノードのうち次のノード
+  br_prev: number;       // 兄弟ノードのうち前のノード
+  turn: TurnColor;       // 手番
+  move: string;          // 直前の移動文字列（例: "7g7f"）
+  lastPos: {row: number, col: number} | null; // 最後に移動したマス
+  isFavorite: boolean;   // お気に入りの一手かどうか
+}
