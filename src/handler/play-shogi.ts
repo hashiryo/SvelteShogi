@@ -1,37 +1,45 @@
-import type { PieceType } from '@/types/shogi';
+import type { PieceType } from "@/types/shogi";
 
-import { getSquare, 
-         setSquare, 
-         resetSquare, 
-         getNumCaptured, 
-         incrementCaptured, 
-         decrementCaptured, 
-         getHandPiece,
-         setHandPieceFromSquare,
-         setHandPieceFromCaptured,
-         resetHandPiece,
-         getIsSenteTurn,
-         toggleTurn
-       } from '@/store/game-board-store.svelte';
+import {
+  getSquare,
+  setSquare,
+  resetSquare,
+  getNumCaptured,
+  incrementCaptured,
+  decrementCaptured,
+  getHandPiece,
+  setHandPieceFromSquare,
+  setHandPieceFromCaptured,
+  resetHandPiece,
+  getIsSenteTurn,
+  toggleTurn,
+} from "@/store/game-board-store.svelte";
 
-import { getCanMove, 
-         setCanMoveSquare, 
-         setCanMoveAll, 
-         resetCanMoveSquare,
-         resetCanMoveAll,
-         getPromotionPos, 
-         setPromotionPos, 
-         resetPromotionPos 
-        } from '@/store/play-game-store.svelte';
+import {
+  getCanMove,
+  setCanMoveSquare,
+  setCanMoveAll,
+  resetCanMoveSquare,
+  resetCanMoveAll,
+  getPromotionPos,
+  setPromotionPos,
+  resetPromotionPos,
+} from "@/store/play-game-store.svelte";
 
-import { getPieceMoveVec, promotePiece, originalPiece } from '@/domain/shogi-rule';
+import { addHistoryNode, getCurrentIndex } from "@/store/kifu-history.svelte";
+
+import {
+  getPieceMoveVec,
+  promotePiece,
+  originalPiece,
+} from "@/domain/shogi-rule";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
   const square = getSquare(row, col);
   if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
   const vec = getPieceMoveVec(square.piece);
-  for (const {r, c, slide} of vec) {
+  for (const { r, c, slide } of vec) {
     const rv = square.isSente ? r : -r; // Reverse direction for gote
     const rc = c;
     let nr = row + rv;
@@ -61,29 +69,29 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
       if (getSquare(r, c)) resetCanMoveSquare(r, c); // Reset canMove for occupied squares
     }
   }
-  if (piece === '歩') {
-    for(let c=0; c<9; c++) {
+  if (piece === "歩") {
+    for (let c = 0; c < 9; c++) {
       resetCanMoveSquare(isSente ? 0 : 8, c); // Place pawn on the first or last row
       let nifu = false;
-      for(let r=0; r<9; r++) {
+      for (let r = 0; r < 9; r++) {
         const square = getSquare(r, c);
         if (square && square.isSente === isSente) {
-          if (square.piece === '歩') {
+          if (square.piece === "歩") {
             nifu = true; // Found another pawn in the same column
             break;
           }
         }
       }
       if (nifu) {
-        for(let r=0; r<9; r++) resetCanMoveSquare(r, c);
+        for (let r = 0; r < 9; r++) resetCanMoveSquare(r, c);
       }
     }
   }
-  if (piece === '香') {
-    for(let c=0; c<9; c++) resetCanMoveSquare(isSente ? 0 : 8, c);
+  if (piece === "香") {
+    for (let c = 0; c < 9; c++) resetCanMoveSquare(isSente ? 0 : 8, c);
   }
-  if (piece === '桂') {
-    for(let c=0; c<9; c++) {
+  if (piece === "桂") {
+    for (let c = 0; c < 9; c++) {
       resetCanMoveSquare(isSente ? 0 : 8, c);
       resetCanMoveSquare(isSente ? 1 : 7, c);
     }
@@ -96,6 +104,8 @@ function turnEnd() {
   resetPromotionPos();
   resetHandPiece();
   resetPromotionPos();
+  // todo: Update history
+  addHistoryNode("hoge", "sfenx", true, "fuga", false);
 }
 
 export function clickSquareHandler(row: number, col: number) {
@@ -103,23 +113,23 @@ export function clickSquareHandler(row: number, col: number) {
   const square = getSquare(row, col);
   const handPiece = getHandPiece();
   const isSenteTurn = getIsSenteTurn();
-  if(!handPiece) {
+  if (!handPiece) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(square.piece, square.isSente, {row, col});
+      setHandPieceFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);
       resetPromotionPos();
     }
     return;
   }
   const handPiecePos = handPiece.position;
-  if(handPiecePos && handPiecePos.row === row && handPiecePos.col === col) {
+  if (handPiecePos && handPiecePos.row === row && handPiecePos.col === col) {
     resetHandPiece();
     resetPromotionPos();
     return;
   }
-  if(!getCanMove(row, col)) {
+  if (!getCanMove(row, col)) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(square.piece, square.isSente, {row, col});
+      setHandPieceFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);
       resetPromotionPos();
     } else {
@@ -129,23 +139,30 @@ export function clickSquareHandler(row: number, col: number) {
     return;
   }
 
-  if(!handPiecePos) {
+  if (!handPiecePos) {
     setSquare(row, col, handPiece.piece, handPiece.isSente);
-    decrementCaptured(handPiece.piece, handPiece.isSente);  
+    decrementCaptured(handPiece.piece, handPiece.isSente);
     turnEnd();
-    return;  
+    return;
   }
 
-  if (isSenteTurn ? (handPiecePos.row < 3 || row < 3) : (handPiecePos.row > 5 || row > 5)) {
+  if (
+    isSenteTurn
+      ? handPiecePos.row < 3 || row < 3
+      : handPiecePos.row > 5 || row > 5
+  ) {
     const promotedPiece = promotePiece(handPiece.piece);
-    if(promotedPiece !== handPiece.piece) {
+    if (promotedPiece !== handPiece.piece) {
       setPromotionPos(row, col);
       return;
     }
   }
 
   const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
-  if (!fromSquare) throw new Error(`Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`);
+  if (!fromSquare)
+    throw new Error(
+      `Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`
+    );
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
@@ -161,19 +178,19 @@ export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   const isSenteTurn = getIsSenteTurn();
   if (isSente === isSenteTurn) {
     if (handPiece && !handPiece.position && handPiece.isSente === isSente) {
-        resetHandPiece();
-        resetPromotionPos();
-    }else{
-        setHandPieceFromCaptured(piece, isSente);
-        setCanMoveFromCaptured(piece, isSente);
-        resetPromotionPos();
+      resetHandPiece();
+      resetPromotionPos();
+    } else {
+      setHandPieceFromCaptured(piece, isSente);
+      setCanMoveFromCaptured(piece, isSente);
+      resetPromotionPos();
     }
     return;
   }
   resetHandPiece();
   resetPromotionPos();
 }
-  
+
 export function clickPromotionHandler(getPromote: boolean) {
   console.log(`clickPromotionHandler: getPromote=${getPromote}`);
   const handPiece = getHandPiece();
@@ -183,12 +200,20 @@ export function clickPromotionHandler(getPromote: boolean) {
   const promotionPos = getPromotionPos();
   if (!promotionPos) throw new Error("No promotion position set.");
   const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
-  if (!fromSquare) throw new Error(`Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`);
+  if (!fromSquare)
+    throw new Error(
+      `Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`
+    );
   const square = getSquare(promotionPos.row, promotionPos.col);
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
   resetSquare(handPiecePos.row, handPiecePos.col);
-  setSquare(promotionPos.row, promotionPos.col, getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece, fromSquare.isSente);
+  setSquare(
+    promotionPos.row,
+    promotionPos.col,
+    getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece,
+    fromSquare.isSente
+  );
   turnEnd();
 }
