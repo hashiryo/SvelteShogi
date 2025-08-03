@@ -9,7 +9,7 @@
     br_next: 0,
     br_prev: 0,
     isSente: true,
-    move: "fuga",
+    move: "",
     isFavorite: false
   })
 
