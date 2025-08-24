@@ -4,7 +4,7 @@
   import Captured from './Captured.svelte';
   import type { PieceType} from '@/types/shogi.d.ts';
 
-  import { getSquare, getCaptured, getHandPiece } from '@/store/game-board-store.svelte';
+  import { getSquare, getCaptured, getHandPiece } from '@/store/game-board.svelte';
 
   // --- 状態 (State) ---
   let {

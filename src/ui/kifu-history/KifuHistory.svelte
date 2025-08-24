@@ -2,7 +2,7 @@
   import type { HistoryNode } from "@/types/shogi";
   import { getNode, initHistory } from "@/store/kifu-history.svelte";
 
-  import { getGrid, getCaptured } from "@/store/game-board-store.svelte"
+  import { getGrid, getCaptured } from "@/store/game-board.svelte";
   import {shogiPositionToSfenx } from "@/domain/sfenx"
   import { get } from "svelte/store";
 

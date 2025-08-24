@@ -4,9 +4,9 @@
   import Information from './information/Information.svelte';
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '@/types/shogi';
 
-  import { getCanMove, getPromotionPos } from '@/store/play-game-store.svelte';
+  import { getCanMove, getPromotionPos } from '@/store/play-game.svelte';
   import { clickSquareHandler, clickCapturedHandler, clickPromotionHandler } from '@/handler/play-shogi';
-  import { getHandPiece } from '@/store/game-board-store.svelte';
+  import { getHandPiece } from '@/store/game-board.svelte';
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;

@@ -15,7 +15,7 @@ import {
   getIsSenteTurn,
   toggleTurn,
   getCaptured,
-} from "@/store/game-board-store.svelte";
+} from "@/store/game-board.svelte";
 
 import {
   getCanMove,
@@ -26,7 +26,7 @@ import {
   getPromotionPos,
   setPromotionPos,
   resetPromotionPos,
-} from "@/store/play-game-store.svelte";
+} from "@/store/play-game.svelte";
 
 import { addHistoryNode, getCurrentIndex } from "@/store/kifu-history.svelte";
 
