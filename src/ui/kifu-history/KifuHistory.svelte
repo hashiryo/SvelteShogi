@@ -37,8 +37,10 @@
   {@const node = getNode(id)}
     <div class="kifu-history-item"
          class:even={index % 2 === 1}
+         class:current={id === getCurrentIndex()}
          role="button"
          tabindex="0"
+         aria-current={id === getCurrentIndex() ? 'true' : undefined}
          onclick={() => jumpToKifu(id)}
            onkeydown={(e) => {
              if (e.key === 'Enter' || e.key === ' ') {
@@ -75,6 +77,13 @@
 
 .kifu-history-item.even {
   margin-top: calc(var(--item-height) / 2);
+}
+
+.kifu-history-item.current {
+  background-color: #e8f4ff; /* 淡い青 */
+  border: 1px solid #a6d8ff;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
 }
 
 </style>
