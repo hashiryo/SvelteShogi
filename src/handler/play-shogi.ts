@@ -4,6 +4,7 @@ import {
   getSquare,
   setSquare,
   resetSquare,
+  getGrid,
   getNumCaptured,
   incrementCaptured,
   decrementCaptured,
@@ -13,6 +14,7 @@ import {
   resetHandPiece,
   getIsSenteTurn,
   toggleTurn,
+  getCaptured,
 } from "@/store/game-board-store.svelte";
 
 import {
@@ -33,6 +35,8 @@ import {
   promotePiece,
   originalPiece,
 } from "@/domain/shogi-rule";
+
+import { shogiPositionToSfenx } from "@/domain/sfenx";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -105,7 +109,12 @@ function turnEnd() {
   resetHandPiece();
   resetPromotionPos();
   // todo: Update history
-  addHistoryNode("hoge", "sfenx", true, "fuga", false);
+  const sfenx = shogiPositionToSfenx(
+    getGrid(),
+    getCaptured(true),
+    getCaptured(false)
+  );
+  addHistoryNode("hoge", sfenx, true, "fuga", false);
 }
 
 export function clickSquareHandler(row: number, col: number) {
