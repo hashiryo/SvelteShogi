@@ -13,6 +13,10 @@ export function getCurrentIndex(): number {
   return currentIndex;
 }
 
+export function setCurrentIndex(index: number) {
+  currentIndex = index;
+}
+
 export function addHistoryNode(
   display: string,
   sfenx: string,
