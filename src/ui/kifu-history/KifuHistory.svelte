@@ -1,10 +1,14 @@
 <script lang="ts">
-  import { getCurrentIndex, getNode, initHistory } from "@/store/kifu-history.svelte";
   import type { HistoryNode } from "@/types/shogi";
+  import { getNode, initHistory } from "@/store/kifu-history.svelte";
+
+  import { getGrid, getCaptured } from "@/store/game-board-store.svelte"
+  import {shogiPositionToSfenx } from "@/domain/sfenx"
+  import { get } from "svelte/store";
 
   initHistory({
     display: "初期局面",
-    sfenx: "sfenx",
+    sfenx: shogiPositionToSfenx(getGrid(), getCaptured(true), getCaptured(false)),
     prev: -1,
     next: -1,
     br_next: 0,
