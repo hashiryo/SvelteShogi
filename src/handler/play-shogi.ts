@@ -36,7 +36,11 @@ import {
   originalPiece,
 } from "@/domain/shogi-rule";
 
-import { shogiPositionToSfenx } from "@/domain/sfenx";
+import {
+  pieceTypeToCharMap,
+  shogiPositionToSfenx,
+  positionToStr,
+} from "@/domain/sfenx";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -102,7 +106,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
-function turnEnd() {
+function turnEnd(move: string) {
   toggleTurn();
   resetCanMoveAll();
   resetPromotionPos();
@@ -114,7 +118,7 @@ function turnEnd() {
     getCaptured(true),
     getCaptured(false)
   );
-  addHistoryNode("hoge", sfenx, true, "fuga", false);
+  addHistoryNode("hoge", sfenx, true, move, false);
 }
 
 export function clickSquareHandler(row: number, col: number) {
@@ -151,7 +155,11 @@ export function clickSquareHandler(row: number, col: number) {
   if (!handPiecePos) {
     setSquare(row, col, handPiece.piece, handPiece.isSente);
     decrementCaptured(handPiece.piece, handPiece.isSente);
-    turnEnd();
+    const move = `${pieceTypeToCharMap[handPiece.piece]}*${positionToStr(
+      row,
+      col
+    )}`;
+    turnEnd(move);
     return;
   }
 
@@ -177,7 +185,11 @@ export function clickSquareHandler(row: number, col: number) {
   }
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
-  turnEnd();
+  const move = `${positionToStr(
+    handPiecePos.row,
+    handPiecePos.col
+  )}${positionToStr(row, col)}`;
+  turnEnd(move);
   return;
 }
 
@@ -224,5 +236,11 @@ export function clickPromotionHandler(getPromote: boolean) {
     getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece,
     fromSquare.isSente
   );
-  turnEnd();
+  const move = `${positionToStr(
+    handPiecePos.row,
+    handPiecePos.col
+  )}${positionToStr(promotionPos.row, promotionPos.col)}${
+    getPromote ? "+" : ""
+  }`;
+  turnEnd(move);
 }

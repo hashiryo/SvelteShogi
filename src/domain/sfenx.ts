@@ -9,7 +9,7 @@ import type { PieceType, Square } from "@/types/shogi";
 // | 角   | B/b | 馬   | H/h (Horse)  |
 // | 飛   | R/r | 龍   | D/d (Dragon) |
 
-const pieceTypeToCharMap: Record<PieceType, string> = {
+export const pieceTypeToCharMap: Record<PieceType, string> = {
   歩: "P",
   香: "L",
   桂: "N",
@@ -225,4 +225,15 @@ export function shogiPositionToSfenx(
   const capturedPiecesString =
     capturedPiecesToStr(capturedSente) + capturedPiecesToStr(capturedGote);
   return `${gridString} ${capturedPiecesString}`;
+}
+
+export function strToPosition(posString: string): { row: number; col: number } {
+  return {
+    col: parseInt(posString[0]) - 1,
+    row: posString[1].charCodeAt(0) - "a".charCodeAt(0),
+  };
+}
+
+export function positionToStr(row: number, col: number): string {
+  return `${col + 1}${String.fromCharCode("a".charCodeAt(0) + row)}`;
 }

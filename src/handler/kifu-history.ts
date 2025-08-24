@@ -7,6 +7,7 @@ import { sfenxToShogiPosition } from "@/domain/sfenx";
 
 export function jumpToKifu(nodeIndex: number) {
   const node = getNode(nodeIndex);
+  console.log(node);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
   );
