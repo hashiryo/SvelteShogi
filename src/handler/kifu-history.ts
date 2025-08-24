@@ -5,9 +5,8 @@ import { setCurrentIndex, getNode } from "@/store/kifu-history.svelte";
 
 import { sfenxToShogiPosition } from "@/domain/sfenx";
 
-export function clickKifuItem(nodeIndex: number) {
+export function jumpToKifu(nodeIndex: number) {
   const node = getNode(nodeIndex);
-  console.log("Clicked node:", node);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
   );

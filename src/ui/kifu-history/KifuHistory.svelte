@@ -1,11 +1,9 @@
 <script lang="ts">
-  import type { HistoryNode } from "@/types/shogi";
-
-  import { getNode, initHistory } from "@/store/kifu-history.svelte";
+  import { getCurrentIndex, getNode, initHistory } from "@/store/kifu-history.svelte";
   import { getGrid, getCaptured } from "@/store/game-board.svelte";
-  import {shogiPositionToSfenx } from "@/domain/sfenx"
+  import  {shogiPositionToSfenx } from "@/domain/sfenx"
 
-  import { clickKifuItem } from "@/handler/kifu-history"
+  import { jumpToKifu } from "@/handler/kifu-history"
 
 
   initHistory({
@@ -41,10 +39,10 @@
          class:even={index % 2 === 1}
          role="button"
          tabindex="0"
-         onclick={() => clickKifuItem(id)}
+         onclick={() => jumpToKifu(id)}
            onkeydown={(e) => {
              if (e.key === 'Enter' || e.key === ' ') {
-              clickKifuItem(id);
+              jumpToKifu(id);
              }
            }}>{node.display}</div>
   {/each}
