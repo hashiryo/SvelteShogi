@@ -1,10 +1,12 @@
 <script lang="ts">
   import type { HistoryNode } from "@/types/shogi";
-  import { getNode, initHistory } from "@/store/kifu-history.svelte";
 
+  import { getNode, initHistory } from "@/store/kifu-history.svelte";
   import { getGrid, getCaptured } from "@/store/game-board.svelte";
   import {shogiPositionToSfenx } from "@/domain/sfenx"
-  import { get } from "svelte/store";
+
+  import { clickKifuItem } from "@/handler/kifu-history"
+
 
   initHistory({
     display: "初期局面",
@@ -30,10 +32,6 @@
   }
 
   let ids = $derived(getIds());
-
-  function clickHandler(node: HistoryNode) {
-    console.log(node);
-  }
 </script>
 
 <div class="kifu-history">
@@ -43,10 +41,10 @@
          class:even={index % 2 === 1}
          role="button"
          tabindex="0"
-         onclick={() => clickHandler(node)}
+         onclick={() => clickKifuItem(node)}
            onkeydown={(e) => {
              if (e.key === 'Enter' || e.key === ' ') {
-              clickHandler(node);
+              clickKifuItem(node);
              }
            }}>{node.display}</div>
   {/each}
