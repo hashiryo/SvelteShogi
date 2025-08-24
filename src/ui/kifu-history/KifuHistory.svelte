@@ -30,9 +30,26 @@
   }
 
   let ids = $derived(getIds());
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const cur = getCurrentIndex();
+    const pos = ids.indexOf(cur);
+    let newPos = pos === -1 ? 0 : pos;
+    if (e.key === 'ArrowDown') {
+      if (pos < ids.length - 1) newPos = pos + 1;
+    } else if (e.key === 'ArrowUp') {
+      if (pos > 0) newPos = pos - 1;
+    }
+    const newId = ids[newPos];
+    if (newId !== undefined && newId !== cur) {
+      jumpToKifu(newId);
+    }
+  }
 </script>
 
-<div class="kifu-history">
+<div class="kifu-history" role="listbox" tabindex="0" onkeydown={handleKeyDown}>
   {#each ids as id, index}
   {@const node = getNode(id)}
     <div class="kifu-history-item"
