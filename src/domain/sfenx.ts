@@ -69,37 +69,72 @@ function strToCapturedPieces(
   capturedPiecesString: string
 ): { piece: PieceType; num: number }[] {
   let capturedPieces: { piece: PieceType; num: number }[] = [];
-  capturedPieces.push({
-    piece: "歩",
-    num: capturedPiecesString.charCodeAt(0) - "a".charCodeAt(0),
-  });
+  {
+    const num = capturedPiecesString.charCodeAt(0) - "a".charCodeAt(0);
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "歩",
+        num,
+      });
+    }
+  }
   const lk_num = capturedPiecesString.charCodeAt(1) - "a".charCodeAt(0);
-  capturedPieces.push({
-    piece: "香",
-    num: lk_num % 5,
-  });
-  capturedPieces.push({
-    piece: "桂",
-    num: Math.floor(lk_num / 5),
-  });
+  {
+    const num = lk_num % 5;
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "香",
+        num,
+      });
+    }
+  }
+  {
+    const num = Math.floor(lk_num / 5);
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "桂",
+        num,
+      });
+    }
+  }
   const sg_num = capturedPiecesString.charCodeAt(2) - "a".charCodeAt(0);
-  capturedPieces.push({
-    piece: "銀",
-    num: sg_num % 5,
-  });
-  capturedPieces.push({
-    piece: "金",
-    num: Math.floor(sg_num / 5),
-  });
+  {
+    const num = sg_num % 5;
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "銀",
+        num,
+      });
+    }
+  }
+  {
+    const num = Math.floor(sg_num / 5);
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "金",
+        num,
+      });
+    }
+  }
   const br_num = capturedPiecesString.charCodeAt(3) - "a".charCodeAt(0);
-  capturedPieces.push({
-    piece: "角",
-    num: br_num % 5,
-  });
-  capturedPieces.push({
-    piece: "飛",
-    num: Math.floor(br_num / 5),
-  });
+  {
+    const num = br_num % 5;
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "角",
+        num,
+      });
+    }
+  }
+  {
+    const num = Math.floor(br_num / 5);
+    if (num > 0) {
+      capturedPieces.push({
+        piece: "飛",
+        num,
+      });
+    }
+  }
   return capturedPieces;
 }
 

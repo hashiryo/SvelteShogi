@@ -55,6 +55,9 @@ export function resetSquare(row: number, col: number) {
 export function getGrid(): (Square | null)[] {
   return grid;
 }
+export function setGrid(newGrid: (Square | null)[]) {
+  grid = newGrid;
+}
 
 let capturedSente: { piece: PieceType; num: number }[] = $state([]);
 let capturedGote: { piece: PieceType; num: number }[] = $state([]);
@@ -87,6 +90,17 @@ export function getCaptured(
   isSente: boolean
 ): { piece: PieceType; num: number }[] {
   return isSente ? capturedSente : capturedGote;
+}
+
+export function setCaptured(
+  isSente: boolean,
+  captured: { piece: PieceType; num: number }[]
+) {
+  if (isSente) {
+    capturedSente = captured;
+  } else {
+    capturedGote = captured;
+  }
 }
 
 export function incrementCaptured(piece: PieceType, isSente: boolean) {

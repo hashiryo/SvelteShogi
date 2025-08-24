@@ -41,10 +41,10 @@
          class:even={index % 2 === 1}
          role="button"
          tabindex="0"
-         onclick={() => clickKifuItem(node)}
+         onclick={() => clickKifuItem(id)}
            onkeydown={(e) => {
              if (e.key === 'Enter' || e.key === ' ') {
-              clickKifuItem(node);
+              clickKifuItem(id);
              }
            }}>{node.display}</div>
   {/each}
