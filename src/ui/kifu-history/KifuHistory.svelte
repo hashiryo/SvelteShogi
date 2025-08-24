@@ -40,28 +40,26 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px;
-  max-height: 400px;
+  height: 400px;
   overflow-y: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  --item-height: 20px;
+  --item-height: 24px;
+  align-content: start;
 }
 
 .kifu-history-item {
   height: var(--item-height);
+  padding: 4px 8px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .kifu-history-item.even {
   margin-top: calc(var(--item-height) / 2);
-}
-
-.kifu-history-item {
-  padding: 4px 8px;
-  border-bottom: 1px solid #eee;
-  min-height: 24px;
-  display: flex;
-  align-items: center;
 }
 
 </style>
