@@ -45,6 +45,15 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+  --item-height: 20px;
+}
+
+.kifu-history-item {
+  height: var(--item-height);
+}
+
+.kifu-history-item.even {
+  margin-top: calc(var(--item-height) / 2);
 }
 
 .kifu-history-item {
