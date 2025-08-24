@@ -42,6 +42,8 @@ import {
   positionToStr,
 } from "@/domain/sfenx";
 
+import { KANJI_NUM, ZENKAKU_NUM } from "@/domain/display";
+
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
   const square = getSquare(row, col);
@@ -106,19 +108,18 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
-function turnEnd(move: string) {
+function turnEnd(display: string, move: string) {
   toggleTurn();
   resetCanMoveAll();
   resetPromotionPos();
   resetHandPiece();
   resetPromotionPos();
-  // todo: Update history
   const sfenx = shogiPositionToSfenx(
     getGrid(),
     getCaptured(true),
     getCaptured(false)
   );
-  addHistoryNode("hoge", sfenx, true, move, false);
+  addHistoryNode(display, sfenx, true, move, false);
 }
 
 export function clickSquareHandler(row: number, col: number) {
@@ -153,13 +154,13 @@ export function clickSquareHandler(row: number, col: number) {
   }
 
   if (!handPiecePos) {
+    let display = `${isSenteTurn ? "☗" : "☖"}${ZENKAKU_NUM[col]}${
+      KANJI_NUM[row]
+    }${handPiece.piece}`;
     setSquare(row, col, handPiece.piece, handPiece.isSente);
     decrementCaptured(handPiece.piece, handPiece.isSente);
-    const move = `${pieceTypeToCharMap[handPiece.piece]}*${positionToStr(
-      row,
-      col
-    )}`;
-    turnEnd(move);
+    const ts = positionToStr(row, col);
+    turnEnd(display, `${pieceTypeToCharMap[handPiece.piece]}*${ts}`);
     return;
   }
 
@@ -183,13 +184,12 @@ export function clickSquareHandler(row: number, col: number) {
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
+  let display = isSenteTurn ? "☗" : "☖";
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
-  const move = `${positionToStr(
-    handPiecePos.row,
-    handPiecePos.col
-  )}${positionToStr(row, col)}`;
-  turnEnd(move);
+  const fs = positionToStr(handPiecePos.row, handPiecePos.col);
+  const ts = positionToStr(row, col);
+  turnEnd(display, `${fs}${ts}`);
   return;
 }
 
@@ -229,6 +229,7 @@ export function clickPromotionHandler(getPromote: boolean) {
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
+  let display = getIsSenteTurn() ? "☗" : "☖";
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(
     promotionPos.row,
@@ -236,11 +237,7 @@ export function clickPromotionHandler(getPromote: boolean) {
     getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece,
     fromSquare.isSente
   );
-  const move = `${positionToStr(
-    handPiecePos.row,
-    handPiecePos.col
-  )}${positionToStr(promotionPos.row, promotionPos.col)}${
-    getPromote ? "+" : ""
-  }`;
-  turnEnd(move);
+  const fs = positionToStr(handPiecePos.row, handPiecePos.col);
+  const ts = positionToStr(promotionPos.row, promotionPos.col);
+  turnEnd(display, `${fs}${ts}${getPromote ? "+" : ""}`);
 }
