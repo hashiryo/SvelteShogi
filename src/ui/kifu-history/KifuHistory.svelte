@@ -28,9 +28,9 @@
 </script>
 
 <div class="kifu-history">
-  {#each ids as id}
+  {#each ids as id, index}
   {@const node = getNode(id)}
-    <div class="kifu-history-item">{node.display}</div>
+    <div class="kifu-history-item" class:even={index % 2 === 1}>{node.display}</div>
   {/each}
 </div>
 
@@ -42,11 +42,17 @@
   padding: 8px;
   max-height: 400px;
   overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .kifu-history-item {
   padding: 4px 8px;
   border-bottom: 1px solid #eee;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
 }
 
 </style>
