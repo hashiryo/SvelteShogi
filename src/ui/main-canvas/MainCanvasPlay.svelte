@@ -4,7 +4,7 @@
   import Information from './information/Information.svelte';
   import type { PieceType, FavoriteFrom, StatisticsFrom } from '@/types/shogi';
 
-  import { getCanMove, getPromotionPos } from '@/store/play-game.svelte';
+  import { getCanMove, getLastPos, getPromotionPos } from '@/store/play-game.svelte';
   import { clickSquareHandler, clickCapturedHandler, clickPromotionHandler } from '@/handler/play-shogi';
   import { getHandPiece } from '@/store/game-board.svelte';
 
@@ -256,6 +256,17 @@
         </div>
       {/if}
     {/if}
+    {@const lastPos=getLastPos()}
+    {#if lastPos}
+      {@const index = lastPos.row * 9 + lastPos.col}
+      {@const { x, y, width, height } = relativeSquareRect[index]}
+      <div class="last-move" 
+          style="top: {y}px;
+                  left: {x}px;
+                  width: {width}px;
+                  height: {height}px;">
+      </div>
+    {/if}
     <div class="information">
       <Information {relativeSquarePositions}
                    {relativeCapturedSentePositions}
@@ -283,6 +294,12 @@
 .cannot-move-square {
   position: absolute;
   background-color: rgba(30, 0, 0, 0.2); /* 半透明 */
+}
+
+.last-move {
+  position: absolute;
+  background-color: rgba(0, 255, 0, 0.2); /* 半透明 */
+  z-index: 5;
 }
 
 .promotion-square {
