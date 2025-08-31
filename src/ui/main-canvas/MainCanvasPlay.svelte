@@ -299,6 +299,7 @@
 .last-move {
   position: absolute;
   background-color: rgba(0, 255, 0, 0.2); /* 半透明 */
+  pointer-events: none; /* クリックイベントを無視 */
   z-index: 5;
 }
 

@@ -1,10 +1,17 @@
-import type { HistoryNode } from "@/types/shogi";
-
-import { setGrid, setCaptured } from "@/store/game-board.svelte";
+import {
+  setGrid,
+  setCaptured,
+  setIsSenteTurn,
+  resetHandPiece,
+} from "@/store/game-board.svelte";
 import { setCurrentIndex, getNode } from "@/store/kifu-history.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
-import { getLastPos, resetLastPos, setLastPos } from "@/store/play-game.svelte";
+import {
+  resetCanMoveAll,
+  resetLastPos,
+  setLastPos,
+} from "@/store/play-game.svelte";
 
 export function jumpToKifu(nodeIndex: number) {
   const node = getNode(nodeIndex);
@@ -21,5 +28,8 @@ export function jumpToKifu(nodeIndex: number) {
   } else {
     resetLastPos();
   }
+  setIsSenteTurn(node.isSente);
   setCurrentIndex(nodeIndex);
+  resetCanMoveAll();
+  resetHandPiece();
 }

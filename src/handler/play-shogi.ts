@@ -121,7 +121,7 @@ function turnEnd(display: string, move: string) {
     getCaptured(true),
     getCaptured(false)
   );
-  addHistoryNode(display, sfenx, true, move, false);
+  addHistoryNode(display, sfenx, getIsSenteTurn(), move, false);
 }
 
 export function clickSquareHandler(row: number, col: number) {
