@@ -44,7 +44,10 @@ import {
   positionToStr,
 } from "@/domain/sfenx";
 
-import { KANJI_NUM, ZENKAKU_NUM } from "@/domain/display";
+import {
+  getDisplayMoveFromGrid,
+  getDisplayMoveFromCaptured,
+} from "@/domain/display";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -53,9 +56,9 @@ function setCanMoveFromSquare(row: number, col: number) {
   const vec = getPieceMoveVec(square.piece);
   for (const { r, c, slide } of vec) {
     const rv = square.isSente ? r : -r; // Reverse direction for gote
-    const rc = c;
+    const cv = c;
     let nr = row + rv;
-    let nc = col + rc;
+    let nc = col + cv;
     while (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
       const targetSquare = getSquare(nr, nc);
       if (targetSquare) {
@@ -68,7 +71,7 @@ function setCanMoveFromSquare(row: number, col: number) {
       }
       if (!slide) break; // If not sliding piece, stop here
       nr += rv;
-      nc += rc;
+      nc += cv;
     }
   }
 }
@@ -156,9 +159,13 @@ export function clickSquareHandler(row: number, col: number) {
   }
 
   if (!handPiecePos) {
-    let display = `${isSenteTurn ? "☗" : "☖"}${ZENKAKU_NUM[col]}${
-      KANJI_NUM[row]
-    }${handPiece.piece}`;
+    const display = getDisplayMoveFromCaptured(
+      getGrid(),
+      row,
+      col,
+      handPiece.piece,
+      isSenteTurn
+    );
     setSquare(row, col, handPiece.piece, handPiece.isSente);
     decrementCaptured(handPiece.piece, handPiece.isSente);
     const ts = positionToStr(row, col);
@@ -187,14 +194,14 @@ export function clickSquareHandler(row: number, col: number) {
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
-  let display = isSenteTurn ? "☗" : "☖";
-  const lastPos = getLastPos();
-  if (lastPos && lastPos.row === row && lastPos.col === col) {
-    display += "同　";
-  } else {
-    display += `${ZENKAKU_NUM[col]}${KANJI_NUM[row]}`;
-  }
-  display += handPiece.piece;
+  const display = getDisplayMoveFromGrid(
+    getGrid(),
+    handPiecePos,
+    { row, col },
+    fromSquare.piece,
+    isSenteTurn,
+    getLastPos()
+  );
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
@@ -241,14 +248,15 @@ export function clickPromotionHandler(getPromote: boolean) {
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
-  let display = getIsSenteTurn() ? "☗" : "☖";
-  const lastPos = getLastPos();
-  if (lastPos && lastPos.row === row && lastPos.col === col) {
-    display += "同　";
-  } else {
-    display += `${ZENKAKU_NUM[col]}${KANJI_NUM[row]}`;
-  }
-  display += handPiece.piece;
+  const display =
+    getDisplayMoveFromGrid(
+      getGrid(),
+      handPiecePos,
+      { row, col },
+      fromSquare.piece,
+      fromSquare.isSente,
+      getLastPos()
+    ) + (getPromote ? "成" : "不成");
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(
     row,
