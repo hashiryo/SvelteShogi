@@ -26,6 +26,8 @@ import {
   getPromotionPos,
   setPromotionPos,
   resetPromotionPos,
+  setLastPos,
+  getLastPos,
 } from "@/store/play-game.svelte";
 
 import { addHistoryNode, getCurrentIndex } from "@/store/kifu-history.svelte";
@@ -160,6 +162,7 @@ export function clickSquareHandler(row: number, col: number) {
     setSquare(row, col, handPiece.piece, handPiece.isSente);
     decrementCaptured(handPiece.piece, handPiece.isSente);
     const ts = positionToStr(row, col);
+    setLastPos(row, col);
     turnEnd(display, `${pieceTypeToCharMap[handPiece.piece]}*${ts}`);
     return;
   }
@@ -185,10 +188,18 @@ export function clickSquareHandler(row: number, col: number) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
   let display = isSenteTurn ? "☗" : "☖";
+  const lastPos = getLastPos();
+  if (lastPos && lastPos.row === row && lastPos.col === col) {
+    display += "同　";
+  } else {
+    display += `${ZENKAKU_NUM[col]}${KANJI_NUM[row]}`;
+  }
+  display += handPiece.piece;
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(row, col, fromSquare.piece, fromSquare.isSente);
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);
+  setLastPos(row, col);
   turnEnd(display, `${fs}${ts}`);
   return;
 }
@@ -220,24 +231,33 @@ export function clickPromotionHandler(getPromote: boolean) {
   if (!handPiecePos) throw new Error("Hand piece is not from a square.");
   const promotionPos = getPromotionPos();
   if (!promotionPos) throw new Error("No promotion position set.");
+  const { row, col } = promotionPos;
   const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
   if (!fromSquare)
     throw new Error(
       `Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`
     );
-  const square = getSquare(promotionPos.row, promotionPos.col);
+  const square = getSquare(row, col);
   if (square) {
     incrementCaptured(originalPiece(square.piece), !square.isSente);
   }
   let display = getIsSenteTurn() ? "☗" : "☖";
+  const lastPos = getLastPos();
+  if (lastPos && lastPos.row === row && lastPos.col === col) {
+    display += "同　";
+  } else {
+    display += `${ZENKAKU_NUM[col]}${KANJI_NUM[row]}`;
+  }
+  display += handPiece.piece;
   resetSquare(handPiecePos.row, handPiecePos.col);
   setSquare(
-    promotionPos.row,
-    promotionPos.col,
+    row,
+    col,
     getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece,
     fromSquare.isSente
   );
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
-  const ts = positionToStr(promotionPos.row, promotionPos.col);
+  const ts = positionToStr(row, col);
+  setLastPos(row, col);
   turnEnd(display, `${fs}${ts}${getPromote ? "+" : ""}`);
 }
