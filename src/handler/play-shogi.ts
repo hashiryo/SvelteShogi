@@ -5,7 +5,6 @@ import {
   setSquare,
   resetSquare,
   getGrid,
-  getNumCaptured,
   incrementCaptured,
   decrementCaptured,
   getHandPiece,
