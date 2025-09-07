@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { PieceType, Square } from "@/types/shogi";
+import type { Square } from "@/types/shogi";
 import { getDisplayMoveFromGrid } from "@/domain/display";
 
 describe("getDisplayMoveFromGrid", () => {
