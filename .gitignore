@@ -25,3 +25,7 @@ dist-ssr
 
 # lsmcp cache
 .lsmcp/cache
+
+# Supabase - only ignore temporary files, not config and migrations
+supabase/.temp/
+supabase/.branches/
