@@ -197,8 +197,6 @@ export function clickSquareHandler(row: number, col: number) {
     getGrid(),
     handPiecePos,
     { row, col },
-    fromSquare.piece,
-    isSenteTurn,
     getLastPos()
   );
   resetSquare(handPiecePos.row, handPiecePos.col);
@@ -252,8 +250,6 @@ export function clickPromotionHandler(getPromote: boolean) {
       getGrid(),
       handPiecePos,
       { row, col },
-      fromSquare.piece,
-      fromSquare.isSente,
       getLastPos()
     ) + (getPromote ? "成" : "不成");
   resetSquare(handPiecePos.row, handPiecePos.col);

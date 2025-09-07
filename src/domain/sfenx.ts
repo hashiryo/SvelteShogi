@@ -7,7 +7,7 @@ import type { PieceType, Square } from "@/types/shogi";
 // | 桂   | N/n | 成桂  | U/u          |
 // | 銀   | S/s | 成銀  | M/m          |
 // | 角   | B/b | 馬   | H/h (Horse)  |
-// | 飛   | R/r | 龍   | D/d (Dragon) |
+// | 飛   | R/r | 竜   | D/d (Dragon) |
 
 export const pieceTypeToCharMap: Record<PieceType, string> = {
   歩: "P",
@@ -23,7 +23,7 @@ export const pieceTypeToCharMap: Record<PieceType, string> = {
   圭: "U",
   全: "M",
   馬: "H",
-  龍: "D",
+  竜: "D",
 };
 
 const charToPieceTypeMap: Record<string, PieceType> = {
@@ -40,7 +40,7 @@ const charToPieceTypeMap: Record<string, PieceType> = {
   U: "圭",
   M: "全",
   H: "馬",
-  D: "龍",
+  D: "竜",
 };
 
 function charToSquare(char: string): Square {

@@ -42,7 +42,7 @@ function getFromVDirections(
     while (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
       const square = grid[nr * 9 + nc];
       if (square?.isSente === isSente && square.piece === piece) {
-        const relPos = c > 0 ? "left" : c < 0 ? "right" : "none";
+        const relPos = c > 0 ? "right" : c < 0 ? "left" : "none";
         const move = r > 0 ? "down" : r < 0 ? "up" : "none";
         dirCnt[relPos][move]++;
       }
@@ -78,23 +78,23 @@ export function getDisplayMoveFromGrid(
   grid: (Square | null)[],
   from: { row: number; col: number },
   to: { row: number; col: number },
-  piece: PieceType,
-  isSente: boolean,
   lastPos: { row: number; col: number } | null
 ): string {
   const fromSquare = grid[from.row * 9 + from.col];
   if (!fromSquare)
     throw new Error(`fromSquare is null {from: ${from.col},${from.row}}`);
-  if (fromSquare.isSente !== isSente)
-    throw new Error(
-      `fromSquare is not my piece {from: ${from.col},${from.row}}`
-    );
-  const dr = isSente ? to.row - from.row : from.row - to.row;
-  const dc = isSente ? to.col - from.col : from.col - to.col;
-  const myRelPos = dc > 0 ? "left" : dc < 0 ? "right" : "none";
+  const dr = fromSquare.isSente ? to.row - from.row : from.row - to.row;
+  const dc = fromSquare.isSente ? to.col - from.col : from.col - to.col;
+  const myRelPos = dc < 0 ? "left" : dc > 0 ? "right" : "none";
   const myMove = dr < 0 ? "up" : dr > 0 ? "down" : "none";
 
-  let dirCnt = getFromVDirections(grid, to.row, to.col, piece, isSente);
+  let dirCnt = getFromVDirections(
+    grid,
+    to.row,
+    to.col,
+    fromSquare.piece,
+    fromSquare.isSente
+  );
   dirCnt[myRelPos][myMove]--;
   console.log("dirCnt", dirCnt);
 
@@ -108,18 +108,18 @@ export function getDisplayMoveFromGrid(
     );
   }, 0);
   let useVertical = true;
-  let display = isSente ? "☗" : "☖";
+  let display = fromSquare.isSente ? "☗" : "☖";
   if (lastPos && lastPos.row === to.row && lastPos.col === to.col) {
     display += "同　";
   } else {
     display += `${ZENKAKU_NUM[to.col]}${KANJI_NUM[to.row]}`;
   }
-  display += piece;
+  display += fromSquare.piece;
   if (hSum > 0) {
     if (
       fromSquare.piece === "飛" ||
       fromSquare.piece === "角" ||
-      fromSquare.piece === "龍" ||
+      fromSquare.piece === "竜" ||
       fromSquare.piece === "馬"
     )
       display += dirCnt.left[myMove] > 0 ? "右" : "左";

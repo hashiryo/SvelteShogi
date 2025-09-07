@@ -12,7 +12,7 @@ export type PieceType =
   | "圭"
   | "全"
   | "馬"
-  | "龍";
+  | "竜";
 
 export type Square = {
   piece: PieceType;

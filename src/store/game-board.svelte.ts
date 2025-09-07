@@ -76,7 +76,7 @@ const TYPE_ORDER: Record<PieceType, number> = {
   圭: 11,
   全: 12,
   馬: 13,
-  龍: 14,
+  竜: 14,
 };
 
 export function getNumCaptured(piece: PieceType, isSente: boolean): number {
