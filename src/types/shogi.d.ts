@@ -62,7 +62,7 @@ export type HandPieceFrom = {
 };
 
 // 棋譜履歴のノード
-export interface HistoryNode {
+export interface KifuNode {
   display: string; // 表示用の棋譜
   sfenx: string; // SFENのような形式の文字列, 絶対的なもの
   prev: number; // 親のノード
