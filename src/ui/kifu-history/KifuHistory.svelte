@@ -55,7 +55,13 @@
   });
 
   function handleKeyDown(e: KeyboardEvent) {
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    if (
+      e.key !== "ArrowDown" &&
+      e.key !== "ArrowUp" &&
+      e.key !== "ArrowLeft" &&
+      e.key !== "ArrowRight"
+    )
+      return;
     e.preventDefault();
     const cur = getCurrentIndex();
     const pos = ids.indexOf(cur);
@@ -64,7 +70,12 @@
       if (pos < ids.length - 1) newPos = pos + 1;
     } else if (e.key === "ArrowUp") {
       if (pos > 0) newPos = pos - 1;
+    } else if (e.key === "ArrowLeft") {
+      newPos = 0;
+    } else if (e.key === "ArrowRight") {
+      newPos = ids.length - 1;
     }
+
     const newId = ids[newPos];
     if (newId !== undefined && newId !== cur) {
       jumpToKifu(newId);
