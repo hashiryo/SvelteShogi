@@ -100,59 +100,66 @@
   });
 </script>
 
-<div class="kifu-history" role="listbox" bind:this={containerRef}>
-  {#each ids as id}
-    {@const node = getNode(id)}
-    <div
-      class="kifu-history-item"
-      class:current={id === getCurrentIndex()}
-      role="button"
-      tabindex="-1"
-      aria-current={id === getCurrentIndex() ? "true" : undefined}
-      onclick={() => jumpToKifu(id)}
-      onkeydown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          jumpToKifu(id);
-        }
-      }}
-    >
-      <div class="kifu-history-item-display">
-        {node.display}
-      </div>
-      {#if id != 0}
-        <div
-          class="kifu-history-item-favorite"
-          class:favorite={node.isFavorite}
-          role="button"
-          tabindex="-1"
-          onclick={id === getCurrentIndex()
-            ? () => toggleFavorite(id)
-            : undefined}
-          onkeydown={id === getCurrentIndex()
-            ? (e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  toggleFavorite(id);
+<div class="kifu-history">
+  <div class="kifu-history-keyboard-hint">
+    <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+  </div>
+  <div class="kifu-history-list" role="listbox" bind:this={containerRef}>
+    {#each ids as id}
+      {@const node = getNode(id)}
+      <div
+        class="kifu-history-item"
+        class:current={id === getCurrentIndex()}
+        role="button"
+        tabindex="-1"
+        aria-current={id === getCurrentIndex() ? "true" : undefined}
+        onclick={() => jumpToKifu(id)}
+        onkeydown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            jumpToKifu(id);
+          }
+        }}
+      >
+        <div class="kifu-history-item-display">
+          {node.display}
+        </div>
+        {#if id != 0}
+          <div
+            class="kifu-history-item-favorite"
+            class:favorite={node.isFavorite}
+            role="button"
+            tabindex="-1"
+            onclick={id === getCurrentIndex()
+              ? () => toggleFavorite(id)
+              : undefined}
+            onkeydown={id === getCurrentIndex()
+              ? (e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    toggleFavorite(id);
+                  }
                 }
-              }
-            : undefined}
-        >
-          <div class="kifu-history-item-favorite-content">★</div>
-        </div>
-        <div class="has-branch-flg">
-          {#if node.br_next !== id}
-            <div class="has-branch-flg-content">＋</div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/each}
+              : undefined}
+          >
+            <div class="kifu-history-item-favorite-content">★</div>
+          </div>
+          <div class="has-branch-flg">
+            {#if node.br_next !== id}
+              <div class="has-branch-flg-content">＋</div>
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {/each}
+  </div>
 </div>
 
 <style>
   .kifu-history {
     border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 8px;
+  }
+  .kifu-history-list {
+    padding: 0px 8px 0 8px;
     height: 400px;
     overflow-y: auto;
     display: grid;
@@ -221,5 +228,7 @@
   }
   .has-branch-flg-content {
     text-align: right;
+    color: #aaa;
+    font-weight: bold;
   }
 </style>
