@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Piece from './Piece.svelte';
-  import type { PieceType } from '@/types/shogi.d.ts';
+  import Piece from "./Piece.svelte";
+  import type { PieceType } from "@/types/shogi.d.ts";
 
   let {
     squareWidth = 40,
@@ -10,16 +10,24 @@
     capturedPieces = [] as { piece: PieceType; num: number }[],
     handPiece = null as PieceType | null,
     reverse = false,
-    clickHandler = (piece: PieceType) => { console.log(`Clicked on piece: ${piece}`); },
-    capturedElements = $bindable([]) as { piece: PieceType; element: HTMLDivElement }[],
+    clickHandler = (piece: PieceType) => {
+      console.log(`Clicked on piece: ${piece}`);
+    },
+    capturedElements = $bindable([]) as {
+      piece: PieceType;
+      element: HTMLDivElement;
+    }[],
   } = $props();
 
   let elements = $state([]) as HTMLDivElement[];
   $effect(() => {
-    if(elements.length == capturedPieces.length) {
+    if (elements.length == capturedPieces.length) {
       elements.forEach((element, index) => {
         if (element) {
-          capturedElements[index] = { piece: capturedPieces[index].piece, element };
+          capturedElements[index] = {
+            piece: capturedPieces[index].piece,
+            element,
+          };
         }
       });
     }
@@ -27,25 +35,26 @@
 </script>
 
 <div class="captured">
-  {#each capturedPieces as {piece, num}, index}
+  {#each capturedPieces as { piece, num }, index}
     <div class="piece-container" style="width: {squareWidth}px;">
-      <div class="piece-top"
-           role="button"
-           tabindex="-1"
-           onclick={() => clickHandler(piece)}
-           onkeydown={(e) => {
-             if (e.key === 'Enter' || e.key === ' ') {
-              clickHandler(piece);
-             }
-           }}
-           bind:this={elements[index]}
+      <div
+        class="piece-top"
+        role="button"
+        tabindex="-1"
+        onclick={() => clickHandler(piece)}
+        onkeydown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            clickHandler(piece);
+          }
+        }}
+        bind:this={elements[index]}
       >
         <Piece
           width={squareWidth}
           height={squareHeight}
-          fontSize={fontSize}
+          {fontSize}
           character={piece}
-          reverse={reverse}
+          {reverse}
           scale={pieceScale}
           isHanded={handPiece === piece}
         />
@@ -55,14 +64,18 @@
           <Piece
             width={squareWidth}
             height={squareHeight}
-            fontSize={fontSize}
+            {fontSize}
             character={piece}
-            reverse={reverse}
+            {reverse}
             scale={pieceScale}
             isHanded={false}
           />
         </div>
-        <span class="piece-count" class:reverse style="--font-size: {fontSize * pieceScale * 0.6}px;">{num}</span>
+        <span
+          class="piece-count"
+          class:reverse
+          style="--font-size: {fontSize * pieceScale * 0.6}px;">{num}</span
+        >
       {/if}
     </div>
   {/each}
@@ -90,6 +103,10 @@
     z-index: 20;
   }
 
+  .piece-top:focus {
+    outline: none;
+  }
+
   .piece-below {
     position: absolute;
     top: 3px;
@@ -102,7 +119,7 @@
     font-weight: bold;
     font-size: var(--font-size);
     width: calc(var(--font-size) * 1.2);
-    background-color: rgba(128, 128, 255, 0.9); 
+    background-color: rgba(128, 128, 255, 0.9);
     color: rgba(255, 255, 255, 1);
     border-radius: 60%;
     line-height: 1;
