@@ -17,7 +17,7 @@
 <div class="promote">
   <div class="promote-piece"
         role="button"
-        tabindex="0"
+        tabindex="-1"
         onclick={() => clickHandler(true)}
         onkeydown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -36,7 +36,7 @@
   </div>
   <div class="original-piece"
         role="button"
-        tabindex="0"
+        tabindex="-1"
         onclick={() => clickHandler(false)}
         onkeydown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

@@ -14,8 +14,6 @@
   style="--square-width: {width}px; --square-height: {height}px;">
   <div 
     class="piece {reverse ? 'reversed' : ''}"
-    role="button"
-    tabindex="0"
     style="--font-size: {fontSize}px; 
            --piece-scale: {scale}; 
            --piece-top: {reverse ? '5%' : '25%'};

@@ -34,7 +34,7 @@
             data-col={col}
             style="--width: {squareWidth}px; --height: {squareHeight}px;"
             role="button"
-            tabindex="0"
+            tabindex="-1"
             onclick={() => clickHandler(row, col)}
             onkeydown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {

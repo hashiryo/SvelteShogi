@@ -31,7 +31,7 @@
     <div class="piece-container" style="width: {squareWidth}px;">
       <div class="piece-top"
            role="button"
-           tabindex="0"
+           tabindex="-1"
            onclick={() => clickHandler(piece)}
            onkeydown={(e) => {
              if (e.key === 'Enter' || e.key === ' ') {

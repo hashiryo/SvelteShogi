@@ -55,7 +55,7 @@
     <div class="kifu-history-item"
          class:current={id === getCurrentIndex()}
          role="button"
-         tabindex="0"
+         tabindex="-1"
          aria-current={id === getCurrentIndex() ? 'true' : undefined}
          onclick={() => jumpToKifu(id)}
          onkeydown={(e) => {
@@ -68,7 +68,7 @@
             <div class="kifu-history-item-favorite"
                  class:favorite={node.isFavorite}
                  role="button"
-                 tabindex="0"
+                 tabindex="-1"
                  onclick={id === getCurrentIndex() ? () => toggleFavorite(id) : undefined /* 仮置き */}
                  onkeydown={id === getCurrentIndex() ? (e) => {
                       if (e.key === 'Enter' || e.key === ' ') { toggleFavorite(id);}
