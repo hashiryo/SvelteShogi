@@ -1,26 +1,15 @@
 <script lang="ts">
-  import { getCurrentIndex, getNode } from "@/store/kifu-node.svelte";
+  import {
+    getBranches,
+    getCurrentIndex,
+    getNode,
+  } from "@/store/kifu-node.svelte";
 
-  import { jumpToKifu } from "@/handler/kifu-history";
-
-  function getIds() {
-    let cur = getCurrentIndex();
-    if (cur === 0) return [];
-    let ret = [cur];
-    cur = getNode(cur).br_next;
-    while (cur !== getCurrentIndex()) {
-      ret.push(cur);
-      const node = getNode(cur);
-      cur = node.br_next;
-    }
-    return ret;
-  }
-
-  let ids = $derived(getIds());
+  import { switchBranch } from "@/handler/kifu-history";
 </script>
 
 <div class="kifu-history" role="listbox">
-  {#each ids as id, index}
+  {#each getBranches() as id, index}
     {@const node = getNode(id)}
     <div
       class="kifu-history-item"
@@ -28,10 +17,10 @@
       role="button"
       tabindex="-1"
       aria-current={id === getCurrentIndex() ? "true" : undefined}
-      onclick={() => jumpToKifu(id)}
+      onclick={() => switchBranch(id)}
       onkeydown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
-          jumpToKifu(id);
+          switchBranch(id);
         }
       }}
     >

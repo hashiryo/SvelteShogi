@@ -4,7 +4,12 @@ import {
   setIsSenteTurn,
   resetHandPiece,
 } from "@/store/game-board.svelte";
-import { setCurrentIndex, getNode } from "@/store/kifu-node.svelte";
+import {
+  setCurrentIndex,
+  getNode,
+  setBranches,
+  setChildNode,
+} from "@/store/kifu-node.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
 import {
@@ -13,7 +18,7 @@ import {
   setLastPos,
 } from "@/store/play-game.svelte";
 
-export function jumpToKifu(nodeIndex: number) {
+function setCurrentNode(nodeIndex: number) {
   const node = getNode(nodeIndex);
   console.log(node);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
@@ -28,8 +33,18 @@ export function jumpToKifu(nodeIndex: number) {
   } else {
     resetLastPos();
   }
-  setIsSenteTurn(node.isSente);
   setCurrentIndex(nodeIndex);
   resetCanMoveAll();
   resetHandPiece();
+}
+
+export function jumpToKifu(nodeIndex: number) {
+  setCurrentNode(nodeIndex);
+  setIsSenteTurn(getNode(nodeIndex).isSente);
+  setBranches(nodeIndex);
+}
+
+export function switchBranch(nodeIndex: number) {
+  setCurrentNode(nodeIndex);
+  setChildNode(getNode(nodeIndex).prev, nodeIndex);
 }

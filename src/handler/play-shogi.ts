@@ -29,7 +29,11 @@ import {
   getLastPos,
 } from "@/store/play-game.svelte";
 
-import { pushKifuNode } from "@/store/kifu-node.svelte";
+import {
+  getCurrentIndex,
+  pushKifuNode,
+  setBranches,
+} from "@/store/kifu-node.svelte";
 
 import {
   getPieceMoveVec,
@@ -124,6 +128,7 @@ function turnEnd(display: string, move: string) {
     getCaptured(false)
   );
   pushKifuNode(display, sfenx, getIsSenteTurn(), move, false);
+  setBranches(getCurrentIndex());
 }
 
 export function clickSquareHandler(row: number, col: number) {

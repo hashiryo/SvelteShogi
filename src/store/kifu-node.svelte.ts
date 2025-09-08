@@ -54,6 +54,29 @@ export function getNode(index: number): KifuNode {
   return nodes[index];
 }
 
+export function setChildNode(parIndex: number, childIndex: number) {
+  nodes[parIndex].next = childIndex;
+}
+
 export function toggleFavorite(index: number) {
   nodes[index].isFavorite = !nodes[index].isFavorite;
+}
+
+let branches: number[] = $state([]);
+
+export function getBranches() {
+  return branches;
+}
+export function setBranches(baseNodeIndex: number) {
+  let cur = baseNodeIndex;
+  if (cur === 0) {
+    branches = [];
+    return;
+  }
+  branches = [cur];
+  cur = nodes[cur].br_next;
+  while (cur !== baseNodeIndex) {
+    branches.push(cur);
+    cur = nodes[cur].br_next;
+  }
 }
