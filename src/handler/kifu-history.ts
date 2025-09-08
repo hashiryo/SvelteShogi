@@ -20,7 +20,6 @@ import {
 
 function setCurrentNode(nodeIndex: number) {
   const node = getNode(nodeIndex);
-  console.log(node);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
   );
@@ -46,5 +45,5 @@ export function jumpToKifu(nodeIndex: number) {
 
 export function switchBranch(nodeIndex: number) {
   setCurrentNode(nodeIndex);
-  setChildNode(getNode(nodeIndex).prev, nodeIndex);
+  if (nodeIndex !== 0) setChildNode(getNode(nodeIndex).prev, nodeIndex);
 }
