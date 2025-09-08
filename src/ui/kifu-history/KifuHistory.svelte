@@ -78,6 +78,8 @@
     const newId = ids[newPos];
     if (newId !== undefined && newId !== cur) {
       jumpToKifu(newId);
+      // フォーカスを外す（少しやり方が綺麗じゃないかも）
+      containerRef.focus();
     }
   }
 
@@ -104,7 +106,12 @@
   <div class="kifu-history-keyboard-hint">
     <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
   </div>
-  <div class="kifu-history-list" role="listbox" bind:this={containerRef}>
+  <div
+    class="kifu-history-list"
+    tabindex="-1"
+    role="listbox"
+    bind:this={containerRef}
+  >
     {#each ids as id}
       {@const node = getNode(id)}
       <div
@@ -167,6 +174,9 @@
     --item-height: 24px;
     scroll-behavior: smooth;
     align-content: start;
+  }
+  .kifu-history-list:focus {
+    outline: none;
   }
 
   .kifu-history-item {
