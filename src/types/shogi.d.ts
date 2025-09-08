@@ -68,7 +68,6 @@ export interface KifuNode {
   prev: number; // 親のノード
   next: number; // 子のノード
   br_next: number; // 兄弟ノードのうち次のノード
-  br_prev: number; // 兄弟ノードのうち前のノード
   isSente: boolean; // 手番
   move: string; // 直前の移動文字列（例: "7g7f"） 空文字ならば初期局面
   isFavorite: boolean; // お気に入りの一手かどうか

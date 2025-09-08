@@ -5,7 +5,7 @@
     getNode,
   } from "@/store/kifu-node.svelte";
 
-  import { switchBranch } from "@/handler/kifu-history";
+  import { switchBranch } from "@/handler/kifu-node";
 
   function handleKeyDown(e: KeyboardEvent) {
     if (e.code !== "Space") return;

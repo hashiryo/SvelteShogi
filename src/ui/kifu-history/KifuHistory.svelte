@@ -8,7 +8,7 @@
   import { getGrid, getCaptured } from "@/store/game-board.svelte";
   import { shogiPositionToSfenx } from "@/domain/sfenx";
 
-  import { jumpToKifu } from "@/handler/kifu-history";
+  import { jumpToKifu } from "@/handler/kifu-node";
 
   initKifuNodes({
     display: "初期局面",
@@ -20,7 +20,6 @@
     prev: -1,
     next: -1,
     br_next: 0,
-    br_prev: 0,
     isSente: true,
     move: "",
     isFavorite: false,

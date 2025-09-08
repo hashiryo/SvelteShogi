@@ -51,6 +51,7 @@ import {
   getDisplayMoveFromGrid,
   getDisplayMoveFromCaptured,
 } from "@/domain/display";
+import { pushOrJumpToKifu } from "./kifu-node";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -127,7 +128,7 @@ function turnEnd(display: string, move: string) {
     getCaptured(true),
     getCaptured(false)
   );
-  pushKifuNode(display, sfenx, getIsSenteTurn(), move, false);
+  pushOrJumpToKifu(display, sfenx, getIsSenteTurn(), move);
   setBranches(getCurrentIndex());
 }
 

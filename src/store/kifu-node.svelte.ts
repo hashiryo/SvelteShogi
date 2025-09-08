@@ -17,37 +17,29 @@ export function setCurrentIndex(index: number) {
   currentIndex = index;
 }
 
+export function getNodesSize() {
+  return nodes.length;
+}
+
 export function pushKifuNode(
   display: string,
   sfenx: string,
+  prev: number,
+  br_next: number,
   isSente: boolean,
   move: string,
-  isFavorite: boolean = false
+  isFavorite: boolean
 ) {
-  const newIndex = nodes.length;
-  const curNextIndex = nodes[currentIndex].next;
-  nodes[currentIndex].next = newIndex;
-  let br_next = newIndex;
-  let br_prev = newIndex;
-  if (curNextIndex !== -1) {
-    const curNextBrPrev = nodes[curNextIndex].br_prev;
-    nodes[curNextBrPrev].br_next = newIndex;
-    br_prev = curNextBrPrev;
-    nodes[curNextIndex].br_prev = newIndex;
-    br_next = curNextIndex;
-  }
   nodes.push({
     display,
     sfenx,
-    prev: currentIndex,
+    prev,
     next: -1,
     br_next,
-    br_prev,
     isSente,
     move,
     isFavorite,
   });
-  currentIndex = newIndex;
 }
 
 export function getNode(index: number): KifuNode {
@@ -56,6 +48,10 @@ export function getNode(index: number): KifuNode {
 
 export function setChildNode(parIndex: number, childIndex: number) {
   nodes[parIndex].next = childIndex;
+}
+
+export function setBranchNode(preIndex: number, nexIndex: number) {
+  nodes[preIndex].br_next = nexIndex;
 }
 
 export function toggleFavorite(index: number) {
@@ -73,10 +69,9 @@ export function setBranches(baseNodeIndex: number) {
     branches = [];
     return;
   }
-  branches = [cur];
-  cur = nodes[cur].br_next;
-  while (cur !== baseNodeIndex) {
+  branches = [];
+  do {
     branches.push(cur);
     cur = nodes[cur].br_next;
-  }
+  } while (cur !== baseNodeIndex);
 }
