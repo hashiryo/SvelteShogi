@@ -6,6 +6,31 @@
   } from "@/store/kifu-node.svelte";
 
   import { switchBranch } from "@/handler/kifu-history";
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.code !== "Space") return;
+    e.preventDefault();
+    const cur = getCurrentIndex();
+    switchBranch(getNode(cur).br_next);
+  }
+
+  function handleGlobalKeyDown(e: KeyboardEvent) {
+    // 特定の条件下でのみ実行（例：入力フィールドにフォーカスがない時）
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
+      return; // 入力フィールドにフォーカスがある場合は無視
+    }
+    handleKeyDown(e);
+  }
+
+  $effect(() => {
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  });
 </script>
 
 <div class="kifu-history" role="listbox">
