@@ -29,7 +29,7 @@ import {
   getLastPos,
 } from "@/store/play-game.svelte";
 
-import { addHistoryNode, getCurrentIndex } from "@/store/kifu-history.svelte";
+import { addHistoryNode } from "@/store/kifu-node.svelte";
 
 import {
   getPieceMoveVec,

@@ -1,12 +1,16 @@
 <script lang="ts">
   import GameCanvas from "./ui/main-canvas/MainCanvasPlay.svelte";
   import KifuHistory from "./ui/kifu-history/KifuHistory.svelte";
+  import KifuBranch from "./ui/kifu-history/KifuBranch.svelte";
 </script>
 
 <main>
   <div class="container">
     <GameCanvas />
-    <KifuHistory />
+    <div class="subcanvas">
+      <KifuHistory />
+      <KifuBranch />
+    </div>
   </div>
 </main>
 

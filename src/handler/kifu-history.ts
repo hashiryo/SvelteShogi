@@ -4,7 +4,7 @@ import {
   setIsSenteTurn,
   resetHandPiece,
 } from "@/store/game-board.svelte";
-import { setCurrentIndex, getNode } from "@/store/kifu-history.svelte";
+import { setCurrentIndex, getNode } from "@/store/kifu-node.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
 import {

@@ -4,7 +4,7 @@
     getNode,
     initHistory,
     toggleFavorite,
-  } from "@/store/kifu-history.svelte";
+  } from "@/store/kifu-node.svelte";
   import { getGrid, getCaptured } from "@/store/game-board.svelte";
   import { shogiPositionToSfenx } from "@/domain/sfenx";
 
@@ -79,8 +79,6 @@
     const newId = ids[newPos];
     if (newId !== undefined && newId !== cur) {
       jumpToKifu(newId);
-      // let item = containerRef.children[newPos] as HTMLDivElement;
-      // item.focus();
     }
   }
 
@@ -188,7 +186,7 @@
   .kifu-history-item-favorite:focus {
     outline: none;
   }
-  .kifu-history-item-favorite-content:hover {
+  .kifu-history-item.current .kifu-history-item-favorite-content:hover {
     transform: scale(1.3);
   }
 
