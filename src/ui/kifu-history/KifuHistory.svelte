@@ -102,7 +102,7 @@
 </script>
 
 <div class="kifu-history" role="listbox" bind:this={containerRef}>
-  {#each ids as id, index}
+  {#each ids as id}
     {@const node = getNode(id)}
     <div
       class="kifu-history-item"
@@ -120,7 +120,7 @@
       <div class="kifu-history-item-display">
         {node.display}
       </div>
-      {#if index != 0}
+      {#if id != 0}
         <div
           class="kifu-history-item-favorite"
           class:favorite={node.isFavorite}
@@ -138,6 +138,11 @@
             : undefined}
         >
           <div class="kifu-history-item-favorite-content">★</div>
+        </div>
+        <div class="has-branch-flg">
+          {#if node.br_next !== id}
+            <div class="has-branch-flg-content">＋</div>
+          {/if}
         </div>
       {/if}
     </div>
@@ -174,12 +179,12 @@
     border-radius: 4px;
   }
   .kifu-history-item-display {
-    width: 80%;
+    width: 70%;
     text-align: left;
   }
   .kifu-history-item-favorite {
     display: flex;
-    width: 20%;
+    width: 16%;
     color: #eee;
     padding: 0;
   }
@@ -207,5 +212,15 @@
   }
   .kifu-history-item:nth-child(even) .kifu-history-item-favorite {
     justify-content: flex-start;
+  }
+  .has-branch-flg {
+    width: 14%;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    justify-content: flex-end;
+  }
+  .has-branch-flg-content {
+    text-align: right;
   }
 </style>
