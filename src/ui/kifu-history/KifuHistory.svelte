@@ -68,18 +68,31 @@
     const newId = ids[newPos];
     if (newId !== undefined && newId !== cur) {
       jumpToKifu(newId);
-      if (containerRef) containerRef.focus();
+      // let item = containerRef.children[newPos] as HTMLDivElement;
+      // item.focus();
     }
   }
+
+  function handleGlobalKeyDown(e: KeyboardEvent) {
+    // 特定の条件下でのみ実行（例：入力フィールドにフォーカスがない時）
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
+      return; // 入力フィールドにフォーカスがある場合は無視
+    }
+    handleKeyDown(e);
+  }
+
+  $effect(() => {
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  });
 </script>
 
-<div
-  class="kifu-history"
-  role="listbox"
-  tabindex="0"
-  bind:this={containerRef}
-  onkeydown={handleKeyDown}
->
+<div class="kifu-history" role="listbox" bind:this={containerRef}>
   {#each ids as id, index}
     {@const node = getNode(id)}
     <div
