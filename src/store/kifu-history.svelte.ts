@@ -53,3 +53,7 @@ export function addHistoryNode(
 export function getNode(index: number): HistoryNode {
   return history[index];
 }
+
+export function toggleFavorite(index: number) {
+  history[index].isFavorite = !history[index].isFavorite;
+}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getCurrentIndex, getNode, initHistory } from "@/store/kifu-history.svelte";
+  import { getCurrentIndex, getNode, initHistory, toggleFavorite } from "@/store/kifu-history.svelte";
   import { getGrid, getCaptured } from "@/store/game-board.svelte";
   import  {shogiPositionToSfenx } from "@/domain/sfenx"
 
@@ -53,17 +53,33 @@
   {#each ids as id, index}
   {@const node = getNode(id)}
     <div class="kifu-history-item"
-         class:even={index % 2 === 1}
          class:current={id === getCurrentIndex()}
          role="button"
          tabindex="0"
          aria-current={id === getCurrentIndex() ? 'true' : undefined}
          onclick={() => jumpToKifu(id)}
-           onkeydown={(e) => {
-             if (e.key === 'Enter' || e.key === ' ') {
-              jumpToKifu(id);
-             }
-           }}>{node.display}</div>
+         onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') { jumpToKifu(id);}
+         }}>
+           <div class="kifu-history-item-display">
+              {node.display}
+           </div>
+           {#if index != 0}
+            <div class="kifu-history-item-favorite"
+                 class:favorite={node.isFavorite}
+                 role="button"
+                 tabindex="0"
+                 onclick={id === getCurrentIndex() ? () => toggleFavorite(id) : undefined /* 仮置き */}
+                 onkeydown={id === getCurrentIndex() ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') { toggleFavorite(id);}
+                 }: undefined }
+                 >
+                 <div class="kifu-history-item-favorite-content">
+                    ★
+                 </div>
+            </div>
+           {/if}
+      </div>
   {/each}
 </div>
 
@@ -76,8 +92,7 @@
   height: 400px;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 2px;
   --item-height: 24px;
   align-content: start;
 }
@@ -85,22 +100,61 @@
 .kifu-history-item {
   height: var(--item-height);
   padding: 4px 8px;
-  border-bottom: 1px solid #eee;
   display: flex;
   align-items: center;
   box-sizing: border-box;
   cursor: pointer;
 }
 
-.kifu-history-item.even {
-  margin-top: calc(var(--item-height) / 2);
+.kifu-history:focus-within {
+  outline: 2px solid royalblue; /* 親にフォーカス風の枠を出す */
+  border-radius: 4px;
+}
+
+.kifu-history-item:focus {
+  outline: none; /* 子要素のデフォルトリングを消す */
 }
 
 .kifu-history-item.current {
   background-color: #e8f4ff; /* 淡い青 */
-  border: 1px solid #a6d8ff;
   border-radius: 4px;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.kifu-history-item-display{
+  width: 80%;
+  text-align: left;
+}
+
+.kifu-history-item-favorite{
+  display: flex;
+  width: 20%;
+  color: #eee;
+  padding: 0;
+}
+.kifu-history-item-favorite:focus {
+  outline: none; /* 子要素のデフォルトリングを消す */
+}
+.kifu-history-item-favorite-content:hover {
+  transform: scale(1.3);
+}
+
+.kifu-history-item.current .kifu-history-item-favorite{
+  color: #ddd;
+}
+
+.kifu-history-item-favorite.favorite{
+  color: rgb(243, 220, 74);
+}
+
+.kifu-history-item.current .kifu-history-item-favorite.favorite{
+  color: rgb(244, 212, 5);
+}
+
+.kifu-history-item:nth-child(odd) .kifu-history-item-favorite{
+  justify-content: flex-end;
+}
+.kifu-history-item:nth-child(even) .kifu-history-item-favorite{
+  justify-content: flex-start;
 }
 
 </style>
