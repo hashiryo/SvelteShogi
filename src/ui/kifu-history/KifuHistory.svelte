@@ -157,22 +157,25 @@
     box-sizing: border-box;
     cursor: pointer;
   }
-
+  .kifu-history-item:focus {
+    outline: none;
+  }
   .kifu-history-item.current {
     background-color: #e8f4ff; /* 淡い青 */
     border-radius: 4px;
   }
-
   .kifu-history-item-display {
     width: 80%;
     text-align: left;
   }
-
   .kifu-history-item-favorite {
     display: flex;
     width: 20%;
     color: #eee;
     padding: 0;
+  }
+  .kifu-history-item-favorite:focus {
+    outline: none;
   }
   .kifu-history-item-favorite-content:hover {
     transform: scale(1.3);
