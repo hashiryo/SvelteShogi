@@ -68,6 +68,7 @@
     const newId = ids[newPos];
     if (newId !== undefined && newId !== cur) {
       jumpToKifu(newId);
+      if (containerRef) containerRef.focus();
     }
   }
 </script>
@@ -144,15 +145,6 @@
     cursor: pointer;
   }
 
-  .kifu-history:focus-within {
-    outline: 2px solid royalblue; /* 親にフォーカス風の枠を出す */
-    border-radius: 4px;
-  }
-
-  .kifu-history-item:focus {
-    outline: none; /* 子要素のデフォルトリングを消す */
-  }
-
   .kifu-history-item.current {
     background-color: #e8f4ff; /* 淡い青 */
     border-radius: 4px;
@@ -168,9 +160,6 @@
     width: 20%;
     color: #eee;
     padding: 0;
-  }
-  .kifu-history-item-favorite:focus {
-    outline: none; /* 子要素のデフォルトリングを消す */
   }
   .kifu-history-item-favorite-content:hover {
     transform: scale(1.3);
