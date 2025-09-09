@@ -7,6 +7,23 @@
 
   import { switchBranch } from "@/handler/kifu-node";
 
+  let containerRef: HTMLDivElement;
+
+  // 自動スクロール
+  $effect(() => {
+    const currentIndex = getCurrentIndex();
+    const ids = getBranches();
+    const currentPos = ids.indexOf(currentIndex);
+
+    if (currentPos !== -1 && containerRef) {
+      const currentItem = containerRef.children[currentPos] as HTMLElement;
+      currentItem?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest", // 必要最小限のスクロール
+      });
+    }
+  });
+
   function handleKeyDown(e: KeyboardEvent) {
     if (e.code !== "Space") return;
     e.preventDefault();
@@ -37,7 +54,7 @@
   <div class="kifu-branch-keyboard-hint">
     <kbd>Space</kbd>
   </div>
-  <div class="kifu-branch-list" role="listbox">
+  <div class="kifu-branch-list" role="listbox" bind:this={containerRef}>
     {#each getBranches() as id, index}
       {@const node = getNode(id)}
       <div
