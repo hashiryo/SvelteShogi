@@ -23,7 +23,7 @@
     tabindex="-1"
     onclick={() => clickHandler(true)}
     onkeydown={(e) => {
-      if (e.key === "Enter" || e.key === " ") {
+      if (e.key === "Enter") {
         clickHandler(true);
       }
     }}
@@ -43,7 +43,7 @@
     tabindex="-1"
     onclick={() => clickHandler(false)}
     onkeydown={(e) => {
-      if (e.key === "Enter" || e.key === " ") {
+      if (e.key === "Enter") {
         clickHandler(false);
       }
     }}

@@ -122,7 +122,7 @@
         aria-current={id === getCurrentIndex() ? "true" : undefined}
         onclick={() => jumpToKifu(id)}
         onkeydown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === "Enter") {
             jumpToKifu(id);
           }
         }}
@@ -141,7 +141,7 @@
               : undefined}
             onkeydown={id === getCurrentIndex()
               ? (e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (e.key === "Enter") {
                     toggleFavorite(id);
                   }
                 }

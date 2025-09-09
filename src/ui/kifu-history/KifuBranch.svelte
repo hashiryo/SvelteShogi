@@ -65,7 +65,7 @@
         aria-current={id === getCurrentIndex() ? "true" : undefined}
         onclick={() => switchBranch(id)}
         onkeydown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === "Enter") {
             switchBranch(id);
           }
         }}

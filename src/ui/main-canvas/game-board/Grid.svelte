@@ -47,7 +47,7 @@
             tabindex="-1"
             onclick={() => clickHandler(row, col)}
             onkeydown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
+              if (e.key === "Enter") {
                 clickHandler(row, col);
               }
             }}
