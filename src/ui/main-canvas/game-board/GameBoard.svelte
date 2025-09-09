@@ -176,7 +176,7 @@
       {/if}
     </div>
     <button
-      class="reverse-btn"
+      class="reverse-btn {reverse ? 'reverse' : ''}"
       aria-label="reverse"
       onclick={() => {
         reverse = !reverse;
@@ -259,5 +259,10 @@
     width: 10%;
     text-align: center;
     align-items: flex-end;
+  }
+
+  .reverse-btn.reverse {
+    background-color: rgb(2, 162, 109);
+    color: white;
   }
 </style>
