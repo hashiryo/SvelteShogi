@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { sfenxToShogiPosition, shogiPositionToSfenx } from "@/domain/sfenx";
+import {
+  flipMove,
+  flipSfenx,
+  sfenxToShogiPosition,
+  shogiPositionToSfenx,
+  strToPosition,
+} from "@/domain/sfenx";
 
 describe("sfenxToShogiPosition", () => {
   it("空の場合", () => {
@@ -92,5 +98,60 @@ describe("shogiPositionToSfenx", () => {
     ).toEqual(
       "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp aaaaaaaa"
     );
+  });
+});
+
+describe("strToPosition", () => {
+  it("5e", () => {
+    expect(strToPosition("5e")).toEqual({
+      col: 4,
+      row: 4,
+    });
+  });
+  it("1a", () => {
+    expect(strToPosition("1a")).toEqual({
+      col: 0,
+      row: 0,
+    });
+  });
+  it("1i", () => {
+    expect(strToPosition("1i")).toEqual({
+      col: 0,
+      row: 8,
+    });
+  });
+});
+
+describe("flipSfenx", () => {
+  it("初期局面の場合", () => {
+    expect(
+      flipSfenx("lnsgkgsnl1b5r1ppppppppp999PPPPPPPPP1R5B1LNSGKGSNL aaaaaaaa")
+    ).toEqual("lnsgkgsnl1b5r1ppppppppp999PPPPPPPPP1R5B1LNSGKGSNL aaaaaaaa");
+  });
+
+  it("全ての持ち駒を持った場合", () => {
+    expect(flipSfenx("999999999 syymaaaa")).toEqual("999999999 aaaasyym");
+  });
+
+  it("盤面がすべて先手の歩の場合", () => {
+    expect(
+      flipSfenx(
+        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP aaaaaaaa"
+      )
+    ).toEqual(
+      "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp aaaaaaaa"
+    );
+  });
+});
+
+describe("flipMove", () => {
+  it("２六は８四", () => {
+    expect(flipMove("2g2f")).toEqual("8c8d");
+  });
+  it("成りがある場合", () => {
+    expect(flipMove("5d5c+")).toEqual("5f5g+");
+  });
+  it("持ち駒がある場合", () => {
+    expect(flipMove("P*2d")).toEqual("P*8f");
   });
 });

@@ -9,6 +9,7 @@
   import { shogiPositionToSfenx } from "@/domain/sfenx";
 
   import { jumpToKifu } from "@/handler/kifu-node";
+  import { clickFavoriteIcon } from "@/handler/favorite-moves";
 
   initKifuNodes({
     display: "初期局面",
@@ -137,12 +138,12 @@
             role="button"
             tabindex="-1"
             onclick={id === getCurrentIndex()
-              ? () => toggleFavorite(id)
+              ? () => clickFavoriteIcon(id)
               : undefined}
             onkeydown={id === getCurrentIndex()
               ? (e) => {
                   if (e.key === "Enter") {
-                    toggleFavorite(id);
+                    clickFavoriteIcon(id);
                   }
                 }
               : undefined}

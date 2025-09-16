@@ -144,10 +144,12 @@ export function sfenxToShogiPosition(sfenx: string): {
   capturedGote: { piece: PieceType; num: number }[];
 } {
   // SFEN形式の文字列を分解
-  const [gridString, capturedPiecesString] = sfenx.split(" ");
+  const match = sfenx.match(/^([a-zA-Z0-9]*) ([a-z]{8})$/);
+  if (!match) throw new Error(`Invalid sfenx: ${sfenx}`);
+  const [, gridString, capString] = match;
   const grid = strToGrid(gridString);
-  const capturedSente = strToCapturedPieces(capturedPiecesString.slice(0, 4));
-  const capturedGote = strToCapturedPieces(capturedPiecesString.slice(4, 8));
+  const capturedSente = strToCapturedPieces(capString.slice(0, 4));
+  const capturedGote = strToCapturedPieces(capString.slice(4, 8));
   return { grid, capturedSente, capturedGote };
 }
 
@@ -228,12 +230,63 @@ export function shogiPositionToSfenx(
 }
 
 export function strToPosition(posString: string): { row: number; col: number } {
+  const match = posString.match(/^(\d)([a-i])$/);
+  if (!match) throw new Error(`Invalid position string: ${posString}`);
+  const [, colString, rowString] = match;
   return {
-    col: parseInt(posString[0]) - 1,
-    row: posString[1].charCodeAt(0) - "a".charCodeAt(0),
+    col: parseInt(colString) - 1,
+    row: rowString.charCodeAt(0) - "a".charCodeAt(0),
   };
 }
 
 export function positionToStr(row: number, col: number): string {
   return `${col + 1}${String.fromCharCode("a".charCodeAt(0) + row)}`;
+}
+
+export function flipSfenx(sfenx: string): string {
+  const match = sfenx.match(/^([a-zA-Z0-9]*) ([a-z]{8})$/);
+  if (!match) throw new Error(`Invalid sfenx: ${sfenx}`);
+  const [, grid, cap] = match;
+  const newGrid = grid
+    .split("")
+    .reverse()
+    .map((ch) => {
+      if (/[a-z]/.test(ch)) {
+        return ch.toUpperCase();
+      } else if (/[A-Z]/.test(ch)) {
+        return ch.toLowerCase();
+      } else {
+        return ch;
+      }
+    })
+    .join("");
+  const newCap = cap.slice(4) + cap.slice(0, 4);
+  return `${newGrid} ${newCap}`;
+}
+
+export function flipMove(move: string): string {
+  function transformLetter(ch: string): string {
+    return String.fromCharCode(
+      "i".charCodeAt(0) - (ch.charCodeAt(0) - "a".charCodeAt(0))
+    );
+  }
+  const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
+  if (match1) {
+    const [, d1, l1, d2, l2, plus] = match1;
+    const newD1 = (10 - Number(d1)).toString();
+    const newD2 = (10 - Number(d2)).toString();
+    const newL1 = transformLetter(l1);
+    const newL2 = transformLetter(l2);
+    return newD1 + newL1 + newD2 + newL2 + (plus ?? "");
+  }
+
+  const match2 = move.match(/^([A-Z])\*(\d)([a-i])$/);
+  if (match2) {
+    const [, upper, d, l] = match2;
+    const newD = (10 - Number(d)).toString();
+    const newL = transformLetter(l);
+    return upper + "*" + newD + newL;
+  }
+
+  throw new Error("入力形式が不正です");
 }
