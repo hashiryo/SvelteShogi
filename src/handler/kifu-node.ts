@@ -52,32 +52,3 @@ export function switchBranch(nodeIndex: number) {
   setCurrentNode(nodeIndex);
   if (nodeIndex !== 0) setChildNode(getNode(nodeIndex).prev, nodeIndex);
 }
-
-export function pushOrJumpToKifu(
-  display: string,
-  sfenx: string,
-  isSente: boolean,
-  move: string
-) {
-  const currentIndex = getCurrentIndex();
-  const newIndex = getNodesSize();
-  const curNextIndex = getNode(currentIndex).next;
-  let br_next = newIndex;
-  if (curNextIndex !== -1) {
-    let cur = curNextIndex;
-    do {
-      const node = getNode(cur);
-      if (node.display === display) {
-        setChildNode(currentIndex, cur);
-        setCurrentIndex(cur);
-        return;
-      }
-      cur = node.br_next;
-    } while (cur !== curNextIndex);
-    br_next = getNode(curNextIndex).br_next;
-    setBranchNode(curNextIndex, newIndex);
-  }
-  pushKifuNode(display, sfenx, currentIndex, br_next, isSente, move, false);
-  setChildNode(currentIndex, newIndex);
-  setCurrentIndex(newIndex);
-}

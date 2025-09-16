@@ -31,8 +31,13 @@ import {
 
 import {
   getCurrentIndex,
+  getNode,
+  getNodesSize,
   pushKifuNode,
   setBranches,
+  setBranchNode,
+  setChildNode,
+  setCurrentIndex,
 } from "@/store/kifu-node.svelte";
 
 import {
@@ -45,13 +50,14 @@ import {
   pieceTypeToCharMap,
   shogiPositionToSfenx,
   positionToStr,
+  flipSfenx,
 } from "@/domain/sfenx";
 
 import {
   getDisplayMoveFromGrid,
   getDisplayMoveFromCaptured,
 } from "@/domain/display";
-import { pushOrJumpToKifu } from "./kifu-node";
+import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -117,6 +123,35 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
+function pushOrJumpToKifu(
+  display: string,
+  sfenx: string,
+  isSente: boolean,
+  move: string
+) {
+  const currentIndex = getCurrentIndex();
+  const newIndex = getNodesSize();
+  const curNextIndex = getNode(currentIndex).next;
+  let br_next = newIndex;
+  if (curNextIndex !== -1) {
+    let cur = curNextIndex;
+    do {
+      const node = getNode(cur);
+      if (node.display === display) {
+        setChildNode(currentIndex, cur);
+        setCurrentIndex(cur);
+        return;
+      }
+      cur = node.br_next;
+    } while (cur !== curNextIndex);
+    br_next = getNode(curNextIndex).br_next;
+    setBranchNode(curNextIndex, newIndex);
+  }
+  pushKifuNode(display, sfenx, currentIndex, br_next, isSente, move, false);
+  setChildNode(currentIndex, newIndex);
+  setCurrentIndex(newIndex);
+}
+
 function turnEnd(display: string, move: string) {
   toggleTurn();
   resetCanMoveAll();
@@ -130,6 +165,11 @@ function turnEnd(display: string, move: string) {
   );
   pushOrJumpToKifu(display, sfenx, getIsSenteTurn(), move);
   setBranches(getCurrentIndex());
+
+  // ToDo: api を呼んでセットする など
+  {
+    setFavoriteMoves(getIsSenteTurn() ? sfenx : flipSfenx(sfenx), []);
+  }
 }
 
 export function clickSquareHandler(row: number, col: number) {

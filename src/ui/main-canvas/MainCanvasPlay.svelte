@@ -14,7 +14,14 @@
     clickCapturedHandler,
     clickPromotionHandler,
   } from "@/handler/play-shogi";
-  import { getHandPiece } from "@/store/game-board.svelte";
+  import {
+    getCaptured,
+    getGrid,
+    getHandPiece,
+    getIsSenteTurn,
+  } from "@/store/game-board.svelte";
+  import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
+  import { shogiPositionToSfenx } from "@/domain/sfenx";
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -97,6 +104,14 @@
       });
     })()
   );
+
+  // ToDo: 初期化を正しそうな方法でやり、apiをちゃんと呼ぶ
+  const sfenx = shogiPositionToSfenx(
+    getGrid(),
+    getCaptured(true),
+    getCaptured(false)
+  );
+  setFavoriteMoves(sfenx, []);
 
   let favoriteArrows: FavoriteFrom[] = [
     // {
