@@ -23,6 +23,7 @@ import {
 } from "@/store/play-game.svelte";
 
 function setCurrentNode(nodeIndex: number) {
+  if (getCurrentIndex() === nodeIndex) return;
   const node = getNode(nodeIndex);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
