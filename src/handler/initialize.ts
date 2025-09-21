@@ -17,7 +17,7 @@ import { resetCanMoveAll } from "@/store/play-game.svelte";
 
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetNodes();
-  pushKifuNode("初期局面", sfenx, -1, 0, !isSente, "", false);
+  pushKifuNode("初期局面", sfenx, -1, 0, isSente, "", false);
   setCurrentIndex(0);
   setBranches(0);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
@@ -27,12 +27,10 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetCanMoveAll();
   resetHandPiece();
   setIsSenteTurn(isSente);
-  try {
-    const adjustSfenx = isSente ? sfenx : flipSfenx(sfenx);
-    // ToDo: user?.id を使うようにする
-    const moves = await fetchFavoriteMoves(adjustSfenx);
-    setFavoriteMoves(adjustSfenx, moves);
-  } catch (err) {}
+  const adjustSfenx = isSente ? sfenx : flipSfenx(sfenx);
+  // ToDo: user?.id を使うようにする
+  const moves = await fetchFavoriteMoves(adjustSfenx);
+  setFavoriteMoves(adjustSfenx, moves);
 }
 
 export async function initialize() {

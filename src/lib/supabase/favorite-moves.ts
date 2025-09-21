@@ -43,7 +43,7 @@ export async function fetchFavoriteMoves(
  * @param userId ユーザーID（オプション）
  * @throws データベースエラーが発生した場合
  */
-export async function addFavoriteMove(
+export async function insertFavoriteMoveToDB(
   sfenx: string,
   move: string,
   userId?: string
@@ -69,7 +69,7 @@ export async function addFavoriteMove(
  * @param userId ユーザーID（オプション）
  * @throws データベースエラーが発生した場合
  */
-export async function removeFavoriteMove(
+export async function deleteFavoriteMoveFromDB(
   sfenx: string,
   move: string,
   userId?: string

@@ -38,6 +38,7 @@ import {
   setBranchNode,
   setChildNode,
   setCurrentIndex,
+  setFavorite,
 } from "@/store/kifu-node.svelte";
 
 import {
@@ -51,13 +52,17 @@ import {
   shogiPositionToSfenx,
   positionToStr,
   flipSfenx,
+  flipMove,
 } from "@/domain/sfenx";
 
 import {
   getDisplayMoveFromGrid,
   getDisplayMoveFromCaptured,
 } from "@/domain/display";
-import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
+import {
+  getFavoriteMoves,
+  setFavoriteMoves,
+} from "@/store/favorite-moves.svelte";
 import { fetchFavoriteMoves } from "@/lib/supabase/favorite-moves";
 
 function setCanMoveFromSquare(row: number, col: number) {
@@ -124,7 +129,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
-function pushOrJumpToKifu(
+async function pushOrJumpToKifu(
   display: string,
   sfenx: string,
   isSente: boolean,
@@ -132,7 +137,8 @@ function pushOrJumpToKifu(
 ) {
   const currentIndex = getCurrentIndex();
   const newIndex = getNodesSize();
-  const curNextIndex = getNode(currentIndex).next;
+  const currentNode = getNode(currentIndex);
+  const curNextIndex = currentNode.next;
   let br_next = newIndex;
   if (curNextIndex !== -1) {
     let cur = curNextIndex;
@@ -148,7 +154,36 @@ function pushOrJumpToKifu(
     br_next = getNode(curNextIndex).br_next;
     setBranchNode(curNextIndex, newIndex);
   }
-  pushKifuNode(display, sfenx, currentIndex, br_next, isSente, move, false);
+  let moves = getFavoriteMoves(currentNode.sfenx);
+  if (!moves) {
+    try {
+      moves = await fetchFavoriteMoves(sfenx);
+      setFavoriteMoves(sfenx, moves);
+      if (moves.length > 0) {
+        const n = getNodesSize();
+        for (let i = 1; i < n; ++i) {
+          let { prev, move: targetMove, isSente } = getNode(i);
+          if (isSente) targetMove = flipMove(targetMove);
+          if (moves.includes(targetMove)) {
+            let { sfenx: targetSfenx } = getNode(prev);
+            if (isSente) targetSfenx = flipSfenx(targetSfenx);
+            if (currentNode.sfenx === targetSfenx) setFavorite(i, true);
+          }
+        }
+      }
+    } catch (err) {}
+  }
+
+  const isFavorite = moves ? moves.includes(move) : false;
+  pushKifuNode(
+    display,
+    sfenx,
+    currentIndex,
+    br_next,
+    isSente,
+    move,
+    isFavorite
+  );
   setChildNode(currentIndex, newIndex);
   setCurrentIndex(newIndex);
 }
@@ -164,12 +199,12 @@ async function turnEnd(display: string, move: string) {
     getCaptured(true),
     getCaptured(false)
   );
-  pushOrJumpToKifu(display, sfenx, getIsSenteTurn(), move);
+  await pushOrJumpToKifu(display, sfenx, getIsSenteTurn(), move);
   setBranches(getCurrentIndex());
 
   // ToDo: api を呼んでセットする など
+  const adjustSfenx = getIsSenteTurn() ? sfenx : flipSfenx(sfenx);
   try {
-    const adjustSfenx = getIsSenteTurn() ? sfenx : flipSfenx(sfenx);
     const moves = await fetchFavoriteMoves(adjustSfenx);
     setFavoriteMoves(adjustSfenx, moves);
   } catch (err) {}

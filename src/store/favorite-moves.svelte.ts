@@ -16,7 +16,7 @@ export function insertFavoriteMove(sfenx: string, move: string) {
   data[sfenx].push(move);
 }
 
-export function removeFavoriteMove(sfenx: string, move: string) {
+export function deleteFavoriteMove(sfenx: string, move: string) {
   if (!data[sfenx]) throw new Error(`Invalid sfenx: ${sfenx}`);
   data[sfenx] = data[sfenx].filter((m) => m !== move);
 }

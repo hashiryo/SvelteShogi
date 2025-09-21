@@ -57,6 +57,10 @@ export function toggleFavorite(index: number) {
   nodes[index].isFavorite = !nodes[index].isFavorite;
 }
 
+export function setFavorite(index: number, isFavorite: boolean) {
+  nodes[index].isFavorite = isFavorite;
+}
+
 let branches: number[] = $state([]);
 
 export function getBranches() {
