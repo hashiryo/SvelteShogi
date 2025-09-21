@@ -1,6 +1,5 @@
 import { flipMove, flipSfenx } from "@/domain/sfenx";
 import {
-  getFavoriteMoves,
   insertFavoriteMove,
   removeFavoriteMove,
 } from "@/store/favorite-moves.svelte";

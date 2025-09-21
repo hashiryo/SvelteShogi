@@ -105,14 +105,6 @@
     })()
   );
 
-  // ToDo: 初期化を正しそうな方法でやり、apiをちゃんと呼ぶ
-  const sfenx = shogiPositionToSfenx(
-    getGrid(),
-    getCaptured(true),
-    getCaptured(false)
-  );
-  setFavoriteMoves(sfenx, []);
-
   let favoriteArrows: FavoriteFrom[] = [
     // {
     //   startRow: 8,

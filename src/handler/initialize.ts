@@ -1,4 +1,5 @@
-import { sfenxToShogiPosition } from "@/domain/sfenx";
+import { flipSfenx, sfenxToShogiPosition } from "@/domain/sfenx";
+import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
 import {
   resetHandPiece,
   setCaptured,
@@ -25,6 +26,9 @@ export function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetCanMoveAll();
   resetHandPiece();
   setIsSenteTurn(isSente);
+
+  // ToDo: 初期化を正しそうな方法でやり、apiをちゃんと呼ぶ
+  setFavoriteMoves(isSente ? sfenx : flipSfenx(sfenx), []);
 }
 
 export function initialize() {
