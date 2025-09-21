@@ -1,4 +1,5 @@
 import { flipSfenx, sfenxToShogiPosition } from "@/domain/sfenx";
+import { fetchFavoriteMoves } from "@/lib/supabase/favorite-moves";
 import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
 import {
   resetHandPiece,
@@ -14,7 +15,7 @@ import {
 } from "@/store/kifu-node.svelte";
 import { resetCanMoveAll } from "@/store/play-game.svelte";
 
-export function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
+export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetNodes();
   pushKifuNode("初期局面", sfenx, -1, 0, !isSente, "", false);
   setCurrentIndex(0);
@@ -26,12 +27,15 @@ export function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetCanMoveAll();
   resetHandPiece();
   setIsSenteTurn(isSente);
-
-  // ToDo: apiをちゃんと呼ぶ
-  setFavoriteMoves(isSente ? sfenx : flipSfenx(sfenx), []);
+  try {
+    const adjustSfenx = isSente ? sfenx : flipSfenx(sfenx);
+    // ToDo: user?.id を使うようにする
+    const moves = await fetchFavoriteMoves(adjustSfenx);
+    setFavoriteMoves(adjustSfenx, moves);
+  } catch (err) {}
 }
 
-export function initialize() {
+export async function initialize() {
   initializeBySfenxTurn(
     "lnsgkgsnl1b5r1ppppppppp999PPPPPPPPP1R5B1LNSGKGSNL aaaaaaaa",
     true

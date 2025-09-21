@@ -1,8 +1,6 @@
 import { supabase } from "./client";
 import type { Database } from "./types";
 
-type FavoriteMoveRow =
-  Database["public"]["Tables"]["favorite_shogi_moves"]["Row"];
 type FavoriteMoveInsert =
   Database["public"]["Tables"]["favorite_shogi_moves"]["Insert"];
 
@@ -28,9 +26,7 @@ export async function fetchFavoriteMoves(
     query = query.is("user_id", null);
   }
 
-  const { data, error } = await query.order("created_at", {
-    ascending: false,
-  });
+  const { data, error } = await query;
 
   if (error) {
     console.error("お気に入りの取得に失敗しました:", error);

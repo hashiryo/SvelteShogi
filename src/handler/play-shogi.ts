@@ -58,6 +58,7 @@ import {
   getDisplayMoveFromCaptured,
 } from "@/domain/display";
 import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
+import { fetchFavoriteMoves } from "@/lib/supabase/favorite-moves";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -152,7 +153,7 @@ function pushOrJumpToKifu(
   setCurrentIndex(newIndex);
 }
 
-function turnEnd(display: string, move: string) {
+async function turnEnd(display: string, move: string) {
   toggleTurn();
   resetCanMoveAll();
   resetPromotionPos();
@@ -167,12 +168,14 @@ function turnEnd(display: string, move: string) {
   setBranches(getCurrentIndex());
 
   // ToDo: api を呼んでセットする など
-  {
-    setFavoriteMoves(getIsSenteTurn() ? sfenx : flipSfenx(sfenx), []);
-  }
+  try {
+    const adjustSfenx = getIsSenteTurn() ? sfenx : flipSfenx(sfenx);
+    const moves = await fetchFavoriteMoves(adjustSfenx);
+    setFavoriteMoves(adjustSfenx, moves);
+  } catch (err) {}
 }
 
-export function clickSquareHandler(row: number, col: number) {
+export async function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);
   const square = getSquare(row, col);
   const handPiece = getHandPiece();
@@ -215,7 +218,7 @@ export function clickSquareHandler(row: number, col: number) {
     decrementCaptured(handPiece.piece, handPiece.isSente);
     const ts = positionToStr(row, col);
     setLastPos(row, col);
-    turnEnd(display, `${pieceTypeToCharMap[handPiece.piece]}*${ts}`);
+    await turnEnd(display, `${pieceTypeToCharMap[handPiece.piece]}*${ts}`);
     return;
   }
 
@@ -250,11 +253,11 @@ export function clickSquareHandler(row: number, col: number) {
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);
   setLastPos(row, col);
-  turnEnd(display, `${fs}${ts}`);
+  await turnEnd(display, `${fs}${ts}`);
   return;
 }
 
-export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
+export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   console.log(`clickCapturedHandler: piece=${piece}, isSente=${isSente}`);
   const handPiece = getHandPiece();
   const isSenteTurn = getIsSenteTurn();
@@ -273,7 +276,7 @@ export function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   resetPromotionPos();
 }
 
-export function clickPromotionHandler(getPromote: boolean) {
+export async function clickPromotionHandler(getPromote: boolean) {
   console.log(`clickPromotionHandler: getPromote=${getPromote}`);
   const handPiece = getHandPiece();
   if (!handPiece) throw new Error("No hand piece selected for promotion.");
@@ -308,5 +311,5 @@ export function clickPromotionHandler(getPromote: boolean) {
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);
   setLastPos(row, col);
-  turnEnd(display, `${fs}${ts}${getPromote ? "+" : ""}`);
+  await turnEnd(display, `${fs}${ts}${getPromote ? "+" : ""}`);
 }

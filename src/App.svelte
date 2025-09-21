@@ -1,9 +1,11 @@
 <script lang="ts">
   import { initialize } from "@/handler/initialize";
-  initialize();
   import GameCanvas from "./ui/main-canvas/MainCanvasPlay.svelte";
   import KifuHistory from "./ui/kifu-history/KifuHistory.svelte";
   import KifuBranch from "./ui/kifu-history/KifuBranch.svelte";
+
+  // 初期化処理
+  await initialize();
 </script>
 
 <main>
