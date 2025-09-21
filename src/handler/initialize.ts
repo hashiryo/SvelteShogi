@@ -27,7 +27,7 @@ export function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetHandPiece();
   setIsSenteTurn(isSente);
 
-  // ToDo: 初期化を正しそうな方法でやり、apiをちゃんと呼ぶ
+  // ToDo: apiをちゃんと呼ぶ
   setFavoriteMoves(isSente ? sfenx : flipSfenx(sfenx), []);
 }
 
