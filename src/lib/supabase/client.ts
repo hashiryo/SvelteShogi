@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./types";
 
 // 開発環境の判定
 const isDevelopment = import.meta.env.DEV;
@@ -37,4 +38,4 @@ if (!config.url || !config.key) {
   throw new Error(errorMessage);
 }
 
-export const supabase = createClient(config.url, config.key);
+export const supabase = createClient<Database>(config.url, config.key);
