@@ -1,39 +1,6 @@
 import type { PieceType, Square, HandPieceFrom } from "@/types/shogi";
 
-function initGrid(): (Square | null)[] {
-  let grid: (Square | null)[] = Array(81).fill(null);
-  grid[0] = { piece: "香", isSente: false };
-  grid[1] = { piece: "桂", isSente: false };
-  grid[2] = { piece: "銀", isSente: false };
-  grid[3] = { piece: "金", isSente: false };
-  grid[4] = { piece: "玉", isSente: false };
-  grid[5] = { piece: "金", isSente: false };
-  grid[6] = { piece: "銀", isSente: false };
-  grid[7] = { piece: "桂", isSente: false };
-  grid[8] = { piece: "香", isSente: false };
-  grid[9 + 1] = { piece: "角", isSente: false };
-  grid[9 + 7] = { piece: "飛", isSente: false };
-  for (let i = 0; i < 9; i++) {
-    grid[9 * 2 + i] = { piece: "歩", isSente: false };
-  }
-  for (let i = 0; i < 9; i++) {
-    grid[9 * 6 + i] = { piece: "歩", isSente: true };
-  }
-  grid[9 * 7 + 1] = { piece: "飛", isSente: true };
-  grid[9 * 7 + 7] = { piece: "角", isSente: true };
-  grid[9 * 8 + 0] = { piece: "香", isSente: true };
-  grid[9 * 8 + 1] = { piece: "桂", isSente: true };
-  grid[9 * 8 + 2] = { piece: "銀", isSente: true };
-  grid[9 * 8 + 3] = { piece: "金", isSente: true };
-  grid[9 * 8 + 4] = { piece: "玉", isSente: true };
-  grid[9 * 8 + 5] = { piece: "金", isSente: true };
-  grid[9 * 8 + 6] = { piece: "銀", isSente: true };
-  grid[9 * 8 + 7] = { piece: "桂", isSente: true };
-  grid[9 * 8 + 8] = { piece: "香", isSente: true };
-  return grid;
-}
-
-let grid: (Square | null)[] = $state(initGrid());
+let grid: (Square | null)[] = $state([]);
 
 export function getSquare(row: number, col: number): Square | null {
   return grid[row * 9 + col];

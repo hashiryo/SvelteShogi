@@ -1,30 +1,7 @@
 <script lang="ts">
-  import {
-    getCurrentIndex,
-    getNode,
-    initKifuNodes,
-    toggleFavorite,
-  } from "@/store/kifu-node.svelte";
-  import { getGrid, getCaptured } from "@/store/game-board.svelte";
-  import { shogiPositionToSfenx } from "@/domain/sfenx";
-
+  import { getCurrentIndex, getNode } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { clickFavoriteIcon } from "@/handler/favorite-moves";
-
-  initKifuNodes({
-    display: "初期局面",
-    sfenx: shogiPositionToSfenx(
-      getGrid(),
-      getCaptured(true),
-      getCaptured(false)
-    ),
-    prev: -1,
-    next: -1,
-    br_next: 0,
-    isSente: true,
-    move: "",
-    isFavorite: false,
-  });
 
   function getIds() {
     let ret = [];

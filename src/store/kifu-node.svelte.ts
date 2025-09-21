@@ -4,9 +4,8 @@ let currentIndex: number = $state(-1);
 
 let nodes: KifuNode[] = $state([]);
 
-export function initKifuNodes(node: KifuNode) {
-  nodes = [node];
-  currentIndex = 0;
+export function resetNodes() {
+  nodes = [];
 }
 
 export function getCurrentIndex(): number {
@@ -65,10 +64,6 @@ export function getBranches() {
 }
 export function setBranches(baseNodeIndex: number) {
   let cur = baseNodeIndex;
-  if (cur === 0) {
-    branches = [];
-    return;
-  }
   branches = [];
   do {
     branches.push(cur);

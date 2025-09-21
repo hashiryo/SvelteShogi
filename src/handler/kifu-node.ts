@@ -9,10 +9,7 @@ import {
   getNode,
   setBranches,
   setChildNode,
-  pushKifuNode,
-  getNodesSize,
   getCurrentIndex,
-  setBranchNode,
 } from "@/store/kifu-node.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
