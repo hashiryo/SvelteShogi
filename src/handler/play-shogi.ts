@@ -45,6 +45,7 @@ import {
   getPieceMoveVec,
   promotePiece,
   originalPiece,
+  canPromotePos,
 } from "@/domain/shogi-rule";
 
 import {
@@ -64,6 +65,7 @@ import {
   setFavoriteMoves,
 } from "@/store/favorite-moves.svelte";
 import { fetchFavoriteMoves } from "@/lib/supabase/favorite-moves";
+import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -132,7 +134,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
 async function pushOrJumpToKifu(
   display: string,
   sfenx: string,
-  isSente: boolean,
+  isSenteNext: boolean,
   move: string
 ) {
   const currentIndex = getCurrentIndex();
@@ -154,33 +156,23 @@ async function pushOrJumpToKifu(
     br_next = getNode(curNextIndex).br_next;
     setBranchNode(curNextIndex, newIndex);
   }
-  let moves = getFavoriteMoves(currentNode.sfenx);
-  if (!moves) {
-    try {
-      moves = await fetchFavoriteMoves(sfenx);
-      setFavoriteMoves(sfenx, moves);
-      if (moves.length > 0) {
-        const n = getNodesSize();
-        for (let i = 1; i < n; ++i) {
-          let { prev, move: targetMove, isSente } = getNode(i);
-          if (isSente) targetMove = flipMove(targetMove);
-          if (moves.includes(targetMove)) {
-            let { sfenx: targetSfenx } = getNode(prev);
-            if (isSente) targetSfenx = flipSfenx(targetSfenx);
-            if (currentNode.sfenx === targetSfenx) setFavorite(i, true);
-          }
-        }
-      }
-    } catch (err) {}
-  }
 
-  const isFavorite = moves ? moves.includes(move) : false;
+  let isFavorite = false;
+  // ここではすでに favorite は取得されているはず
+  // ToDo: もし以前のタイミングで favorite が取得できてなかった場合、ここで再取得する
+  if (isSenteNext) {
+    const moves = getFavoriteMoves(flipSfenx(currentNode.sfenx));
+    isFavorite = moves ? moves.includes(flipMove(move)) : false;
+  } else {
+    const moves = getFavoriteMoves(currentNode.sfenx);
+    isFavorite = moves ? moves.includes(move) : false;
+  }
   pushKifuNode(
     display,
     sfenx,
     currentIndex,
     br_next,
-    isSente,
+    isSenteNext,
     move,
     isFavorite
   );
@@ -199,15 +191,10 @@ async function turnEnd(display: string, move: string) {
     getCaptured(true),
     getCaptured(false)
   );
-  await pushOrJumpToKifu(display, sfenx, getIsSenteTurn(), move);
+  const isSente = getIsSenteTurn();
+  await pushOrJumpToKifu(display, sfenx, isSente, move);
   setBranches(getCurrentIndex());
-
-  // ToDo: api を呼んでセットする など
-  const adjustSfenx = getIsSenteTurn() ? sfenx : flipSfenx(sfenx);
-  try {
-    const moves = await fetchFavoriteMoves(adjustSfenx);
-    setFavoriteMoves(adjustSfenx, moves);
-  } catch (err) {}
+  fetchAndSetFavoriteMoves(isSente, sfenx);
 }
 
 export async function clickSquareHandler(row: number, col: number) {
@@ -257,11 +244,7 @@ export async function clickSquareHandler(row: number, col: number) {
     return;
   }
 
-  if (
-    isSenteTurn
-      ? handPiecePos.row < 3 || row < 3
-      : handPiecePos.row > 5 || row > 5
-  ) {
+  if (canPromotePos(isSenteTurn, handPiecePos.row, row)) {
     const promotedPiece = promotePiece(handPiece.piece);
     if (promotedPiece !== handPiece.piece) {
       setPromotionPos(row, col);

@@ -26,7 +26,7 @@ export const pieceTypeToCharMap: Record<PieceType, string> = {
   竜: "D",
 };
 
-const charToPieceTypeMap: Record<string, PieceType> = {
+export const charToPieceTypeMap: Record<string, PieceType> = {
   P: "歩",
   L: "香",
   N: "桂",

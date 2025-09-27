@@ -1,30 +1,51 @@
 import { flipMove, flipSfenx } from "@/domain/sfenx";
 import {
-  fetchFavoriteMoves,
   insertFavoriteMoveToDB,
   deleteFavoriteMoveFromDB,
+  fetchFavoriteMoves,
 } from "@/lib/supabase/favorite-moves";
 import {
-  getFavoriteMoves,
   insertFavoriteMove,
   deleteFavoriteMove,
   setFavoriteMoves,
+  getFavoriteMoves,
 } from "@/store/favorite-moves.svelte";
 
 import {
   toggleFavorite,
   getNode,
   getNodesSize,
-  setFavorite,
 } from "@/store/kifu-node.svelte";
+
+export async function fetchAndSetFavoriteMoves(
+  isSente: boolean,
+  sfenx: string
+) {
+  if (isSente) {
+    // ToDo: user?.id を使うようにする
+    if (!getFavoriteMoves(sfenx)) {
+      const moves = await fetchFavoriteMoves(sfenx);
+      setFavoriteMoves(sfenx, moves);
+    }
+  } else {
+    const adjustSfenx = flipSfenx(sfenx);
+    // ToDo: user?.id を使うようにする
+    if (!getFavoriteMoves(adjustSfenx)) {
+      const moves = await fetchFavoriteMoves(adjustSfenx);
+      setFavoriteMoves(adjustSfenx, moves.map(flipMove));
+    }
+  }
+}
 
 export async function clickFavoriteIcon(index: number) {
   let { prev, move, isSente, isFavorite } = getNode(index);
+  console.log(prev, move, isSente, isFavorite);
   let { sfenx } = getNode(prev);
   if (isSente) {
     sfenx = flipSfenx(sfenx);
     move = flipMove(move);
   }
+  console.log(sfenx, move);
   // ToDo: user?.id
   if (isFavorite) {
     await deleteFavoriteMoveFromDB(sfenx, move);

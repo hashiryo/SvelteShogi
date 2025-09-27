@@ -1,5 +1,6 @@
 import type { PieceType, Square } from "@/types/shogi";
-import { getPieceMoveVec } from "./shogi-rule";
+import { canPromotePos, getPieceMoveVec } from "./shogi-rule";
+import { charToPieceTypeMap, strToPosition } from "./sfenx";
 
 export const KANJI_NUM = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
 export const ZENKAKU_NUM = [
@@ -152,4 +153,34 @@ export function getDisplayMoveFromGrid(
     }
   }
   return display;
+}
+
+export function getDisplayMoveFromMoveStr(
+  grid: (Square | null)[],
+  move: string,
+  isSente: boolean,
+  lastPos: { row: number; col: number } | null
+): string {
+  let displayText = "";
+  const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
+  if (match1) {
+    const [, fromColStr, fromRowStr, toColStr, toRowStr, prom] = match1;
+    const from = strToPosition(`${fromColStr}${fromRowStr}`);
+    const to = strToPosition(`${toColStr}${toRowStr}`);
+    displayText = getDisplayMoveFromGrid(grid, from, to, lastPos);
+    if (canPromotePos(isSente, from.row, to.row)) {
+      displayText += prom ? "成" : "不成";
+    }
+    return displayText;
+  }
+
+  const match2 = move.match(/^([A-Z])\*(\d)([a-i])$/);
+  if (match2) {
+    const [, pieceChar, colStr, rowStr] = match2;
+    const { row, col } = strToPosition(`${colStr}${rowStr}`);
+    const piece = charToPieceTypeMap[pieceChar];
+    return getDisplayMoveFromCaptured(grid, row, col, piece, isSente);
+  }
+
+  throw new Error("不正な形式の手");
 }

@@ -122,3 +122,11 @@ export function originalPiece(piece: PieceType): PieceType {
       return piece; // 金、玉は元の駒
   }
 }
+
+export function canPromotePos(
+  isSente: boolean,
+  fromRow: number,
+  toRow: number
+) {
+  return isSente ? fromRow < 3 || toRow < 3 : fromRow > 5 || toRow > 5;
+}
