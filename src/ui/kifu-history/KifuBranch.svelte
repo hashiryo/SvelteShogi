@@ -51,8 +51,11 @@
 </script>
 
 <div class="kifu-branch">
-  <div class="kifu-branch-keyboard-hint">
-    <kbd>Space</kbd>
+  <div class="card-header">
+    変化
+    <div class="kifu-branch-keyboard-hint">
+      <kbd>Space</kbd>
+    </div>
   </div>
   <div class="kifu-branch-list" role="listbox" bind:this={containerRef}>
     {#each getBranches() as id, index}

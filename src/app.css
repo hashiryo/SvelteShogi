@@ -77,6 +77,16 @@ button:focus-visible {
   }
 }
 
+.card-header {
+  padding: 4px 8px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 kbd {
   background: #ccc;
   border-radius: 4px;

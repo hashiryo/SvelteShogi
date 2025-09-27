@@ -41,7 +41,7 @@
 </script>
 
 <div class="favorite-next-moves">
-  <div class="favorite-next-moves-keyboard-hint">
+  <div class="card-header">
     お気に入りの次の一手
     {#if displayCount > 0}
       <span class="count-badge">({displayCount}件)</span>
@@ -76,16 +76,6 @@
   .favorite-next-moves {
     border: 1px solid #ccc;
     border-radius: 4px;
-  }
-
-  .favorite-next-moves-keyboard-hint {
-    padding: 4px 8px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ccc;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
 
   .count-badge {
@@ -124,10 +114,6 @@
   .favorite-next-moves-item-favorite {
     width: 8%;
     color: rgb(243, 220, 74);
-  }
-
-  .favorite-next-moves-item-favorite-content {
-    /* スタイルを統一 */
   }
 
   .favorite-next-moves-empty {

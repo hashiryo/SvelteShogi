@@ -81,8 +81,11 @@
 </script>
 
 <div class="kifu-history">
-  <div class="kifu-history-keyboard-hint">
-    <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+  <div class="card-header">
+    棋譜
+    <div class="kifu-history-keyboard-hint">
+      <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+    </div>
   </div>
   <div
     class="kifu-history-list"
