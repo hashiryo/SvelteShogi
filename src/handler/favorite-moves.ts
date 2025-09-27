@@ -39,13 +39,11 @@ export async function fetchAndSetFavoriteMoves(
 
 export async function clickFavoriteIcon(index: number) {
   let { prev, move, isSente, isFavorite } = getNode(index);
-  console.log(prev, move, isSente, isFavorite);
   let { sfenx } = getNode(prev);
   if (isSente) {
     sfenx = flipSfenx(sfenx);
     move = flipMove(move);
   }
-  console.log(sfenx, move);
   // ToDo: user?.id
   if (isFavorite) {
     await deleteFavoriteMoveFromDB(sfenx, move);

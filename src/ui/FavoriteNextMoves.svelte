@@ -40,194 +40,104 @@
   let displayCount = $derived(displayMoves.length);
 </script>
 
-<div
-  class="favorite-next-moves"
-  role="region"
-  aria-label="お気に入りの次の一手"
->
-  <!-- ヘッダーセクション -->
-  <div class="header">
-    <h3 class="title">お気に入りの次の一手</h3>
+<div class="favorite-next-moves">
+  <div class="favorite-next-moves-keyboard-hint">
+    お気に入りの次の一手
     {#if displayCount > 0}
       <span class="count-badge">({displayCount}件)</span>
     {/if}
   </div>
-
-  <!-- 手の一覧表示 -->
-  {#if displayCount > 0}
-    <ul class="moves-list" role="list">
+  <div
+    class="favorite-next-moves-list"
+    role="listbox"
+    aria-label="お気に入りの次の一手"
+  >
+    {#if displayCount > 0}
       {#each displayMoves as moveData}
-        <li class="move-item" role="listitem">
-          <span class="move-icon" aria-hidden="true">⭐</span>
-          <span class="move-text">{moveData}</span>
-        </li>
+        <div class="favorite-next-moves-item" role="listitem">
+          <div class="favorite-next-moves-item-favorite">
+            <div class="favorite-next-moves-item-favorite-content">★</div>
+          </div>
+          <div class="favorite-next-moves-item-display">
+            {moveData}
+          </div>
+        </div>
       {/each}
-    </ul>
-  {:else}
-    <!-- 空状態表示 -->
-    <div class="empty-state" aria-live="polite">
-      <span class="empty-icon" aria-hidden="true">📝</span>
-      <p class="empty-message">この局面にお気に入りの手は登録されていません</p>
-      <p class="empty-description">
-        手を指した後、お気に入りボタンで登録できます
-      </p>
-    </div>
-  {/if}
+    {:else}
+      <!-- 空状態表示 -->
+      <div class="favorite-next-moves-empty" aria-live="polite">
+        この局面にお気に入りの手は登録されていません
+      </div>
+    {/if}
+  </div>
 </div>
 
 <style>
   .favorite-next-moves {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 16px;
-    background-color: #fafafa;
-    font-family: "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
 
-  .header {
+  .favorite-next-moves-keyboard-hint {
+    padding: 4px 8px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+    font-size: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  .title {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
   }
 
   .count-badge {
     background-color: #2196f3;
     color: white;
-    font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 12px;
+    font-size: 10px;
+    padding: 1px 4px;
+    border-radius: 8px;
     font-weight: 500;
   }
 
-  .moves-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .favorite-next-moves-list {
+    padding: 0px 8px 0 8px;
+    height: 100px;
+    overflow-y: auto;
+    display: grid;
+    gap: 2px;
+    --item-height: 24px;
+    scroll-behavior: smooth;
+    align-content: start;
   }
 
-  .move-item {
+  .favorite-next-moves-item {
+    height: var(--item-height);
+    padding: 4px 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    box-sizing: border-box;
   }
 
-  .move-item:hover {
-    background-color: #f5f5f5;
-    border-color: #2196f3;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .favorite-next-moves-item-display {
+    width: 92%;
+    text-align: left;
   }
 
-  .move-icon {
-    font-size: 14px;
-    color: #ff9800;
+  .favorite-next-moves-item-favorite {
+    width: 8%;
+    color: rgb(243, 220, 74);
   }
 
-  .move-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    font-family: "Hiragino Sans", "Yu Gothic UI", monospace;
+  .favorite-next-moves-item-favorite-content {
+    /* スタイルを統一 */
   }
 
-  .empty-state {
+  .favorite-next-moves-empty {
+    padding: 8px;
     text-align: center;
-    padding: 24px 16px;
     color: #666;
-  }
-
-  .empty-icon {
-    font-size: 24px;
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  .empty-message {
-    margin: 0 0 8px 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #666;
-  }
-
-  .empty-description {
-    margin: 0;
     font-size: 12px;
-    color: #999;
-    line-height: 1.4;
-  }
-
-  /* レスポンシブ対応 */
-  @media (max-width: 768px) {
-    .favorite-next-moves {
-      padding: 12px;
-    }
-
-    .title {
-      font-size: 14px;
-    }
-
-    .move-text {
-      font-size: 13px;
-    }
-
-    .moves-list {
-      gap: 6px;
-    }
-
-    .move-item {
-      padding: 6px 10px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .moves-list {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-  }
-
-  /* アクセシビリティ対応 */
-  @media (prefers-reduced-motion: reduce) {
-    .move-item {
-      transition: none;
-    }
-
-    .move-item:hover {
-      transform: none;
-    }
-  }
-
-  /* 高コントラストテーマ対応 */
-  @media (prefers-contrast: high) {
-    .favorite-next-moves {
-      border-color: #000;
-    }
-
-    .move-item {
-      border-color: #000;
-    }
-
-    .title,
-    .move-text {
-      color: #000;
-    }
+    height: var(--item-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

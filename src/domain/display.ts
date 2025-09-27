@@ -97,7 +97,6 @@ export function getDisplayMoveFromGrid(
     fromSquare.isSente
   );
   dirCnt[myRelPos][myMove]--;
-  console.log("dirCnt", dirCnt);
 
   const vSum =
     dirCnt[myRelPos].down + dirCnt[myRelPos].none + dirCnt[myRelPos].up;
