@@ -4,18 +4,19 @@ import {
   deleteFavoriteMoveFromDB,
   fetchFavoriteMoves,
 } from "@/lib/supabase/favorite-moves";
-import {
-  insertFavoriteMove,
-  deleteFavoriteMove,
-  setFavoriteMoves,
-  getFavoriteMoves,
-} from "@/store/favorite-moves.svelte";
+import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
 
 import {
   toggleFavorite,
   getNode,
   getNodesSize,
 } from "@/store/kifu-node.svelte";
+
+export function getCurFavorite(isSente: boolean, sfenx: string) {
+  return isSente
+    ? FavoriteMovesStore.get(sfenx) || []
+    : (FavoriteMovesStore.get(flipSfenx(sfenx)) || []).map(flipMove);
+}
 
 export async function fetchAndSetFavoriteMoves(
   isSente: boolean,
@@ -25,9 +26,9 @@ export async function fetchAndSetFavoriteMoves(
     sfenx = flipSfenx(sfenx);
   }
   // ToDo: user?.id を使うようにする
-  if (!getFavoriteMoves(sfenx)) {
+  if (!FavoriteMovesStore.get(sfenx)) {
     const moves = await fetchFavoriteMoves(sfenx);
-    setFavoriteMoves(sfenx, moves);
+    FavoriteMovesStore.set(sfenx, moves);
   }
 }
 
@@ -41,10 +42,10 @@ export async function clickFavoriteIcon(index: number) {
   // ToDo: user?.id
   if (isFavorite) {
     await deleteFavoriteMoveFromDB(sfenx, move);
-    deleteFavoriteMove(sfenx, move);
+    FavoriteMovesStore.delete(sfenx, move);
   } else {
     await insertFavoriteMoveToDB(sfenx, move);
-    insertFavoriteMove(sfenx, move);
+    FavoriteMovesStore.insert(sfenx, move);
   }
   const n = getNodesSize();
   for (let i = 1; i < n; ++i) {

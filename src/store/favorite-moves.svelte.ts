@@ -2,21 +2,21 @@ let data: {
   [key: string]: string[] | undefined;
 } = $state({});
 
-export function getFavoriteMoves(sfenx: string) {
-  return data[sfenx];
-}
-
-export function setFavoriteMoves(sfenx: string, moves: string[]) {
-  data[sfenx] = moves;
-}
-
-export function insertFavoriteMove(sfenx: string, move: string) {
-  if (!data[sfenx]) throw new Error(`Invalid sfenx: ${sfenx}`);
-  if (data[sfenx].includes(move)) return;
-  data[sfenx].push(move);
-}
-
-export function deleteFavoriteMove(sfenx: string, move: string) {
-  if (!data[sfenx]) throw new Error(`Invalid sfenx: ${sfenx}`);
-  data[sfenx] = data[sfenx].filter((m) => m !== move);
+let currentMoves: string[] = $state([]);
+export class FavoriteMovesStore {
+  static get(sfenx: string) {
+    return data[sfenx];
+  }
+  static set(sfenx: string, moves: string[]) {
+    data[sfenx] = moves;
+  }
+  static insert(sfenx: string, move: string) {
+    if (!data[sfenx]) throw new Error(`Invalid sfenx: ${sfenx}`);
+    if (data[sfenx].includes(move)) return;
+    data[sfenx].push(move);
+  }
+  static delete(sfenx: string, move: string) {
+    if (!data[sfenx]) throw new Error(`Invalid sfenx: ${sfenx}`);
+    data[sfenx] = data[sfenx].filter((m) => m !== move);
+  }
 }

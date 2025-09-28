@@ -1,9 +1,4 @@
-import { flipMove, flipSfenx, sfenxToShogiPosition } from "@/domain/sfenx";
-import { fetchFavoriteMoves } from "@/lib/supabase/favorite-moves";
-import {
-  getFavoriteMoves,
-  setFavoriteMoves,
-} from "@/store/favorite-moves.svelte";
+import { sfenxToShogiPosition } from "@/domain/sfenx";
 import {
   resetHandPiece,
   setCaptured,

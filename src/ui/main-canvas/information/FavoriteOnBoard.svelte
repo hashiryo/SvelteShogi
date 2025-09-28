@@ -1,17 +1,23 @@
 <script lang="ts">
-  import FavoriteArrow from './FavoriteArrow.svelte';
-  import { fade} from 'svelte/transition';
-  import type { PieceType, FavoriteFrom } from '@/types/shogi.d.ts';
+  import FavoriteArrow from "./FavoriteArrow.svelte";
+  import { fade } from "svelte/transition";
+  import type { PieceType, FavoriteFrom } from "@/types/shogi.d.ts";
 
   let {
-    relativeSquarePositions = [] as { x: number, y: number }[],
-    relativeCapturedSentePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
-    relativeCapturedGotePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
+    relativeSquarePositions = [] as { x: number; y: number }[],
+    relativeCapturedSentePositions = [] as {
+      piece: PieceType;
+      position: { x: number; y: number };
+    }[],
+    relativeCapturedGotePositions = [] as {
+      piece: PieceType;
+      position: { x: number; y: number };
+    }[],
     arrows = [] as FavoriteFrom[],
   } = $props();
 
   function getStartEndPositions(arrow: FavoriteFrom) {
-    if ('startRow' in arrow && 'startCol' in arrow) {
+    if ("startRow" in arrow && "startCol" in arrow) {
       // FromSquare
       return {
         startX: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].x,
@@ -21,7 +27,9 @@
       };
     } else {
       // FromCaptured
-      const position = arrow.is_sente ? relativeCapturedSentePositions.find(p => p.piece === arrow.piece) : relativeCapturedGotePositions.find(p => p.piece === arrow.piece);
+      const position = arrow.is_sente
+        ? relativeCapturedSentePositions.find((p) => p.piece === arrow.piece)
+        : relativeCapturedGotePositions.find((p) => p.piece === arrow.piece);
       if (position) {
         return {
           startX: position.position.x,
@@ -35,12 +43,19 @@
   }
 
   let selected = $state(0);
-  let selectedArrow = $derived(arrows[selected]);
+  let selectedArrow = $derived(arrows.length > 0 ? arrows[selected] : null);
   let isVisible = $state(true);
 
-  let { startX, startY, endX, endY } = $derived(getStartEndPositions(selectedArrow));
+  let { startX, startY, endX, endY } = $derived(
+    selectedArrow
+      ? getStartEndPositions(selectedArrow)
+      : { startX: 0, startY: 0, endX: 0, endY: 0 }
+  );
 
   $effect(() => {
+    // arrows が空の場合はエフェクトを実行しない
+    if (arrows.length === 0) return;
+
     const delay = isVisible ? 3000 : 3000;
 
     const timerId = setTimeout(() => {
@@ -54,25 +69,20 @@
       clearTimeout(timerId);
     };
   });
-
 </script>
-
 
 <div class="favorite-on-board">
   {#if arrows.length > 0}
     {#if isVisible}
-      <div out:fade={{ delay: 50, duration: 100 }} in:fade={{ delay: 500, duration: 1000 }}>
-        <FavoriteArrow
-          startX={startX}
-          startY={startY}
-          endX={endX}
-          endY={endY}
-        />
+      <div
+        out:fade={{ delay: 50, duration: 100 }}
+        in:fade={{ delay: 500, duration: 1000 }}
+      >
+        <FavoriteArrow {startX} {startY} {endX} {endY} />
       </div>
     {/if}
   {/if}
 </div>
-
 
 <style>
   .favorite-on-board {

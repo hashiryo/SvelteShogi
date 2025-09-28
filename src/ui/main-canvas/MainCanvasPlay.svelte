@@ -14,14 +14,10 @@
     clickCapturedHandler,
     clickPromotionHandler,
   } from "@/handler/play-shogi";
-  import {
-    getCaptured,
-    getGrid,
-    getHandPiece,
-    getIsSenteTurn,
-  } from "@/store/game-board.svelte";
-  import { setFavoriteMoves } from "@/store/favorite-moves.svelte";
-  import { shogiPositionToSfenx } from "@/domain/sfenx";
+  import { getHandPiece } from "@/store/game-board.svelte";
+  import { getCurrentIndex, getNode } from "@/store/kifu-node.svelte";
+  import { getCurFavorite } from "@/handler/favorite-moves";
+  import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -105,56 +101,37 @@
     })()
   );
 
-  let favoriteArrows: FavoriteFrom[] = [
-    // {
-    //   startRow: 8,
-    //   startCol: 0,
-    //   endRow: 0,
-    //   endCol: 0
-    // },
-    // {
-    //   startRow: 5,
-    //   startCol: 0,
-    //   endRow: 5,
-    //   endCol: 8
-    // },
-    // {
-    //   startRow: 4,
-    //   startCol: 4,
-    //   endRow: 8,
-    //   endCol: 8,
-    // },
-    // {
-    //   startRow: 2,
-    //   startCol: 2,
-    //   endRow: 3,
-    //   endCol: 3,
-    // },
-    // {
-    //   startRow: 1,
-    //   startCol: 1,
-    //   endRow: 1,
-    //   endCol: 2,
-    // },
-    // {
-    //   startRow: 0,
-    //   startCol: 4,
-    //   endRow: 6,
-    //   endCol: 0,
-    // },
-    // {
-    //   piece: "歩",
-    //   is_sente: true,
-    //   endRow: 6,
-    //   endCol: 0,
-    // },
-    {
-      piece: "銀",
-      is_sente: false,
-      endRow: 7,
-      endCol: 0,
-    },
-  ];
+  let favoriteArrows: FavoriteFrom[] = $derived.by(() => {
+    const { isSente, sfenx } = getNode(getCurrentIndex());
+    const moves = getCurFavorite(isSente, sfenx);
+    return moves.map((move) => {
+      const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
+      if (match1) {
+        const [, fromColStr, fromRowStr, toColStr, toRowStr, prom] = match1;
+        const from = strToPosition(`${fromColStr}${fromRowStr}`);
+        const to = strToPosition(`${toColStr}${toRowStr}`);
+        return {
+          startRow: from.row,
+          startCol: from.col,
+          endRow: to.row,
+          endCol: to.col,
+        };
+      }
+      const match2 = move.match(/^([A-Z])\*(\d)([a-i])$/);
+      if (match2) {
+        const [, pieceChar, toColStr, toRowStr] = match2;
+        const { row, col } = strToPosition(`${toColStr}${toRowStr}`);
+        const piece = charToPieceTypeMap[pieceChar];
+        return {
+          piece,
+          is_sente: isSente,
+          endRow: row,
+          endCol: col,
+        };
+      }
+      throw "Invalid favorite move";
+    });
+  });
 
   let statisticsArrows: StatisticsFrom[] = [
     {

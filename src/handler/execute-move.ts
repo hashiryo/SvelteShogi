@@ -1,11 +1,9 @@
 import {
   charToPieceTypeMap,
-  flipMove,
-  flipSfenx,
   shogiPositionToSfenx,
   strToPosition,
 } from "@/domain/sfenx";
-import { getFavoriteMoves } from "@/store/favorite-moves.svelte";
+import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
 import {
   decrementCaptured,
   getCaptured,
@@ -33,7 +31,7 @@ import {
   resetPromotionPos,
   setLastPos,
 } from "@/store/play-game.svelte";
-import { fetchAndSetFavoriteMoves } from "./favorite-moves";
+import { fetchAndSetFavoriteMoves, getCurFavorite } from "./favorite-moves";
 import { originalPiece, promotePiece } from "@/domain/shogi-rule";
 
 function pushOrJumpToKifu(
@@ -62,16 +60,8 @@ function pushOrJumpToKifu(
     setBranchNode(curNextIndex, newIndex);
   }
 
-  let isFavorite = false;
-  // ここではすでに favorite は取得されているはず
-  // ToDo: もし以前のタイミングで favorite が取得できてなかった場合、ここで再取得する のを実装 (await でやる)
-  if (isSenteNext) {
-    const moves = getFavoriteMoves(flipSfenx(currentNode.sfenx));
-    isFavorite = moves ? moves.includes(flipMove(move)) : false;
-  } else {
-    const moves = getFavoriteMoves(currentNode.sfenx);
-    isFavorite = moves ? moves.includes(move) : false;
-  }
+  const moves = getCurFavorite(currentNode.isSente, currentNode.sfenx);
+  const isFavorite = moves ? moves.includes(move) : false;
 
   pushKifuNode(
     display,
@@ -134,6 +124,5 @@ export async function executeMove(display: string, move: string) {
 
   setBranches(getCurrentIndex());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
-
   setIsSenteTurn(!isSente);
 }

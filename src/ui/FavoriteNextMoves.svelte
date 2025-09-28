@@ -1,27 +1,16 @@
 <script lang="ts">
-  import { getFavoriteMoves } from "@/store/favorite-moves.svelte";
-  import { getNode, getCurrentIndex } from "@/store/kifu-node.svelte";
   import { getDisplayMoveFromMoveStr } from "@/domain/display";
-  import { flipMove, flipSfenx } from "@/domain/sfenx";
   import { getLastPos } from "@/store/play-game.svelte";
   import { getGrid, getIsSenteTurn } from "@/store/game-board.svelte";
   import { executeMove } from "@/handler/execute-move";
+  import { getCurFavorite } from "@/handler/favorite-moves";
+  import { getCurrentIndex, getNode } from "@/store/kifu-node.svelte";
 
   let isSente = $derived(getIsSenteTurn());
 
-  // リアクティブな現在インデックスの監視
-  let currentIndex = $derived(getCurrentIndex());
-
-  // お気に入りの手の取得
   let favoriteMoves = $derived.by(() => {
-    const currentNode = getNode(currentIndex);
-    if (isSente) {
-      return getFavoriteMoves(currentNode.sfenx) || [];
-    } else {
-      return (getFavoriteMoves(flipSfenx(currentNode.sfenx)) || []).map(
-        flipMove
-      );
-    }
+    const { sfenx } = getNode(getCurrentIndex());
+    return getCurFavorite(isSente, sfenx);
   });
 
   // 表示件数
