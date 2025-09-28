@@ -15,9 +15,9 @@ export function getCurrentStatistics(
           move: flipMove(dat.move),
         };
       });
-  // 勝率の高い順にソート（同率の場合は出現回数の多い順）
+  // 出現率の高い順にソート（同率の場合は勝率の多い順）
   return [...stats].sort((a, b) => {
-    return a.winRate !== b.winRate
+    return b.apparentCount === a.apparentCount
       ? b.winRate - a.winRate
       : b.apparentCount - a.apparentCount;
   });

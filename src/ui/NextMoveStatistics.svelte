@@ -15,47 +15,13 @@
 
   // 表示件数
   let moveCount = $derived(moveStatistics.length);
-
-  // 統計サマリー
-  let statisticsSummary = $derived.by(() => {
-    if (moveStatistics.length === 0) return null;
-
-    const totalApparent = moveStatistics.reduce(
-      (sum, stat) => sum + stat.apparentCount,
-      0
-    );
-    const averageWinRate =
-      moveStatistics.length > 0
-        ? moveStatistics.reduce((sum, stat) => sum + stat.winRate, 0) /
-          moveStatistics.length
-        : 0;
-
-    return {
-      totalApparent,
-      averageWinRate,
-    };
-  });
 </script>
 
 <div class="next-move-statistics">
   <div class="card-header">
-    <div class="header-title">
-      次の一手統計
-      {#if moveCount > 0}
-        <span class="count-badge">({moveCount}件)</span>
-      {/if}
-    </div>
-    {#if statisticsSummary}
-      <div class="statistics-summary">
-        <span class="summary-item"
-          >総出現: {statisticsSummary.totalApparent}回</span
-        >
-        <span class="summary-item"
-          >平均勝率: {(statisticsSummary.averageWinRate * 100).toFixed(
-            1
-          )}%</span
-        >
-      </div>
+    次の一手統計
+    {#if moveCount > 0}
+      <span class="count-badge">({moveCount}件)</span>
     {/if}
   </div>
   <div
@@ -86,29 +52,23 @@
             }
           }}
         >
-          <div class="move-display">
+          <div class="next-move-statistics-item-display">
             {display}
           </div>
-          <div class="statistics-info">
-            <div class="stat-row">
-              <span class="stat-label">出現:</span>
-              <span class="stat-value"
-                >{dat.apparentCount}回 ({(dat.apparentRate * 100).toFixed(
-                  1
-                )}%)</span
-              >
+          <div class="next-move-statistics-item-stats">
+            <div class="stat-main">
+              出現率: {dat.apparentCount}回 ({(dat.apparentRate * 100).toFixed(
+                1
+              )}%)
             </div>
-            <div class="stat-row">
-              <span class="stat-label">勝率:</span>
-              <span
-                class="stat-value win-rate"
-                class:high-win-rate={dat.winRate >= 0.6}
-                class:low-win-rate={dat.winRate < 0.4}
-              >
-                {dat.winCount}/{dat.apparentCount} ({(
-                  dat.winRate * 100
-                ).toFixed(1)}%)
-              </span>
+            <div
+              class="stat-sub"
+              class:high-win-rate={dat.winRate >= 0.6}
+              class:low-win-rate={dat.winRate < 0.4}
+            >
+              勝率: {dat.winCount}/{dat.apparentCount} ({(
+                dat.winRate * 100
+              ).toFixed(1)}%)
             </div>
           </div>
         </div>
@@ -128,101 +88,56 @@
     border-radius: 4px;
   }
 
-  .card-header {
-    padding: 8px 12px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #e0e0e0;
-    border-radius: 4px 4px 0 0;
-  }
-
-  .header-title {
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 4px;
-  }
-
-  .count-badge {
-    font-size: 12px;
-    color: #666;
-    font-weight: normal;
-  }
-
-  .statistics-summary {
-    display: flex;
-    gap: 12px;
-    font-size: 11px;
-    color: #666;
-  }
-
-  .summary-item {
-    display: flex;
-    align-items: center;
-  }
-
   .next-move-statistics-list {
     padding: 0px 8px 0 8px;
-    height: 200px;
+    height: 100px;
     overflow-y: auto;
     display: grid;
-    gap: 4px;
-    --item-height: 60px;
+    gap: 2px;
+    --item-height: 24px;
     scroll-behavior: smooth;
     align-content: start;
   }
 
   .next-move-statistics-item {
     height: var(--item-height);
-    padding: 6px 8px;
+    padding: 4px 8px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
     box-sizing: border-box;
     cursor: pointer;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background-color: #fafafa;
-    transition: background-color 0.2s ease;
   }
 
-  .next-move-statistics-item:hover {
-    background-color: #f0f0f0;
+  .next-move-statistics-item-display {
+    width: 60%;
+    text-align: left;
   }
 
-  .move-display {
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 4px;
-    color: #333;
-  }
-
-  .statistics-info {
+  .next-move-statistics-item-stats {
+    width: 40%;
+    text-align: right;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    align-items: flex-end;
+    line-height: 1.1;
   }
 
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .stat-main {
     font-size: 11px;
-  }
-
-  .stat-label {
     color: #666;
-    font-weight: 500;
+    margin-bottom: 1px;
   }
 
-  .stat-value {
-    color: #333;
-    font-weight: 600;
+  .stat-sub {
+    font-size: 10px;
+    color: #888;
   }
 
-  .win-rate.high-win-rate {
+  .stat-sub.high-win-rate {
     color: #2e7d32; /* 緑色 - 高勝率 */
   }
 
-  .win-rate.low-win-rate {
+  .stat-sub.low-win-rate {
     color: #d32f2f; /* 赤色 - 低勝率 */
   }
 
