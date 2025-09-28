@@ -4,6 +4,7 @@
   import KifuHistory from "@/ui/kifu-history/KifuHistory.svelte";
   import KifuBranch from "@/ui/kifu-history/KifuBranch.svelte";
   import FavoriteNextMoves from "@/ui/FavoriteNextMoves.svelte";
+  import NextMoveStatistics from "./ui/NextMoveStatistics.svelte";
 
   // 初期化処理
   await initialize();
@@ -16,6 +17,7 @@
       <KifuHistory />
       <KifuBranch />
       <FavoriteNextMoves />
+      <NextMoveStatistics />
     </div>
   </div>
 </main>

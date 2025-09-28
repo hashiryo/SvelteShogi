@@ -76,7 +76,7 @@ export interface KifuNode {
 // 集計済み統計データの型
 export interface MoveStatistics {
   move: string;
-  totalCount: number;
+  apparentCount: number;
   winCount: number;
   apparentRate: number;
   winRate: number;

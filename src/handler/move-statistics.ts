@@ -24,22 +24,23 @@ export async function fetchAndSetMoveStatistics(
   // ToDo: user?.id を使うようにする
   if (!MoveStatisticsStore.get(sfenx)) {
     const records = await MoveStatisticsRepository.fetch(sfenx);
-    const moveStats = new Map<string, { total: number; wins: number }>();
+    const total = records.length;
+    const moveStats = new Map<string, { apparents: number; wins: number }>();
     for (const record of records) {
       const move = record.move;
-      const existing = moveStats.get(move) || { total: 0, wins: 0 };
+      const existing = moveStats.get(move) || { apparents: 0, wins: 0 };
       moveStats.set(move, {
-        total: existing.total + 1,
+        apparents: existing.apparents + 1,
         wins: existing.wins + (record.win ? 1 : 0),
       });
     }
     const data: MoveStatistics[] = Array.from(moveStats.entries()).map(
-      ([move, { total, wins }]) => ({
+      ([move, { apparents, wins }]) => ({
         move,
-        totalCount: total,
+        apparentCount: apparents,
         winCount: wins,
-        apparentRate: total > 0 ? (wins / total) * 100 : 0,
-        winRate: total > 0 ? (wins / total) * 100 : 0,
+        apparentRate: (apparents / total) * 100,
+        winRate: (wins / apparents) * 100,
       })
     );
     MoveStatisticsStore.set(sfenx, data);
