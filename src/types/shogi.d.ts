@@ -72,3 +72,10 @@ export interface KifuNode {
   move: string; // 直前の移動文字列（例: "7g7f"） 空文字ならば初期局面
   isFavorite: boolean; // お気に入りの一手かどうか
 }
+
+// 集計済み統計データの型
+export interface MoveStatistics {
+  move: string;
+  apparentRate: number;
+  winRate: number;
+}

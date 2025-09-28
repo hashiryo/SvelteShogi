@@ -8,8 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test:watch": "vitest",
+    "test": "vitest run",
     "types:generate": "supabase gen types typescript --local > src/lib/supabase/types.d.ts"
   },
   "devDependencies": {
