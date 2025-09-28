@@ -6,8 +6,8 @@
 
   import {
     CanMoveStore,
-    getLastPos,
-    getPromotionPos,
+    PromotionPosStore,
+    LastPosStore,
   } from "@/store/play-game.svelte";
   import {
     clickSquareHandler,
@@ -246,7 +246,7 @@
           {/each}
         {/each}
       </div>
-      {@const promotionPos = getPromotionPos()}
+      {@const promotionPos = PromotionPosStore.get()}
       {#if promotionPos}
         {@const index = promotionPos.row * 9 + promotionPos.col}
         {@const { x, y, width, height } = relativeSquareRect[index]}
@@ -269,7 +269,7 @@
         </div>
       {/if}
     {/if}
-    {@const lastPos = getLastPos()}
+    {@const lastPos = LastPosStore.get()}
     {#if lastPos}
       {@const index = lastPos.row * 9 + lastPos.col}
       {@const { x, y, width, height } = relativeSquareRect[index]}

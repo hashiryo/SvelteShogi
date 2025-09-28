@@ -27,8 +27,8 @@ import {
 } from "@/store/kifu-node.svelte";
 import {
   CanMoveStore,
-  resetPromotionPos,
-  setLastPos,
+  PromotionPosStore,
+  LastPosStore,
 } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves, getCurFavorite } from "./favorite-moves";
 import { originalPiece, promotePiece } from "@/domain/shogi-rule";
@@ -97,7 +97,7 @@ export async function executeMove(display: string, move: string) {
       prom ? promotePiece(fromSquare.piece) : fromSquare.piece,
       fromSquare.isSente
     );
-    setLastPos(to.row, to.col);
+    LastPosStore.set(to.row, to.col);
   }
   const match2 = move.match(/^([A-Z])\*(\d)([a-i])$/);
   if (match2) {
@@ -106,13 +106,13 @@ export async function executeMove(display: string, move: string) {
     const piece = charToPieceTypeMap[pieceChar];
     setSquare(row, col, piece, isSente);
     decrementCaptured(piece, isSente);
-    setLastPos(row, col);
+    LastPosStore.set(row, col);
   }
 
   CanMoveStore.resetAll();
-  resetPromotionPos();
+  PromotionPosStore.reset();
   resetHandPiece();
-  resetPromotionPos();
+  PromotionPosStore.reset();
 
   const sfenx = shogiPositionToSfenx(
     getGrid(),

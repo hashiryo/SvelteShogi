@@ -13,11 +13,7 @@ import {
 } from "@/store/kifu-node.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
-import {
-  CanMoveStore,
-  resetLastPos,
-  setLastPos,
-} from "@/store/play-game.svelte";
+import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
 
 function setCurrentNode(nodeIndex: number) {
   if (getCurrentIndex() === nodeIndex) return;
@@ -30,9 +26,9 @@ function setCurrentNode(nodeIndex: number) {
   setCaptured(false, capturedGote);
   if (node.move) {
     const { row, col } = strToPosition(node.move.substring(2, 4));
-    setLastPos(row, col);
+    LastPosStore.set(row, col);
   } else {
-    resetLastPos();
+    LastPosStore.reset();
   }
   setCurrentIndex(nodeIndex);
   CanMoveStore.resetAll();

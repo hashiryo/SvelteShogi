@@ -12,10 +12,8 @@ import {
 
 import {
   CanMoveStore,
-  getPromotionPos,
-  setPromotionPos,
-  resetPromotionPos,
-  getLastPos,
+  PromotionPosStore,
+  LastPosStore,
 } from "@/store/play-game.svelte";
 
 import {
@@ -106,24 +104,24 @@ export async function clickSquareHandler(row: number, col: number) {
     if (square && square.isSente === isSenteTurn) {
       setHandPieceFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);
-      resetPromotionPos();
+      PromotionPosStore.reset();
     }
     return;
   }
   const handPiecePos = handPiece.position;
   if (handPiecePos && handPiecePos.row === row && handPiecePos.col === col) {
     resetHandPiece();
-    resetPromotionPos();
+    PromotionPosStore.reset();
     return;
   }
   if (!CanMoveStore.get(row, col)) {
     if (square && square.isSente === isSenteTurn) {
       setHandPieceFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);
-      resetPromotionPos();
+      PromotionPosStore.reset();
     } else {
       resetHandPiece();
-      resetPromotionPos();
+      PromotionPosStore.reset();
     }
     return;
   }
@@ -144,7 +142,7 @@ export async function clickSquareHandler(row: number, col: number) {
   if (canPromotePos(isSenteTurn, handPiecePos.row, row)) {
     const promotedPiece = promotePiece(handPiece.piece);
     if (promotedPiece !== handPiece.piece) {
-      setPromotionPos(row, col);
+      PromotionPosStore.set(row, col);
       return;
     }
   }
@@ -152,7 +150,7 @@ export async function clickSquareHandler(row: number, col: number) {
     getGrid(),
     handPiecePos,
     { row, col },
-    getLastPos()
+    LastPosStore.get()
   );
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);
@@ -167,16 +165,16 @@ export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   if (isSente === isSenteTurn) {
     if (handPiece && !handPiece.position && handPiece.isSente === isSente) {
       resetHandPiece();
-      resetPromotionPos();
+      PromotionPosStore.reset();
     } else {
       setHandPieceFromCaptured(piece, isSente);
       setCanMoveFromCaptured(piece, isSente);
-      resetPromotionPos();
+      PromotionPosStore.reset();
     }
     return;
   }
   resetHandPiece();
-  resetPromotionPos();
+  PromotionPosStore.reset();
 }
 
 export async function clickPromotionHandler(getPromote: boolean) {
@@ -185,7 +183,7 @@ export async function clickPromotionHandler(getPromote: boolean) {
   if (!handPiece) throw new Error("No hand piece selected for promotion.");
   const handPiecePos = handPiece.position;
   if (!handPiecePos) throw new Error("Hand piece is not from a square.");
-  const promotionPos = getPromotionPos();
+  const promotionPos = PromotionPosStore.get();
   if (!promotionPos) throw new Error("No promotion position set.");
   const { row, col } = promotionPos;
   const display =
@@ -193,7 +191,7 @@ export async function clickPromotionHandler(getPromote: boolean) {
       getGrid(),
       handPiecePos,
       { row, col },
-      getLastPos()
+      LastPosStore.get()
     ) + (getPromote ? "成" : "不成");
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);

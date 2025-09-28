@@ -20,28 +20,28 @@ export class CanMoveStore {
 
 let promotionPos = $state(null) as { row: number; col: number } | null;
 
-export function getPromotionPos(): { row: number; col: number } | null {
-  return promotionPos;
-}
-
-export function setPromotionPos(row: number, col: number) {
-  promotionPos = { row, col };
-}
-
-export function resetPromotionPos() {
-  promotionPos = null;
+export class PromotionPosStore {
+  static get(): { row: number; col: number } | null {
+    return promotionPos;
+  }
+  static set(row: number, col: number) {
+    promotionPos = { row, col };
+  }
+  static reset() {
+    promotionPos = null;
+  }
 }
 
 let lastPos = $state(null) as { row: number; col: number } | null;
 
-export function getLastPos(): { row: number; col: number } | null {
-  return lastPos;
-}
-
-export function setLastPos(row: number, col: number) {
-  lastPos = { row, col };
-}
-
-export function resetLastPos() {
-  lastPos = null;
+export class LastPosStore {
+  static get(): { row: number; col: number } | null {
+    return lastPos;
+  }
+  static set(row: number, col: number) {
+    lastPos = { row, col };
+  }
+  static reset() {
+    lastPos = null;
+  }
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getDisplayMoveFromMoveStr } from "@/domain/display";
-  import { getLastPos } from "@/store/play-game.svelte";
+  import { LastPosStore } from "@/store/play-game.svelte";
   import { getGrid, getIsSenteTurn } from "@/store/game-board.svelte";
   import { executeMove } from "@/handler/execute-move";
   import { getCurFavorite } from "@/handler/favorite-moves";
@@ -31,7 +31,7 @@
   >
     {#if moveCount > 0}
       {@const grid = getGrid()}
-      {@const lastPos = getLastPos()}
+      {@const lastPos = LastPosStore.get()}
       {#each favoriteMoves as move}
         {@const display = getDisplayMoveFromMoveStr(
           grid,
