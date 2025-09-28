@@ -124,10 +124,6 @@ export function getIsSenteTurn(): boolean {
   return isSenteTurn;
 }
 
-export function toggleTurn() {
-  isSenteTurn = !isSenteTurn;
-}
-
 export function setIsSenteTurn(isSente: boolean) {
   isSenteTurn = isSente;
 }

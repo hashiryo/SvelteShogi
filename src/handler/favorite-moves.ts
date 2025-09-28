@@ -21,19 +21,13 @@ export async function fetchAndSetFavoriteMoves(
   isSente: boolean,
   sfenx: string
 ) {
-  if (isSente) {
-    // ToDo: user?.id を使うようにする
-    if (!getFavoriteMoves(sfenx)) {
-      const moves = await fetchFavoriteMoves(sfenx);
-      setFavoriteMoves(sfenx, moves);
-    }
-  } else {
-    const adjustSfenx = flipSfenx(sfenx);
-    // ToDo: user?.id を使うようにする
-    if (!getFavoriteMoves(adjustSfenx)) {
-      const moves = await fetchFavoriteMoves(adjustSfenx);
-      setFavoriteMoves(adjustSfenx, moves.map(flipMove));
-    }
+  if (!isSente) {
+    sfenx = flipSfenx(sfenx);
+  }
+  // ToDo: user?.id を使うようにする
+  if (!getFavoriteMoves(sfenx)) {
+    const moves = await fetchFavoriteMoves(sfenx);
+    setFavoriteMoves(sfenx, moves);
   }
 }
 

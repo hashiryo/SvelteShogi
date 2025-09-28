@@ -15,8 +15,8 @@ import {
   incrementCaptured,
   resetHandPiece,
   resetSquare,
+  setIsSenteTurn,
   setSquare,
-  toggleTurn,
 } from "@/store/game-board.svelte";
 import {
   getCurrentIndex,
@@ -120,7 +120,6 @@ export async function executeMove(display: string, move: string) {
     setLastPos(row, col);
   }
 
-  toggleTurn();
   resetCanMoveAll();
   resetPromotionPos();
   resetHandPiece();
@@ -135,4 +134,6 @@ export async function executeMove(display: string, move: string) {
 
   setBranches(getCurrentIndex());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
+
+  setIsSenteTurn(!isSente);
 }
