@@ -10,7 +10,7 @@
 
   let moveStatistics = $derived.by(() => {
     const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
-    const stats = getCurrentStatistics(isSente, sfenx);
+    return getCurrentStatistics(isSente, sfenx);
   });
 
   // 表示件数
