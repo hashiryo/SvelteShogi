@@ -3,8 +3,11 @@ import { MoveStatisticsRepository } from "@/lib/supabase/move-statistics";
 import { MoveStatisticsStore } from "@/store/move-statistics.svelte";
 import type { MoveStatistics } from "@/types/shogi";
 
-export function getCurrentStatistics(isSente: boolean, sfenx: string) {
-  return isSente
+export function getCurrentStatistics(
+  isSente: boolean,
+  sfenx: string
+): MoveStatistics[] {
+  const stats = isSente
     ? MoveStatisticsStore.get(sfenx) || []
     : (MoveStatisticsStore.get(flipSfenx(sfenx)) || []).map((dat) => {
         return {
@@ -12,6 +15,12 @@ export function getCurrentStatistics(isSente: boolean, sfenx: string) {
           move: flipMove(dat.move),
         };
       });
+  // 勝率の高い順にソート（同率の場合は出現回数の多い順）
+  return stats.sort((a, b) => {
+    return a.winRate !== b.winRate
+      ? b.winRate - a.winRate
+      : b.apparentCount - a.apparentCount;
+  });
 }
 
 export async function fetchAndSetMoveStatistics(
