@@ -12,6 +12,7 @@ import {
 } from "@/store/kifu-node.svelte";
 import { CanMoveStore } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves } from "./favorite-moves";
+import { fetchAndSetMoveStatistics } from "./move-statistics";
 
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   NodesStore.reset();
@@ -26,6 +27,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   HandPieceStore.reset();
   IsSenteTurnStore.set(isSente);
   await fetchAndSetFavoriteMoves(isSente, sfenx);
+  await fetchAndSetMoveStatistics(isSente, sfenx);
 }
 
 export async function initialize() {

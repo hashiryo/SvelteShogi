@@ -19,8 +19,12 @@ import {
   PromotionPosStore,
   LastPosStore,
 } from "@/store/play-game.svelte";
-import { fetchAndSetFavoriteMoves, getCurFavorite } from "./favorite-moves";
+import {
+  fetchAndSetFavoriteMoves,
+  getCurrentFavorites,
+} from "./favorite-moves";
 import { originalPiece, promotePiece } from "@/domain/shogi-rule";
+import { fetchAndSetMoveStatistics } from "./move-statistics";
 
 function pushOrJumpToKifu(
   display: string,
@@ -48,7 +52,7 @@ function pushOrJumpToKifu(
     NodesStore.setBranchNode(curNextIndex, newIndex);
   }
 
-  const moves = getCurFavorite(currentNode.isSente, currentNode.sfenx);
+  const moves = getCurrentFavorites(currentNode.isSente, currentNode.sfenx);
   const isFavorite = moves ? moves.includes(move) : false;
 
   NodesStore.push(
@@ -111,5 +115,6 @@ export async function executeMove(display: string, move: string) {
 
   BranchesStore.set(CurrentIndexStore.get());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
+  await fetchAndSetMoveStatistics(!isSente, sfenx);
   IsSenteTurnStore.set(!isSente);
 }
