@@ -7,7 +7,7 @@ import {
 import {
   setCurrentIndex,
   getNode,
-  setBranches,
+  BranchesStore,
   setChildNode,
   getCurrentIndex,
 } from "@/store/kifu-node.svelte";
@@ -38,7 +38,7 @@ function setCurrentNode(nodeIndex: number) {
 export function jumpToKifu(nodeIndex: number) {
   setCurrentNode(nodeIndex);
   setIsSenteTurn(getNode(nodeIndex).isSente);
-  setBranches(nodeIndex);
+  BranchesStore.set(nodeIndex);
 }
 
 export function switchBranch(nodeIndex: number) {

@@ -63,14 +63,16 @@ export function setFavorite(index: number, isFavorite: boolean) {
 
 let branches: number[] = $state([]);
 
-export function getBranches() {
-  return branches;
-}
-export function setBranches(baseNodeIndex: number) {
-  let cur = baseNodeIndex;
-  branches = [];
-  do {
-    branches.push(cur);
-    cur = nodes[cur].br_next;
-  } while (cur !== baseNodeIndex);
+export class BranchesStore {
+  static get() {
+    return branches;
+  }
+  static set(baseNodeIndex: number) {
+    let cur = baseNodeIndex;
+    branches = [];
+    do {
+      branches.push(cur);
+      cur = nodes[cur].br_next;
+    } while (cur !== baseNodeIndex);
+  }
 }

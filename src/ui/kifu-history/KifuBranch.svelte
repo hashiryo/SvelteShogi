@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    getBranches,
+    BranchesStore,
     getCurrentIndex,
     getNode,
   } from "@/store/kifu-node.svelte";
@@ -9,12 +9,13 @@
 
   let containerRef: HTMLDivElement;
 
+  let branches = $derived(BranchesStore.get());
+  let branchesCount = $derived(branches.length);
+
   // 自動スクロール
   $effect(() => {
     const currentIndex = getCurrentIndex();
-    const ids = getBranches();
-    const currentPos = ids.indexOf(currentIndex);
-
+    const currentPos = branches.indexOf(currentIndex);
     if (currentPos !== -1 && containerRef) {
       const currentItem = containerRef.children[currentPos] as HTMLElement;
       currentItem?.scrollIntoView({
@@ -56,9 +57,12 @@
     <div class="kifu-branch-keyboard-hint">
       <kbd>Space</kbd>
     </div>
+    {#if branchesCount > 1}
+      <span class="count-badge">({branchesCount}件)</span>
+    {/if}
   </div>
   <div class="kifu-branch-list" role="listbox" bind:this={containerRef}>
-    {#each getBranches() as id, index}
+    {#each branches as id}
       {@const node = getNode(id)}
       <div
         class="kifu-branch-item"

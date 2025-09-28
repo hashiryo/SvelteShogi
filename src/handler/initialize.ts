@@ -8,7 +8,7 @@ import {
 import {
   pushKifuNode,
   resetNodes,
-  setBranches,
+  BranchesStore,
   setCurrentIndex,
 } from "@/store/kifu-node.svelte";
 import { CanMoveStore } from "@/store/play-game.svelte";
@@ -18,7 +18,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetNodes();
   pushKifuNode("初期局面", sfenx, -1, 0, isSente, "", false);
   setCurrentIndex(0);
-  setBranches(0);
+  BranchesStore.set(0);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
   setGrid(grid);
   setCaptured(true, capturedSente);

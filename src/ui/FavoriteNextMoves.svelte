@@ -75,15 +75,6 @@
     border-radius: 4px;
   }
 
-  .count-badge {
-    background-color: #2196f3;
-    color: white;
-    font-size: 10px;
-    padding: 1px 4px;
-    border-radius: 8px;
-    font-weight: 500;
-  }
-
   .favorite-next-moves-list {
     padding: 0px 8px 0 8px;
     height: 100px;

@@ -87,6 +87,15 @@ button:focus-visible {
   gap: 8px;
 }
 
+.count-badge {
+  background-color: #2196f3;
+  color: white;
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
 kbd {
   background: #ccc;
   border-radius: 4px;

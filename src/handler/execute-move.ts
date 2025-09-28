@@ -20,7 +20,7 @@ import {
   getNode,
   getNodesSize,
   pushKifuNode,
-  setBranches,
+  BranchesStore,
   setBranchNode,
   setChildNode,
   setCurrentIndex,
@@ -121,7 +121,7 @@ export async function executeMove(display: string, move: string) {
   );
   pushOrJumpToKifu(display, sfenx, !isSente, move);
 
-  setBranches(getCurrentIndex());
+  BranchesStore.set(getCurrentIndex());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
   setIsSenteTurn(!isSente);
 }
