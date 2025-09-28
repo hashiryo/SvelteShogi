@@ -16,7 +16,7 @@ export function getCurrentStatistics(
         };
       });
   // 勝率の高い順にソート（同率の場合は出現回数の多い順）
-  return stats.sort((a, b) => {
+  return [...stats].sort((a, b) => {
     return a.winRate !== b.winRate
       ? b.winRate - a.winRate
       : b.apparentCount - a.apparentCount;
@@ -48,8 +48,8 @@ export async function fetchAndSetMoveStatistics(
         move,
         apparentCount: apparents,
         winCount: wins,
-        apparentRate: (apparents / total) * 100,
-        winRate: (wins / apparents) * 100,
+        apparentRate: apparents / total,
+        winRate: wins / apparents,
       })
     );
     MoveStatisticsStore.set(sfenx, data);
