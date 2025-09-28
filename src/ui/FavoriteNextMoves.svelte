@@ -23,28 +23,15 @@
     }
   });
 
-  // 表示用の手データ変換
-  let displayMoves = $derived.by((): string[] => {
-    if (favoriteMoves.length === 0) return [];
-
-    // 現在局面の盤面情報を取得
-    const grid = getGrid();
-    const lastPos = getLastPos();
-
-    return favoriteMoves.map((move: string): string =>
-      getDisplayMoveFromMoveStr(grid, move, isSente, lastPos)
-    );
-  });
-
   // 表示件数
-  let displayCount = $derived(displayMoves.length);
+  let moveCount = $derived(favoriteMoves.length);
 </script>
 
 <div class="favorite-next-moves">
   <div class="card-header">
     お気に入りの次の一手
-    {#if displayCount > 0}
-      <span class="count-badge">({displayCount}件)</span>
+    {#if moveCount > 0}
+      <span class="count-badge">({moveCount}件)</span>
     {/if}
   </div>
   <div
@@ -52,14 +39,16 @@
     role="listbox"
     aria-label="お気に入りの次の一手"
   >
-    {#if displayCount > 0}
-      {#each displayMoves as moveData}
+    {#if moveCount > 0}
+      {@const grid = getGrid()}
+      {@const lastPos = getLastPos()}
+      {#each favoriteMoves as move}
         <div class="favorite-next-moves-item" role="listitem">
           <div class="favorite-next-moves-item-favorite">
             <div class="favorite-next-moves-item-favorite-content">★</div>
           </div>
           <div class="favorite-next-moves-item-display">
-            {moveData}
+            {getDisplayMoveFromMoveStr(grid, move, isSente, lastPos)}
           </div>
         </div>
       {/each}

@@ -2,18 +2,12 @@ import type { PieceType } from "@/types/shogi";
 
 import {
   getSquare,
-  setSquare,
-  resetSquare,
   getGrid,
-  incrementCaptured,
-  decrementCaptured,
   getHandPiece,
   setHandPieceFromSquare,
   setHandPieceFromCaptured,
   resetHandPiece,
   getIsSenteTurn,
-  toggleTurn,
-  getCaptured,
 } from "@/store/game-board.svelte";
 
 import {
@@ -25,47 +19,23 @@ import {
   getPromotionPos,
   setPromotionPos,
   resetPromotionPos,
-  setLastPos,
   getLastPos,
 } from "@/store/play-game.svelte";
 
 import {
-  getCurrentIndex,
-  getNode,
-  getNodesSize,
-  pushKifuNode,
-  setBranches,
-  setBranchNode,
-  setChildNode,
-  setCurrentIndex,
-  setFavorite,
-} from "@/store/kifu-node.svelte";
-
-import {
   getPieceMoveVec,
   promotePiece,
-  originalPiece,
   canPromotePos,
 } from "@/domain/shogi-rule";
 
-import {
-  pieceTypeToCharMap,
-  shogiPositionToSfenx,
-  positionToStr,
-  flipSfenx,
-  flipMove,
-} from "@/domain/sfenx";
+import { pieceTypeToCharMap, positionToStr } from "@/domain/sfenx";
 
 import {
   getDisplayMoveFromGrid,
   getDisplayMoveFromCaptured,
 } from "@/domain/display";
-import {
-  getFavoriteMoves,
-  setFavoriteMoves,
-} from "@/store/favorite-moves.svelte";
-import { fetchFavoriteMoves } from "@/lib/supabase/favorite-moves";
-import { fetchAndSetFavoriteMoves } from "./favorite-moves";
+
+import { executeMove } from "./execute-move";
 
 function setCanMoveFromSquare(row: number, col: number) {
   resetCanMoveAll();
@@ -131,72 +101,6 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   }
 }
 
-async function pushOrJumpToKifu(
-  display: string,
-  sfenx: string,
-  isSenteNext: boolean,
-  move: string
-) {
-  const currentIndex = getCurrentIndex();
-  const newIndex = getNodesSize();
-  const currentNode = getNode(currentIndex);
-  const curNextIndex = currentNode.next;
-  let br_next = newIndex;
-  if (curNextIndex !== -1) {
-    let cur = curNextIndex;
-    do {
-      const node = getNode(cur);
-      if (node.display === display) {
-        setChildNode(currentIndex, cur);
-        setCurrentIndex(cur);
-        return;
-      }
-      cur = node.br_next;
-    } while (cur !== curNextIndex);
-    br_next = getNode(curNextIndex).br_next;
-    setBranchNode(curNextIndex, newIndex);
-  }
-
-  let isFavorite = false;
-  // ここではすでに favorite は取得されているはず
-  // ToDo: もし以前のタイミングで favorite が取得できてなかった場合、ここで再取得する
-  if (isSenteNext) {
-    const moves = getFavoriteMoves(flipSfenx(currentNode.sfenx));
-    isFavorite = moves ? moves.includes(flipMove(move)) : false;
-  } else {
-    const moves = getFavoriteMoves(currentNode.sfenx);
-    isFavorite = moves ? moves.includes(move) : false;
-  }
-  pushKifuNode(
-    display,
-    sfenx,
-    currentIndex,
-    br_next,
-    isSenteNext,
-    move,
-    isFavorite
-  );
-  setChildNode(currentIndex, newIndex);
-  setCurrentIndex(newIndex);
-}
-
-async function turnEnd(display: string, move: string) {
-  toggleTurn();
-  resetCanMoveAll();
-  resetPromotionPos();
-  resetHandPiece();
-  resetPromotionPos();
-  const sfenx = shogiPositionToSfenx(
-    getGrid(),
-    getCaptured(true),
-    getCaptured(false)
-  );
-  const isSente = getIsSenteTurn();
-  await pushOrJumpToKifu(display, sfenx, isSente, move);
-  setBranches(getCurrentIndex());
-  fetchAndSetFavoriteMoves(isSente, sfenx);
-}
-
 export async function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);
   const square = getSquare(row, col);
@@ -236,11 +140,8 @@ export async function clickSquareHandler(row: number, col: number) {
       handPiece.piece,
       isSenteTurn
     );
-    setSquare(row, col, handPiece.piece, handPiece.isSente);
-    decrementCaptured(handPiece.piece, handPiece.isSente);
-    const ts = positionToStr(row, col);
-    setLastPos(row, col);
-    await turnEnd(display, `${pieceTypeToCharMap[handPiece.piece]}*${ts}`);
+    const move = `${pieceTypeToCharMap[handPiece.piece]}*${positionToStr(row, col)}`;
+    await executeMove(display, move);
     return;
   }
 
@@ -251,27 +152,15 @@ export async function clickSquareHandler(row: number, col: number) {
       return;
     }
   }
-
-  const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
-  if (!fromSquare)
-    throw new Error(
-      `Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`
-    );
-  if (square) {
-    incrementCaptured(originalPiece(square.piece), !square.isSente);
-  }
   const display = getDisplayMoveFromGrid(
     getGrid(),
     handPiecePos,
     { row, col },
     getLastPos()
   );
-  resetSquare(handPiecePos.row, handPiecePos.col);
-  setSquare(row, col, fromSquare.piece, fromSquare.isSente);
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);
-  setLastPos(row, col);
-  await turnEnd(display, `${fs}${ts}`);
+  await executeMove(display, `${fs}${ts}`);
   return;
 }
 
@@ -303,15 +192,6 @@ export async function clickPromotionHandler(getPromote: boolean) {
   const promotionPos = getPromotionPos();
   if (!promotionPos) throw new Error("No promotion position set.");
   const { row, col } = promotionPos;
-  const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
-  if (!fromSquare)
-    throw new Error(
-      `Square at (${handPiecePos.row}, ${handPiecePos.col}) does not exist.`
-    );
-  const square = getSquare(row, col);
-  if (square) {
-    incrementCaptured(originalPiece(square.piece), !square.isSente);
-  }
   const display =
     getDisplayMoveFromGrid(
       getGrid(),
@@ -319,15 +199,7 @@ export async function clickPromotionHandler(getPromote: boolean) {
       { row, col },
       getLastPos()
     ) + (getPromote ? "成" : "不成");
-  resetSquare(handPiecePos.row, handPiecePos.col);
-  setSquare(
-    row,
-    col,
-    getPromote ? promotePiece(fromSquare.piece) : fromSquare.piece,
-    fromSquare.isSente
-  );
   const fs = positionToStr(handPiecePos.row, handPiecePos.col);
   const ts = positionToStr(row, col);
-  setLastPos(row, col);
-  await turnEnd(display, `${fs}${ts}${getPromote ? "+" : ""}`);
+  await executeMove(display, `${fs}${ts}${getPromote ? "+" : ""}`);
 }

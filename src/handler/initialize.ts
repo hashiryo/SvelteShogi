@@ -31,7 +31,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetCanMoveAll();
   resetHandPiece();
   setIsSenteTurn(isSente);
-  fetchAndSetFavoriteMoves(isSente, sfenx);
+  await fetchAndSetFavoriteMoves(isSente, sfenx);
 }
 
 export async function initialize() {
