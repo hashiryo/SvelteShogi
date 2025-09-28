@@ -1,13 +1,10 @@
 import type { PieceType } from "@/types/shogi";
 
 import {
+  IsSenteTurn,
   getSquare,
   getGrid,
-  getHandPiece,
-  setHandPieceFromSquare,
-  setHandPieceFromCaptured,
-  resetHandPiece,
-  getIsSenteTurn,
+  HandPieceStore,
 } from "@/store/game-board.svelte";
 
 import {
@@ -98,11 +95,11 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
 export async function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);
   const square = getSquare(row, col);
-  const handPiece = getHandPiece();
-  const isSenteTurn = getIsSenteTurn();
+  const handPiece = HandPieceStore.get();
+  const isSenteTurn = IsSenteTurn.get();
   if (!handPiece) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(square.piece, square.isSente, { row, col });
+      HandPieceStore.setFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);
       PromotionPosStore.reset();
     }
@@ -110,17 +107,17 @@ export async function clickSquareHandler(row: number, col: number) {
   }
   const handPiecePos = handPiece.position;
   if (handPiecePos && handPiecePos.row === row && handPiecePos.col === col) {
-    resetHandPiece();
+    HandPieceStore.reset();
     PromotionPosStore.reset();
     return;
   }
   if (!CanMoveStore.get(row, col)) {
     if (square && square.isSente === isSenteTurn) {
-      setHandPieceFromSquare(square.piece, square.isSente, { row, col });
+      HandPieceStore.setFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);
       PromotionPosStore.reset();
     } else {
-      resetHandPiece();
+      HandPieceStore.reset();
       PromotionPosStore.reset();
     }
     return;
@@ -160,26 +157,26 @@ export async function clickSquareHandler(row: number, col: number) {
 
 export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   console.log(`clickCapturedHandler: piece=${piece}, isSente=${isSente}`);
-  const handPiece = getHandPiece();
-  const isSenteTurn = getIsSenteTurn();
+  const handPiece = HandPieceStore.get();
+  const isSenteTurn = IsSenteTurn.get();
   if (isSente === isSenteTurn) {
     if (handPiece && !handPiece.position && handPiece.isSente === isSente) {
-      resetHandPiece();
+      HandPieceStore.reset();
       PromotionPosStore.reset();
     } else {
-      setHandPieceFromCaptured(piece, isSente);
+      HandPieceStore.setFromCaptured(piece, isSente);
       setCanMoveFromCaptured(piece, isSente);
       PromotionPosStore.reset();
     }
     return;
   }
-  resetHandPiece();
+  HandPieceStore.reset();
   PromotionPosStore.reset();
 }
 
 export async function clickPromotionHandler(getPromote: boolean) {
   console.log(`clickPromotionHandler: getPromote=${getPromote}`);
-  const handPiece = getHandPiece();
+  const handPiece = HandPieceStore.get();
   if (!handPiece) throw new Error("No hand piece selected for promotion.");
   const handPiecePos = handPiece.position;
   if (!handPiecePos) throw new Error("Hand piece is not from a square.");

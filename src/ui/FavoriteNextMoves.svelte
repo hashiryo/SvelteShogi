@@ -1,12 +1,12 @@
 <script lang="ts">
   import { getDisplayMoveFromMoveStr } from "@/domain/display";
   import { LastPosStore } from "@/store/play-game.svelte";
-  import { getGrid, getIsSenteTurn } from "@/store/game-board.svelte";
+  import { getGrid, IsSenteTurn } from "@/store/game-board.svelte";
   import { executeMove } from "@/handler/execute-move";
   import { getCurFavorite } from "@/handler/favorite-moves";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
 
-  let isSente = $derived(getIsSenteTurn());
+  let isSente = $derived(IsSenteTurn.get());
 
   let favoriteMoves = $derived.by(() => {
     const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());

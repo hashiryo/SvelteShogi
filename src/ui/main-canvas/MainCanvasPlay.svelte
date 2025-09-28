@@ -14,7 +14,7 @@
     clickCapturedHandler,
     clickPromotionHandler,
   } from "@/handler/play-shogi";
-  import { getHandPiece } from "@/store/game-board.svelte";
+  import { HandPieceStore } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { getCurFavorite } from "@/handler/favorite-moves";
   import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
@@ -227,7 +227,7 @@
     />
   </div>
   {#if squareElements.length > 0 && canvasElement}
-    {@const handPiece = getHandPiece()}
+    {@const handPiece = HandPieceStore.get()}
     {#if handPiece}
       <div class="can-move">
         {#each { length: 9 }, row}

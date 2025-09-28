@@ -7,7 +7,7 @@
   import {
     getSquare,
     getCaptured,
-    getHandPiece,
+    HandPieceStore,
   } from "@/store/game-board.svelte";
 
   // --- 状態 (State) ---
@@ -34,7 +34,7 @@
     },
   } = $props();
 
-  let handPiece = $derived(getHandPiece());
+  let handPiece = $derived(HandPieceStore.get());
 
   // 3. ボード全体のコンテナ要素とその座標
   let gameBoardElement: HTMLDivElement | undefined = $state();

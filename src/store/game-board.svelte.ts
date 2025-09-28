@@ -98,32 +98,32 @@ export function decrementCaptured(piece: PieceType, isSente: boolean) {
 
 let handPiece: HandPieceFrom | null = $state(null);
 
-export function setHandPieceFromSquare(
-  piece: PieceType,
-  isSente: boolean,
-  position: { row: number; col: number } | null
-) {
-  handPiece = { piece, isSente, position };
-}
-
-export function setHandPieceFromCaptured(piece: PieceType, isSente: boolean) {
-  handPiece = { piece, isSente, position: null };
-}
-
-export function resetHandPiece() {
-  handPiece = null;
-}
-
-export function getHandPiece(): HandPieceFrom | null {
-  return handPiece;
+export class HandPieceStore {
+  static get(): HandPieceFrom | null {
+    return handPiece;
+  }
+  static reset() {
+    handPiece = null;
+  }
+  static setFromSquare(
+    piece: PieceType,
+    isSente: boolean,
+    position: { row: number; col: number }
+  ) {
+    handPiece = { piece, isSente, position };
+  }
+  static setFromCaptured(piece: PieceType, isSente: boolean) {
+    handPiece = { piece, isSente, position: null };
+  }
 }
 
 let isSenteTurn = $state(true);
 
-export function getIsSenteTurn(): boolean {
-  return isSenteTurn;
-}
-
-export function setIsSenteTurn(isSente: boolean) {
-  isSenteTurn = isSente;
+export class IsSenteTurn {
+  static get(): boolean {
+    return isSenteTurn;
+  }
+  static set(isSente: boolean) {
+    isSenteTurn = isSente;
+  }
 }

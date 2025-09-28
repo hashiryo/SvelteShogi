@@ -4,15 +4,14 @@ import {
   strToPosition,
 } from "@/domain/sfenx";
 import {
+  IsSenteTurn,
   decrementCaptured,
   getCaptured,
   getGrid,
-  getIsSenteTurn,
   getSquare,
   incrementCaptured,
-  resetHandPiece,
+  HandPieceStore,
   resetSquare,
-  setIsSenteTurn,
   setSquare,
 } from "@/store/game-board.svelte";
 import {
@@ -71,7 +70,7 @@ function pushOrJumpToKifu(
 }
 
 export async function executeMove(display: string, move: string) {
-  const isSente = getIsSenteTurn();
+  const isSente = IsSenteTurn.get();
 
   const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
   if (match1) {
@@ -106,7 +105,7 @@ export async function executeMove(display: string, move: string) {
 
   CanMoveStore.resetAll();
   PromotionPosStore.reset();
-  resetHandPiece();
+  HandPieceStore.reset();
 
   const sfenx = shogiPositionToSfenx(
     getGrid(),
@@ -117,5 +116,5 @@ export async function executeMove(display: string, move: string) {
 
   BranchesStore.set(CurrentIndexStore.get());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
-  setIsSenteTurn(!isSente);
+  IsSenteTurn.set(!isSente);
 }

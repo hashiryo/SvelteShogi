@@ -1,9 +1,9 @@
 import { sfenxToShogiPosition } from "@/domain/sfenx";
 import {
-  resetHandPiece,
+  IsSenteTurn,
+  HandPieceStore,
   setCaptured,
   setGrid,
-  setIsSenteTurn,
 } from "@/store/game-board.svelte";
 import {
   CurrentIndexStore,
@@ -23,8 +23,8 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   setCaptured(true, capturedSente);
   setCaptured(false, capturedGote);
   CanMoveStore.resetAll();
-  resetHandPiece();
-  setIsSenteTurn(isSente);
+  HandPieceStore.reset();
+  IsSenteTurn.set(isSente);
   await fetchAndSetFavoriteMoves(isSente, sfenx);
 }
 

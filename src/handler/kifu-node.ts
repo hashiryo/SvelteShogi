@@ -1,8 +1,8 @@
 import {
+  IsSenteTurn,
   setGrid,
   setCaptured,
-  setIsSenteTurn,
-  resetHandPiece,
+  HandPieceStore,
 } from "@/store/game-board.svelte";
 import {
   CurrentIndexStore,
@@ -30,12 +30,12 @@ function setCurrentNode(nodeIndex: number) {
   }
   CurrentIndexStore.set(nodeIndex);
   CanMoveStore.resetAll();
-  resetHandPiece();
+  HandPieceStore.reset();
 }
 
 export function jumpToKifu(nodeIndex: number) {
   setCurrentNode(nodeIndex);
-  setIsSenteTurn(NodesStore.getNode(nodeIndex).isSente);
+  IsSenteTurn.set(NodesStore.getNode(nodeIndex).isSente);
   BranchesStore.set(nodeIndex);
 }
 
