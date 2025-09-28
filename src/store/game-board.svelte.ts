@@ -2,28 +2,27 @@ import type { PieceType, Square, HandPieceFrom } from "@/types/shogi";
 
 let grid: (Square | null)[] = $state([]);
 
-export function getSquare(row: number, col: number): Square | null {
-  return grid[row * 9 + col];
-}
-
-export function setSquare(
-  row: number,
-  col: number,
-  piece: PieceType,
-  isSente: boolean
-) {
-  grid[row * 9 + col] = { piece, isSente };
-}
-
-export function resetSquare(row: number, col: number) {
-  grid[row * 9 + col] = null;
-}
-
-export function getGrid(): (Square | null)[] {
-  return grid;
-}
-export function setGrid(newGrid: (Square | null)[]) {
-  grid = newGrid;
+export class GridStore {
+  static get(): (Square | null)[] {
+    return grid;
+  }
+  static set(newGrid: (Square | null)[]) {
+    grid = newGrid;
+  }
+  static getSquare(row: number, col: number): Square | null {
+    return grid[row * 9 + col];
+  }
+  static setSquare(
+    row: number,
+    col: number,
+    piece: PieceType,
+    isSente: boolean
+  ) {
+    grid[row * 9 + col] = { piece, isSente };
+  }
+  static resetSquare(row: number, col: number) {
+    grid[row * 9 + col] = null;
+  }
 }
 
 let capturedSente: { piece: PieceType; num: number }[] = $state([]);
@@ -119,7 +118,7 @@ export class HandPieceStore {
 
 let isSenteTurn = $state(true);
 
-export class IsSenteTurn {
+export class IsSenteTurnStore {
   static get(): boolean {
     return isSenteTurn;
   }

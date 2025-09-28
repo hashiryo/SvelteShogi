@@ -1,6 +1,6 @@
 import {
-  IsSenteTurn,
-  setGrid,
+  IsSenteTurnStore,
+  GridStore,
   setCaptured,
   HandPieceStore,
 } from "@/store/game-board.svelte";
@@ -19,7 +19,7 @@ function setCurrentNode(nodeIndex: number) {
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
   );
-  setGrid(grid);
+  GridStore.set(grid);
   setCaptured(true, capturedSente);
   setCaptured(false, capturedGote);
   if (node.move) {
@@ -35,7 +35,7 @@ function setCurrentNode(nodeIndex: number) {
 
 export function jumpToKifu(nodeIndex: number) {
   setCurrentNode(nodeIndex);
-  IsSenteTurn.set(NodesStore.getNode(nodeIndex).isSente);
+  IsSenteTurnStore.set(NodesStore.getNode(nodeIndex).isSente);
   BranchesStore.set(nodeIndex);
 }
 

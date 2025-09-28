@@ -1,9 +1,8 @@
 import type { PieceType } from "@/types/shogi";
 
 import {
-  IsSenteTurn,
-  getSquare,
-  getGrid,
+  IsSenteTurnStore,
+  GridStore,
   HandPieceStore,
 } from "@/store/game-board.svelte";
 
@@ -30,7 +29,7 @@ import { executeMove } from "./execute-move";
 
 function setCanMoveFromSquare(row: number, col: number) {
   CanMoveStore.resetAll();
-  const square = getSquare(row, col);
+  const square = GridStore.getSquare(row, col);
   if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
   const vec = getPieceMoveVec(square.piece);
   for (const { r, c, slide } of vec) {
@@ -39,7 +38,7 @@ function setCanMoveFromSquare(row: number, col: number) {
     let nr = row + rv;
     let nc = col + cv;
     while (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
-      const targetSquare = getSquare(nr, nc);
+      const targetSquare = GridStore.getSquare(nr, nc);
       if (targetSquare) {
         if (targetSquare.isSente !== square.isSente) {
           CanMoveStore.set(nr, nc); // Can capture opponent's piece
@@ -60,7 +59,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
   const vec = getPieceMoveVec(piece);
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
-      if (getSquare(r, c)) CanMoveStore.reset(r, c); // Reset canMove for occupied squares
+      if (GridStore.getSquare(r, c)) CanMoveStore.reset(r, c); // Reset canMove for occupied squares
     }
   }
   if (piece === "歩") {
@@ -68,7 +67,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
       CanMoveStore.reset(isSente ? 0 : 8, c); // Place pawn on the first or last row
       let nifu = false;
       for (let r = 0; r < 9; r++) {
-        const square = getSquare(r, c);
+        const square = GridStore.getSquare(r, c);
         if (square && square.isSente === isSente) {
           if (square.piece === "歩") {
             nifu = true; // Found another pawn in the same column
@@ -94,9 +93,9 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
 
 export async function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);
-  const square = getSquare(row, col);
+  const square = GridStore.getSquare(row, col);
   const handPiece = HandPieceStore.get();
-  const isSenteTurn = IsSenteTurn.get();
+  const isSenteTurn = IsSenteTurnStore.get();
   if (!handPiece) {
     if (square && square.isSente === isSenteTurn) {
       HandPieceStore.setFromSquare(square.piece, square.isSente, { row, col });
@@ -125,7 +124,7 @@ export async function clickSquareHandler(row: number, col: number) {
 
   if (!handPiecePos) {
     const display = getDisplayMoveFromCaptured(
-      getGrid(),
+      GridStore.get(),
       row,
       col,
       handPiece.piece,
@@ -144,7 +143,7 @@ export async function clickSquareHandler(row: number, col: number) {
     }
   }
   const display = getDisplayMoveFromGrid(
-    getGrid(),
+    GridStore.get(),
     handPiecePos,
     { row, col },
     LastPosStore.get()
@@ -158,7 +157,7 @@ export async function clickSquareHandler(row: number, col: number) {
 export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   console.log(`clickCapturedHandler: piece=${piece}, isSente=${isSente}`);
   const handPiece = HandPieceStore.get();
-  const isSenteTurn = IsSenteTurn.get();
+  const isSenteTurn = IsSenteTurnStore.get();
   if (isSente === isSenteTurn) {
     if (handPiece && !handPiece.position && handPiece.isSente === isSente) {
       HandPieceStore.reset();
@@ -185,7 +184,7 @@ export async function clickPromotionHandler(getPromote: boolean) {
   const { row, col } = promotionPos;
   const display =
     getDisplayMoveFromGrid(
-      getGrid(),
+      GridStore.get(),
       handPiecePos,
       { row, col },
       LastPosStore.get()

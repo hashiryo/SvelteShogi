@@ -5,7 +5,7 @@
   import type { PieceType } from "@/types/shogi.d.ts";
 
   import {
-    getSquare,
+    GridStore,
     getCaptured,
     HandPieceStore,
   } from "@/store/game-board.svelte";
@@ -108,7 +108,7 @@
         {#each { length: 9 }, row}
           {#each { length: 9 }, col}
             {@const index = row * 9 + col}
-            {@const square = getSquare(row, col)}
+            {@const square = GridStore.getSquare(row, col)}
             {#if square}
               <!-- 駒が存在する場合のみ表示 -->
               <!-- 駒を配置するためのラッパー -->

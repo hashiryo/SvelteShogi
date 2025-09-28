@@ -4,15 +4,12 @@ import {
   strToPosition,
 } from "@/domain/sfenx";
 import {
-  IsSenteTurn,
+  GridStore,
+  IsSenteTurnStore,
   decrementCaptured,
   getCaptured,
-  getGrid,
-  getSquare,
   incrementCaptured,
   HandPieceStore,
-  resetSquare,
-  setSquare,
 } from "@/store/game-board.svelte";
 import {
   CurrentIndexStore,
@@ -70,22 +67,22 @@ function pushOrJumpToKifu(
 }
 
 export async function executeMove(display: string, move: string) {
-  const isSente = IsSenteTurn.get();
+  const isSente = IsSenteTurnStore.get();
 
   const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
   if (match1) {
     const [, fromColStr, fromRowStr, toColStr, toRowStr, prom] = match1;
     const from = strToPosition(`${fromColStr}${fromRowStr}`);
     const to = strToPosition(`${toColStr}${toRowStr}`);
-    const fromSquare = getSquare(from.row, from.col);
+    const fromSquare = GridStore.getSquare(from.row, from.col);
     if (!fromSquare)
       throw new Error(`Square at (${from.row}, ${from.col}) does not exist.`);
-    const toSquare = getSquare(to.row, to.col);
+    const toSquare = GridStore.getSquare(to.row, to.col);
     if (toSquare) {
       incrementCaptured(originalPiece(toSquare.piece), !toSquare.isSente);
     }
-    resetSquare(from.row, from.col);
-    setSquare(
+    GridStore.resetSquare(from.row, from.col);
+    GridStore.setSquare(
       to.row,
       to.col,
       prom ? promotePiece(fromSquare.piece) : fromSquare.piece,
@@ -98,7 +95,7 @@ export async function executeMove(display: string, move: string) {
     const [, pieceChar, toColStr, toRowStr] = match2;
     const { row, col } = strToPosition(`${toColStr}${toRowStr}`);
     const piece = charToPieceTypeMap[pieceChar];
-    setSquare(row, col, piece, isSente);
+    GridStore.setSquare(row, col, piece, isSente);
     decrementCaptured(piece, isSente);
     LastPosStore.set(row, col);
   }
@@ -108,7 +105,7 @@ export async function executeMove(display: string, move: string) {
   HandPieceStore.reset();
 
   const sfenx = shogiPositionToSfenx(
-    getGrid(),
+    GridStore.get(),
     getCaptured(true),
     getCaptured(false)
   );
@@ -116,5 +113,5 @@ export async function executeMove(display: string, move: string) {
 
   BranchesStore.set(CurrentIndexStore.get());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
-  IsSenteTurn.set(!isSente);
+  IsSenteTurnStore.set(!isSente);
 }
