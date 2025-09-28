@@ -3,14 +3,14 @@
   import { LastPosStore } from "@/store/play-game.svelte";
   import { GridStore, IsSenteTurnStore } from "@/store/game-board.svelte";
   import { executeMove } from "@/handler/execute-move";
-  import { getCurFavorite } from "@/handler/favorite-moves";
+  import { getCurrentFavorites } from "@/handler/favorite-moves";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
 
   let isSente = $derived(IsSenteTurnStore.get());
 
   let favoriteMoves = $derived.by(() => {
     const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
-    return getCurFavorite(isSente, sfenx);
+    return getCurrentFavorites(isSente, sfenx);
   });
 
   // 表示件数

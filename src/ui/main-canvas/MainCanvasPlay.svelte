@@ -16,7 +16,7 @@
   } from "@/handler/play-shogi";
   import { HandPieceStore } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
-  import { getCurFavorite } from "@/handler/favorite-moves";
+  import { getCurrentFavorites } from "@/handler/favorite-moves";
   import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
 
   // --- 定数 ---
@@ -105,7 +105,7 @@
 
   let favoriteArrows: FavoriteFrom[] = $derived.by(() => {
     const { isSente, sfenx } = NodesStore.getNode(CurrentIndexStore.get());
-    const moves = getCurFavorite(isSente, sfenx);
+    const moves = getCurrentFavorites(isSente, sfenx);
     return moves.map((move) => {
       const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
       if (match1) {

@@ -4,7 +4,7 @@ import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
 
 import { NodesStore } from "@/store/kifu-node.svelte";
 
-export function getCurFavorite(isSente: boolean, sfenx: string) {
+export function getCurrentFavorites(isSente: boolean, sfenx: string) {
   return isSente
     ? FavoriteMovesStore.get(sfenx) || []
     : (FavoriteMovesStore.get(flipSfenx(sfenx)) || []).map(flipMove);
