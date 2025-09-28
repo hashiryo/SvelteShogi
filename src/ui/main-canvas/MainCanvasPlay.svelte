@@ -40,24 +40,26 @@
   // キャンバス全体のコンテナ要素とその座標
   let canvasElement: HTMLDivElement | undefined = $state();
 
-  function getRelativePosition(element: HTMLDivElement): {
+  function getRelativePosition(element: HTMLDivElement | null): {
     x: number;
     y: number;
   } {
-    const canvasRect = canvasElement?.getBoundingClientRect();
-    if (canvasRect) {
-      const pos = element.getBoundingClientRect();
-      return {
-        x: pos.left - canvasRect.left + pos.width / 2,
-        y: pos.top - canvasRect.top + pos.height / 2,
-      };
+    if (!element || !canvasElement) {
+      return { x: 0, y: 0 };
     }
-    return { x: 0, y: 0 };
+    const canvasRect = canvasElement.getBoundingClientRect();
+    const pos = element.getBoundingClientRect();
+    return {
+      x: pos.left - canvasRect.left + pos.width / 2,
+      y: pos.top - canvasRect.top + pos.height / 2,
+    };
   }
 
   let relativeSquarePositions: { x: number; y: number }[] = $derived(
     (() => {
-      return squareElements.map((el) => getRelativePosition(el));
+      return squareElements.map((el) =>
+        el ? getRelativePosition(el) : { x: 0, y: 0 }
+      );
     })()
   );
 
@@ -68,7 +70,7 @@
     (() => {
       return capturedSenteElements.map(({ piece, element }) => ({
         piece,
-        position: getRelativePosition(element),
+        position: element ? getRelativePosition(element) : { x: 0, y: 0 },
       }));
     })()
   );
@@ -80,7 +82,7 @@
     (() => {
       return capturedGoteElements.map(({ piece, element }) => ({
         piece,
-        position: getRelativePosition(element),
+        position: element ? getRelativePosition(element) : { x: 0, y: 0 },
       }));
     })()
   );
@@ -89,8 +91,8 @@
     (() => {
       const canvasRect = canvasElement?.getBoundingClientRect();
       return squareElements.map((el) => {
+        if (!el || !canvasRect) return { x: 0, y: 0, width: 0, height: 0 };
         const pos = el.getBoundingClientRect();
-        if (!canvasRect) return { x: 0, y: 0, width: 0, height: 0 };
         return {
           x: pos.left - canvasRect.left,
           y: pos.top - canvasRect.top,

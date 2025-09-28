@@ -1,21 +1,27 @@
 <script lang="ts">
-  import StatisticsArrow from './StatisticsArrow.svelte';
-  import { fade} from 'svelte/transition';
-  import type { PieceType, StatisticsFrom } from '@/types/shogi.d.ts';
+  import StatisticsArrow from "./StatisticsArrow.svelte";
+  import { fade } from "svelte/transition";
+  import type { PieceType, StatisticsFrom } from "@/types/shogi.d.ts";
 
   let {
-    relativeSquarePositions = [] as { x: number, y: number }[],
-    relativeCapturedSentePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
-    relativeCapturedGotePositions = [] as { piece: PieceType; position: { x: number; y: number } }[],
+    relativeSquarePositions = [] as { x: number; y: number }[],
+    relativeCapturedSentePositions = [] as {
+      piece: PieceType;
+      position: { x: number; y: number };
+    }[],
+    relativeCapturedGotePositions = [] as {
+      piece: PieceType;
+      position: { x: number; y: number };
+    }[],
     arrows = [] as StatisticsFrom[],
   } = $props();
 
-  function getColorFromRate(rate: number): { r: number, g: number, b: number } {
+  function getColorFromRate(rate: number): { r: number; g: number; b: number } {
     if (rate < 0.5) {
       const r = Math.floor(255 * rate * 2);
       const g = Math.floor(255 * rate * 2);
       return { r, g, b: 255 }; // 青色から白色へのグラデーション
-    }else{
+    } else {
       const g = Math.floor(255 * (1 - rate) * 2);
       const b = Math.floor(255 * (1 - rate) * 2);
       return { r: 255, g, b }; // 赤色から白色へのグラデーション
@@ -23,42 +29,90 @@
   }
 
   function getStartEndPositions(arrow: StatisticsFrom) {
-    if ('startRow' in arrow && 'startCol' in arrow) {
+    if ("startRow" in arrow && "startCol" in arrow) {
       // FromSquare
+      const startIndex = arrow.startRow * 9 + arrow.startCol;
+      const endIndex = arrow.endRow * 9 + arrow.endCol;
+
+      if (
+        startIndex >= relativeSquarePositions.length ||
+        endIndex >= relativeSquarePositions.length
+      ) {
+        return {
+          startX: 0,
+          startY: 0,
+          endX: 0,
+          endY: 0,
+          width: 30,
+          color: { r: 255, g: 255, b: 255 },
+          info: "",
+        };
+      }
+
       return {
-        startX: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].x,
-        startY: relativeSquarePositions[arrow.startRow * 9 + arrow.startCol].y,
-        endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
-        endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
+        startX: relativeSquarePositions[startIndex].x,
+        startY: relativeSquarePositions[startIndex].y,
+        endX: relativeSquarePositions[endIndex].x,
+        endY: relativeSquarePositions[endIndex].y,
         width: arrow.apparentRate * 30, // 矢印の太さをアピアレントレートに基づいて調整
         color: getColorFromRate(arrow.winRate),
-        info: `出現率${arrow.apparentRate.toFixed(2)} 勝率: ${arrow.winRate.toFixed(2)}`
+        info: `出現率${arrow.apparentRate.toFixed(2)} 勝率: ${arrow.winRate.toFixed(2)}`,
       };
     } else {
       // FromCaptured
-      const position = arrow.is_sente ? relativeCapturedSentePositions.find(p => p.piece === arrow.piece) : relativeCapturedGotePositions.find(p => p.piece === arrow.piece);
+      const position = arrow.is_sente
+        ? relativeCapturedSentePositions.find((p) => p.piece === arrow.piece)
+        : relativeCapturedGotePositions.find((p) => p.piece === arrow.piece);
+      const endIndex = arrow.endRow * 9 + arrow.endCol;
+
+      if (endIndex >= relativeSquarePositions.length) {
+        return {
+          startX: 0,
+          startY: 0,
+          endX: 0,
+          endY: 0,
+          width: 30,
+          color: { r: 255, g: 255, b: 255 },
+          info: "",
+        };
+      }
+
       if (position) {
         return {
           startX: position.position.x,
           startY: position.position.y,
-          endX: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].x,
-          endY: relativeSquarePositions[arrow.endRow * 9 + arrow.endCol].y,
+          endX: relativeSquarePositions[endIndex].x,
+          endY: relativeSquarePositions[endIndex].y,
           width: 30,
           color: getColorFromRate(arrow.winRate),
-          info: `出現率${arrow.apparentRate.toFixed(2)} 勝率: ${arrow.winRate.toFixed(2)}`
+          info: `出現率${arrow.apparentRate.toFixed(2)} 勝率: ${arrow.winRate.toFixed(2)}`,
         };
       }
     }
-    return { startX: 0, startY: 0, endX: 0, endY: 0, width: 30, color: { r: 255, g: 255, b: 255 }, info: '' };
+    return {
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+      width: 30,
+      color: { r: 255, g: 255, b: 255 },
+      info: "",
+    };
   }
 
   let selected = $state(0);
   let selectedArrow = $derived(arrows[selected]);
   let isVisible = $state(true);
 
-  let { startX, startY, endX, endY, width, color, info } = $derived(getStartEndPositions(selectedArrow));
+  let { startX, startY, endX, endY, width, color, info } = $derived(
+    getStartEndPositions(selectedArrow)
+  );
 
   $effect(() => {
+    if (arrows.length === 0) {
+      return;
+    }
+
     const delay = isVisible ? 3000 : 3000;
 
     const timerId = setTimeout(() => {
@@ -76,25 +130,26 @@
   // $inspect(selected);
 </script>
 
-
 <div class="statistics-on-board">
   {#if arrows.length > 0}
     {#if isVisible}
-      <div out:fade={{ delay: 50, duration: 100 }} in:fade={{ delay: 500, duration: 1000 }}>
+      <div
+        out:fade={{ delay: 50, duration: 100 }}
+        in:fade={{ delay: 500, duration: 1000 }}
+      >
         <StatisticsArrow
-          startX={startX}
-          startY={startY}
-          endX={endX}
-          endY={endY}
-          width={width}
-          color={color}
-          info={info}
+          {startX}
+          {startY}
+          {endX}
+          {endY}
+          {width}
+          {color}
+          {info}
         />
       </div>
     {/if}
   {/if}
 </div>
-
 
 <style>
   .statistics-on-board {
