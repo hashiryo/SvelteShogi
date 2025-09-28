@@ -5,6 +5,7 @@
   import { flipMove, flipSfenx } from "@/domain/sfenx";
   import { getLastPos } from "@/store/play-game.svelte";
   import { getGrid, getIsSenteTurn } from "@/store/game-board.svelte";
+  import { executeMove } from "@/handler/execute-move";
 
   let isSente = $derived(getIsSenteTurn());
 
@@ -43,12 +44,30 @@
       {@const grid = getGrid()}
       {@const lastPos = getLastPos()}
       {#each favoriteMoves as move}
-        <div class="favorite-next-moves-item" role="listitem">
+        {@const display = getDisplayMoveFromMoveStr(
+          grid,
+          move,
+          isSente,
+          lastPos
+        )}
+        <div
+          class="favorite-next-moves-item"
+          role="button"
+          tabindex="-1"
+          onclick={() => {
+            executeMove(display, move);
+          }}
+          onkeydown={(e) => {
+            if (e.key === "Enter") {
+              executeMove(display, move);
+            }
+          }}
+        >
           <div class="favorite-next-moves-item-favorite">
             <div class="favorite-next-moves-item-favorite-content">★</div>
           </div>
           <div class="favorite-next-moves-item-display">
-            {getDisplayMoveFromMoveStr(grid, move, isSente, lastPos)}
+            {display}
           </div>
         </div>
       {/each}
@@ -93,6 +112,7 @@
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    cursor: pointer;
   }
 
   .favorite-next-moves-item-display {
