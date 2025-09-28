@@ -53,12 +53,12 @@
 <div class="kifu-branch">
   <div class="card-header">
     変化
-    <div class="kifu-branch-keyboard-hint">
-      <kbd>Space</kbd>
-    </div>
     {#if branchesCount > 1}
       <span class="count-badge">({branchesCount}件)</span>
     {/if}
+    <div class="kifu-branch-keyboard-hint">
+      <kbd>Space</kbd>
+    </div>
   </div>
   <div class="kifu-branch-list" role="listbox" bind:this={containerRef}>
     {#each branches as id}
@@ -126,5 +126,8 @@
   .kifu-branch-item-favorite {
     width: 8%;
     color: rgb(243, 220, 74);
+  }
+  .kifu-branch-keyboard-hint {
+    margin-left: auto;
   }
 </style>

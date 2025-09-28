@@ -220,4 +220,8 @@
     color: #aaa;
     font-weight: bold;
   }
+
+  .kifu-history-keyboard-hint {
+    margin-left: auto;
+  }
 </style>

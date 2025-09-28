@@ -15,6 +15,20 @@
 
   // 表示件数
   let moveCount = $derived(moveStatistics.length);
+
+  // 統計サマリー
+  let statisticsSummary = $derived.by(() => {
+    if (moveStatistics.length === 0) return null;
+
+    const totalApparent = moveStatistics.reduce(
+      (sum, stat) => sum + stat.apparentCount,
+      0
+    );
+
+    return {
+      totalApparent,
+    };
+  });
 </script>
 
 <div class="next-move-statistics">
@@ -22,6 +36,9 @@
     次の一手統計
     {#if moveCount > 0}
       <span class="count-badge">({moveCount}件)</span>
+      {#if statisticsSummary}
+        <span class="summary-info">総{statisticsSummary.totalApparent}回</span>
+      {/if}
     {/if}
   </div>
   <div
@@ -86,6 +103,12 @@
   .next-move-statistics {
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .summary-info {
+    color: #888;
+    font-size: 10px;
+    margin-left: auto;
   }
 
   .next-move-statistics-list {
