@@ -6,9 +6,8 @@ import {
 } from "@/store/game-board.svelte";
 import {
   CurrentIndexStore,
-  getNode,
+  NodesStore,
   BranchesStore,
-  setChildNode,
 } from "@/store/kifu-node.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
@@ -16,7 +15,7 @@ import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
 
 function setCurrentNode(nodeIndex: number) {
   if (CurrentIndexStore.get() === nodeIndex) return;
-  const node = getNode(nodeIndex);
+  const node = NodesStore.getNode(nodeIndex);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
   );
@@ -36,11 +35,12 @@ function setCurrentNode(nodeIndex: number) {
 
 export function jumpToKifu(nodeIndex: number) {
   setCurrentNode(nodeIndex);
-  setIsSenteTurn(getNode(nodeIndex).isSente);
+  setIsSenteTurn(NodesStore.getNode(nodeIndex).isSente);
   BranchesStore.set(nodeIndex);
 }
 
 export function switchBranch(nodeIndex: number) {
   setCurrentNode(nodeIndex);
-  if (nodeIndex !== 0) setChildNode(getNode(nodeIndex).prev, nodeIndex);
+  if (nodeIndex !== 0)
+    NodesStore.setChildNode(NodesStore.getNode(nodeIndex).prev, nodeIndex);
 }

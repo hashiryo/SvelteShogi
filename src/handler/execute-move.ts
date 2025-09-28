@@ -17,12 +17,8 @@ import {
 } from "@/store/game-board.svelte";
 import {
   CurrentIndexStore,
-  getNode,
-  getNodesSize,
-  pushKifuNode,
+  NodesStore,
   BranchesStore,
-  setBranchNode,
-  setChildNode,
 } from "@/store/kifu-node.svelte";
 import {
   CanMoveStore,
@@ -39,29 +35,29 @@ function pushOrJumpToKifu(
   move: string
 ) {
   const currentIndex = CurrentIndexStore.get();
-  const newIndex = getNodesSize();
-  const currentNode = getNode(currentIndex);
+  const newIndex = NodesStore.size();
+  const currentNode = NodesStore.getNode(currentIndex);
   const curNextIndex = currentNode.next;
   let br_next = newIndex;
   if (curNextIndex !== -1) {
     let cur = curNextIndex;
     do {
-      const node = getNode(cur);
+      const node = NodesStore.getNode(cur);
       if (node.display === display) {
-        setChildNode(currentIndex, cur);
+        NodesStore.setChildNode(currentIndex, cur);
         CurrentIndexStore.set(cur);
         return;
       }
       cur = node.br_next;
     } while (cur !== curNextIndex);
-    br_next = getNode(curNextIndex).br_next;
-    setBranchNode(curNextIndex, newIndex);
+    br_next = NodesStore.getNode(curNextIndex).br_next;
+    NodesStore.setBranchNode(curNextIndex, newIndex);
   }
 
   const moves = getCurFavorite(currentNode.isSente, currentNode.sfenx);
   const isFavorite = moves ? moves.includes(move) : false;
 
-  pushKifuNode(
+  NodesStore.push(
     display,
     sfenx,
     currentIndex,
@@ -70,7 +66,7 @@ function pushOrJumpToKifu(
     move,
     isFavorite
   );
-  setChildNode(currentIndex, newIndex);
+  NodesStore.setChildNode(currentIndex, newIndex);
   CurrentIndexStore.set(newIndex);
 }
 

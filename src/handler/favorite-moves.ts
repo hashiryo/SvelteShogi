@@ -6,11 +6,7 @@ import {
 } from "@/lib/supabase/favorite-moves";
 import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
 
-import {
-  toggleFavorite,
-  getNode,
-  getNodesSize,
-} from "@/store/kifu-node.svelte";
+import { NodesStore } from "@/store/kifu-node.svelte";
 
 export function getCurFavorite(isSente: boolean, sfenx: string) {
   return isSente
@@ -33,8 +29,8 @@ export async function fetchAndSetFavoriteMoves(
 }
 
 export async function clickFavoriteIcon(index: number) {
-  let { prev, move, isSente, isFavorite } = getNode(index);
-  let { sfenx } = getNode(prev);
+  let { prev, move, isSente, isFavorite } = NodesStore.getNode(index);
+  let { sfenx } = NodesStore.getNode(prev);
   if (isSente) {
     sfenx = flipSfenx(sfenx);
     move = flipMove(move);
@@ -47,14 +43,14 @@ export async function clickFavoriteIcon(index: number) {
     await insertFavoriteMoveToDB(sfenx, move);
     FavoriteMovesStore.insert(sfenx, move);
   }
-  const n = getNodesSize();
+  const n = NodesStore.size();
   for (let i = 1; i < n; ++i) {
-    let { prev, move: targetMove, isSente } = getNode(i);
+    let { prev, move: targetMove, isSente } = NodesStore.getNode(i);
     if (isSente) targetMove = flipMove(targetMove);
     if (move === targetMove) {
-      let { sfenx: targetSfenx } = getNode(prev);
+      let { sfenx: targetSfenx } = NodesStore.getNode(prev);
       if (isSente) targetSfenx = flipSfenx(targetSfenx);
-      if (sfenx === targetSfenx) toggleFavorite(i);
+      if (sfenx === targetSfenx) NodesStore.setFavorite(i, !isFavorite);
     }
   }
 }

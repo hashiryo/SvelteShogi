@@ -2,7 +2,7 @@
   import {
     BranchesStore,
     CurrentIndexStore,
-    getNode,
+    NodesStore,
   } from "@/store/kifu-node.svelte";
 
   import { switchBranch } from "@/handler/kifu-node";
@@ -28,7 +28,7 @@
   function handleKeyDown(e: KeyboardEvent) {
     if (e.code !== "Space") return;
     e.preventDefault();
-    switchBranch(getNode(currentIndex).br_next);
+    switchBranch(NodesStore.getNode(currentIndex).br_next);
   }
 
   function handleGlobalKeyDown(e: KeyboardEvent) {
@@ -62,13 +62,13 @@
   </div>
   <div class="kifu-branch-list" role="listbox" bind:this={containerRef}>
     {#each branches as id}
-      {@const node = getNode(id)}
+      {@const node = NodesStore.getNode(id)}
       <div
         class="kifu-branch-item"
-        class:current={id === CurrentIndexStore.get()}
+        class:current={id === currentIndex}
         role="button"
         tabindex="-1"
-        aria-current={id === CurrentIndexStore.get() ? "true" : undefined}
+        aria-current={id === currentIndex ? "true" : undefined}
         onclick={() => switchBranch(id)}
         onkeydown={(e) => {
           if (e.key === "Enter") {

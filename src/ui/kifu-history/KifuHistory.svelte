@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CurrentIndexStore, getNode } from "@/store/kifu-node.svelte";
+  import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { clickFavoriteIcon } from "@/handler/favorite-moves";
 
@@ -8,7 +8,7 @@
     let cur = 0;
     while (cur !== -1) {
       ret.push(cur);
-      const node = getNode(cur);
+      const node = NodesStore.getNode(cur);
       cur = node.next;
     }
     return ret;
@@ -92,7 +92,7 @@
     bind:this={containerRef}
   >
     {#each ids as id}
-      {@const node = getNode(id)}
+      {@const node = NodesStore.getNode(id)}
       <div
         class="kifu-history-item"
         class:current={id === currentIndex}
