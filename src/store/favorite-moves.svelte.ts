@@ -2,7 +2,6 @@ let data: {
   [key: string]: string[] | undefined;
 } = $state({});
 
-let currentMoves: string[] = $state([]);
 export class FavoriteMovesStore {
   static get(sfenx: string) {
     return data[sfenx];

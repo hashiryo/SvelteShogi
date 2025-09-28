@@ -11,7 +11,7 @@ import {
   setBranches,
   setCurrentIndex,
 } from "@/store/kifu-node.svelte";
-import { resetCanMoveAll } from "@/store/play-game.svelte";
+import { CanMoveStore } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
@@ -23,7 +23,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   setGrid(grid);
   setCaptured(true, capturedSente);
   setCaptured(false, capturedGote);
-  resetCanMoveAll();
+  CanMoveStore.resetAll();
   resetHandPiece();
   setIsSenteTurn(isSente);
   await fetchAndSetFavoriteMoves(isSente, sfenx);

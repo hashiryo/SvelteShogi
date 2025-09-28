@@ -11,11 +11,7 @@ import {
 } from "@/store/game-board.svelte";
 
 import {
-  getCanMove,
-  setCanMoveSquare,
-  setCanMoveAll,
-  resetCanMoveSquare,
-  resetCanMoveAll,
+  CanMoveStore,
   getPromotionPos,
   setPromotionPos,
   resetPromotionPos,
@@ -38,7 +34,7 @@ import {
 import { executeMove } from "./execute-move";
 
 function setCanMoveFromSquare(row: number, col: number) {
-  resetCanMoveAll();
+  CanMoveStore.resetAll();
   const square = getSquare(row, col);
   if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
   const vec = getPieceMoveVec(square.piece);
@@ -51,11 +47,11 @@ function setCanMoveFromSquare(row: number, col: number) {
       const targetSquare = getSquare(nr, nc);
       if (targetSquare) {
         if (targetSquare.isSente !== square.isSente) {
-          setCanMoveSquare(nr, nc); // Can capture opponent's piece
+          CanMoveStore.set(nr, nc); // Can capture opponent's piece
         }
         break;
       } else {
-        setCanMoveSquare(nr, nc); // Empty square can be moved to
+        CanMoveStore.set(nr, nc); // Empty square can be moved to
       }
       if (!slide) break; // If not sliding piece, stop here
       nr += rv;
@@ -65,16 +61,16 @@ function setCanMoveFromSquare(row: number, col: number) {
 }
 
 function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
-  setCanMoveAll();
+  CanMoveStore.setAll();
   const vec = getPieceMoveVec(piece);
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
-      if (getSquare(r, c)) resetCanMoveSquare(r, c); // Reset canMove for occupied squares
+      if (getSquare(r, c)) CanMoveStore.reset(r, c); // Reset canMove for occupied squares
     }
   }
   if (piece === "歩") {
     for (let c = 0; c < 9; c++) {
-      resetCanMoveSquare(isSente ? 0 : 8, c); // Place pawn on the first or last row
+      CanMoveStore.reset(isSente ? 0 : 8, c); // Place pawn on the first or last row
       let nifu = false;
       for (let r = 0; r < 9; r++) {
         const square = getSquare(r, c);
@@ -86,17 +82,17 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
         }
       }
       if (nifu) {
-        for (let r = 0; r < 9; r++) resetCanMoveSquare(r, c);
+        for (let r = 0; r < 9; r++) CanMoveStore.reset(r, c);
       }
     }
   }
   if (piece === "香") {
-    for (let c = 0; c < 9; c++) resetCanMoveSquare(isSente ? 0 : 8, c);
+    for (let c = 0; c < 9; c++) CanMoveStore.reset(isSente ? 0 : 8, c);
   }
   if (piece === "桂") {
     for (let c = 0; c < 9; c++) {
-      resetCanMoveSquare(isSente ? 0 : 8, c);
-      resetCanMoveSquare(isSente ? 1 : 7, c);
+      CanMoveStore.reset(isSente ? 0 : 8, c);
+      CanMoveStore.reset(isSente ? 1 : 7, c);
     }
   }
 }
@@ -120,7 +116,7 @@ export async function clickSquareHandler(row: number, col: number) {
     resetPromotionPos();
     return;
   }
-  if (!getCanMove(row, col)) {
+  if (!CanMoveStore.get(row, col)) {
     if (square && square.isSente === isSenteTurn) {
       setHandPieceFromSquare(square.piece, square.isSente, { row, col });
       setCanMoveFromSquare(row, col);

@@ -3,7 +3,6 @@ import {
   shogiPositionToSfenx,
   strToPosition,
 } from "@/domain/sfenx";
-import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
 import {
   decrementCaptured,
   getCaptured,
@@ -27,7 +26,7 @@ import {
   setCurrentIndex,
 } from "@/store/kifu-node.svelte";
 import {
-  resetCanMoveAll,
+  CanMoveStore,
   resetPromotionPos,
   setLastPos,
 } from "@/store/play-game.svelte";
@@ -110,7 +109,7 @@ export async function executeMove(display: string, move: string) {
     setLastPos(row, col);
   }
 
-  resetCanMoveAll();
+  CanMoveStore.resetAll();
   resetPromotionPos();
   resetHandPiece();
   resetPromotionPos();

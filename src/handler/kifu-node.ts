@@ -14,7 +14,7 @@ import {
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
 import {
-  resetCanMoveAll,
+  CanMoveStore,
   resetLastPos,
   setLastPos,
 } from "@/store/play-game.svelte";
@@ -35,7 +35,7 @@ function setCurrentNode(nodeIndex: number) {
     resetLastPos();
   }
   setCurrentIndex(nodeIndex);
-  resetCanMoveAll();
+  CanMoveStore.resetAll();
   resetHandPiece();
 }
 

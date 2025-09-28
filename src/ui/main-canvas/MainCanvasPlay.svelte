@@ -5,7 +5,7 @@
   import type { PieceType, FavoriteFrom, StatisticsFrom } from "@/types/shogi";
 
   import {
-    getCanMove,
+    CanMoveStore,
     getLastPos,
     getPromotionPos,
   } from "@/store/play-game.svelte";
@@ -232,7 +232,7 @@
       <div class="can-move">
         {#each { length: 9 }, row}
           {#each { length: 9 }, col}
-            {#if !getCanMove(row, col)}
+            {#if !CanMoveStore.get(row, col)}
               {@const index = row * 9 + col}
               {@const { x, y, width, height } = relativeSquareRect[index]}
               <div
