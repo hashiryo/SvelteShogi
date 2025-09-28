@@ -6,10 +6,10 @@ import {
   setIsSenteTurn,
 } from "@/store/game-board.svelte";
 import {
+  CurrentIndexStore,
   pushKifuNode,
   resetNodes,
   BranchesStore,
-  setCurrentIndex,
 } from "@/store/kifu-node.svelte";
 import { CanMoveStore } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves } from "./favorite-moves";
@@ -17,7 +17,7 @@ import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   resetNodes();
   pushKifuNode("初期局面", sfenx, -1, 0, isSente, "", false);
-  setCurrentIndex(0);
+  CurrentIndexStore.set(0);
   BranchesStore.set(0);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
   setGrid(grid);

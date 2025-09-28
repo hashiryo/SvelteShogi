@@ -16,14 +16,13 @@ import {
   setSquare,
 } from "@/store/game-board.svelte";
 import {
-  getCurrentIndex,
+  CurrentIndexStore,
   getNode,
   getNodesSize,
   pushKifuNode,
   BranchesStore,
   setBranchNode,
   setChildNode,
-  setCurrentIndex,
 } from "@/store/kifu-node.svelte";
 import {
   CanMoveStore,
@@ -39,7 +38,7 @@ function pushOrJumpToKifu(
   isSenteNext: boolean,
   move: string
 ) {
-  const currentIndex = getCurrentIndex();
+  const currentIndex = CurrentIndexStore.get();
   const newIndex = getNodesSize();
   const currentNode = getNode(currentIndex);
   const curNextIndex = currentNode.next;
@@ -50,7 +49,7 @@ function pushOrJumpToKifu(
       const node = getNode(cur);
       if (node.display === display) {
         setChildNode(currentIndex, cur);
-        setCurrentIndex(cur);
+        CurrentIndexStore.set(cur);
         return;
       }
       cur = node.br_next;
@@ -72,7 +71,7 @@ function pushOrJumpToKifu(
     isFavorite
   );
   setChildNode(currentIndex, newIndex);
-  setCurrentIndex(newIndex);
+  CurrentIndexStore.set(newIndex);
 }
 
 export async function executeMove(display: string, move: string) {
@@ -112,7 +111,6 @@ export async function executeMove(display: string, move: string) {
   CanMoveStore.resetAll();
   PromotionPosStore.reset();
   resetHandPiece();
-  PromotionPosStore.reset();
 
   const sfenx = shogiPositionToSfenx(
     getGrid(),
@@ -121,7 +119,7 @@ export async function executeMove(display: string, move: string) {
   );
   pushOrJumpToKifu(display, sfenx, !isSente, move);
 
-  BranchesStore.set(getCurrentIndex());
+  BranchesStore.set(CurrentIndexStore.get());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
   setIsSenteTurn(!isSente);
 }

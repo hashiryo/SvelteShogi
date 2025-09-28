@@ -2,18 +2,19 @@ import type { KifuNode } from "@/types/shogi";
 
 let currentIndex: number = $state(-1);
 
+export class CurrentIndexStore {
+  static get() {
+    return currentIndex;
+  }
+  static set(index: number) {
+    currentIndex = index;
+  }
+}
+
 let nodes: KifuNode[] = $state([]);
 
 export function resetNodes() {
   nodes = [];
-}
-
-export function getCurrentIndex(): number {
-  return currentIndex;
-}
-
-export function setCurrentIndex(index: number) {
-  currentIndex = index;
 }
 
 export function getNodesSize() {

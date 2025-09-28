@@ -5,18 +5,17 @@ import {
   resetHandPiece,
 } from "@/store/game-board.svelte";
 import {
-  setCurrentIndex,
+  CurrentIndexStore,
   getNode,
   BranchesStore,
   setChildNode,
-  getCurrentIndex,
 } from "@/store/kifu-node.svelte";
 
 import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
 import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
 
 function setCurrentNode(nodeIndex: number) {
-  if (getCurrentIndex() === nodeIndex) return;
+  if (CurrentIndexStore.get() === nodeIndex) return;
   const node = getNode(nodeIndex);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
     node.sfenx
@@ -30,7 +29,7 @@ function setCurrentNode(nodeIndex: number) {
   } else {
     LastPosStore.reset();
   }
-  setCurrentIndex(nodeIndex);
+  CurrentIndexStore.set(nodeIndex);
   CanMoveStore.resetAll();
   resetHandPiece();
 }

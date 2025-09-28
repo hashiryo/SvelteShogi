@@ -4,12 +4,12 @@
   import { getGrid, getIsSenteTurn } from "@/store/game-board.svelte";
   import { executeMove } from "@/handler/execute-move";
   import { getCurFavorite } from "@/handler/favorite-moves";
-  import { getCurrentIndex, getNode } from "@/store/kifu-node.svelte";
+  import { CurrentIndexStore, getNode } from "@/store/kifu-node.svelte";
 
   let isSente = $derived(getIsSenteTurn());
 
   let favoriteMoves = $derived.by(() => {
-    const { sfenx } = getNode(getCurrentIndex());
+    const { sfenx } = getNode(CurrentIndexStore.get());
     return getCurFavorite(isSente, sfenx);
   });
 

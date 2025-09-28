@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     BranchesStore,
-    getCurrentIndex,
+    CurrentIndexStore,
     getNode,
   } from "@/store/kifu-node.svelte";
 
@@ -9,12 +9,12 @@
 
   let containerRef: HTMLDivElement;
 
+  let currentIndex = $derived(CurrentIndexStore.get());
   let branches = $derived(BranchesStore.get());
   let branchesCount = $derived(branches.length);
 
   // 自動スクロール
   $effect(() => {
-    const currentIndex = getCurrentIndex();
     const currentPos = branches.indexOf(currentIndex);
     if (currentPos !== -1 && containerRef) {
       const currentItem = containerRef.children[currentPos] as HTMLElement;
@@ -28,8 +28,7 @@
   function handleKeyDown(e: KeyboardEvent) {
     if (e.code !== "Space") return;
     e.preventDefault();
-    const cur = getCurrentIndex();
-    switchBranch(getNode(cur).br_next);
+    switchBranch(getNode(currentIndex).br_next);
   }
 
   function handleGlobalKeyDown(e: KeyboardEvent) {
@@ -66,10 +65,10 @@
       {@const node = getNode(id)}
       <div
         class="kifu-branch-item"
-        class:current={id === getCurrentIndex()}
+        class:current={id === CurrentIndexStore.get()}
         role="button"
         tabindex="-1"
-        aria-current={id === getCurrentIndex() ? "true" : undefined}
+        aria-current={id === CurrentIndexStore.get() ? "true" : undefined}
         onclick={() => switchBranch(id)}
         onkeydown={(e) => {
           if (e.key === "Enter") {

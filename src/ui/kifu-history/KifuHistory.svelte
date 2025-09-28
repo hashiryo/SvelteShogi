@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getCurrentIndex, getNode } from "@/store/kifu-node.svelte";
+  import { CurrentIndexStore, getNode } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { clickFavoriteIcon } from "@/handler/favorite-moves";
 
@@ -15,13 +15,12 @@
   }
 
   let ids = $derived(getIds());
+  let currentIndex = $derived(CurrentIndexStore.get());
   let containerRef: HTMLDivElement;
 
   // currentIndexが変更されたときに自動スクロール
   $effect(() => {
-    const currentIndex = getCurrentIndex();
     const currentPos = ids.indexOf(currentIndex);
-
     if (currentPos !== -1 && containerRef) {
       const currentItem = containerRef.children[currentPos] as HTMLElement;
       currentItem?.scrollIntoView({
@@ -40,8 +39,7 @@
     )
       return;
     e.preventDefault();
-    const cur = getCurrentIndex();
-    const pos = ids.indexOf(cur);
+    const pos = ids.indexOf(currentIndex);
     let newPos = pos === -1 ? 0 : pos;
     if (e.key === "ArrowDown") {
       if (pos < ids.length - 1) newPos = pos + 1;
@@ -54,7 +52,7 @@
     }
 
     const newId = ids[newPos];
-    if (newId !== undefined && newId !== cur) {
+    if (newId !== undefined && newId !== currentIndex) {
       jumpToKifu(newId);
       // フォーカスを外す（少しやり方が綺麗じゃないかも）
       containerRef.focus();
@@ -97,10 +95,10 @@
       {@const node = getNode(id)}
       <div
         class="kifu-history-item"
-        class:current={id === getCurrentIndex()}
+        class:current={id === currentIndex}
         role="button"
         tabindex="-1"
-        aria-current={id === getCurrentIndex() ? "true" : undefined}
+        aria-current={id === currentIndex ? "true" : undefined}
         onclick={() => jumpToKifu(id)}
         onkeydown={(e) => {
           if (e.key === "Enter") {
@@ -117,10 +115,10 @@
             class:favorite={node.isFavorite}
             role="button"
             tabindex="-1"
-            onclick={id === getCurrentIndex()
+            onclick={id === currentIndex
               ? () => clickFavoriteIcon(id)
               : undefined}
-            onkeydown={id === getCurrentIndex()
+            onkeydown={id === currentIndex
               ? (e) => {
                   if (e.key === "Enter") {
                     clickFavoriteIcon(id);
