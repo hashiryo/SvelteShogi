@@ -19,6 +19,14 @@
     }[],
   } = $props();
 
+  let adjustCapturedPieces = $derived.by(() => {
+    if (reverse) {
+      return [...capturedPieces].reverse();
+    } else {
+      return [...capturedPieces];
+    }
+  });
+
   let elements = $state([]) as HTMLDivElement[];
   $effect(() => {
     if (elements.length == capturedPieces.length) {
@@ -35,7 +43,7 @@
 </script>
 
 <div class="captured">
-  {#each capturedPieces as { piece, num }, index}
+  {#each adjustCapturedPieces as { piece, num }, index}
     <div class="piece-container" style="width: {squareWidth}px;">
       <div
         class="piece-top"

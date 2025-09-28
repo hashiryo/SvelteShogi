@@ -45,52 +45,47 @@ const TYPE_ORDER: Record<PieceType, number> = {
   竜: 14,
 };
 
-export function getNumCaptured(piece: PieceType, isSente: boolean): number {
-  const found = isSente
-    ? capturedSente.find((p) => p.piece === piece)
-    : capturedGote.find((p) => p.piece === piece);
-  return found ? found.num : 0;
-}
-
-export function getCaptured(
-  isSente: boolean
-): { piece: PieceType; num: number }[] {
-  return isSente ? capturedSente : capturedGote;
-}
-
-export function setCaptured(
-  isSente: boolean,
-  captured: { piece: PieceType; num: number }[]
-) {
-  if (isSente) {
-    capturedSente = captured;
-  } else {
-    capturedGote = captured;
+export class CapturedStore {
+  static get(isSente: boolean): { piece: PieceType; num: number }[] {
+    return isSente ? capturedSente : capturedGote;
   }
-}
-
-export function incrementCaptured(piece: PieceType, isSente: boolean) {
-  const found = isSente
-    ? capturedSente.find((p) => p.piece === piece)
-    : capturedGote.find((p) => p.piece === piece);
-  if (found) {
-    found.num += 1;
-  } else {
-    (isSente ? capturedSente : capturedGote).push({ piece, num: 1 });
+  static set(isSente: boolean, captured: { piece: PieceType; num: number }[]) {
+    if (isSente) {
+      capturedSente = captured;
+    } else {
+      capturedGote = captured;
+    }
   }
-  (isSente ? capturedSente : capturedGote).sort(
-    (a, b) => TYPE_ORDER[a.piece] - TYPE_ORDER[b.piece]
-  );
-}
+  static getNum(isSente: boolean, piece: PieceType): number {
+    const found = isSente
+      ? capturedSente.find((p) => p.piece === piece)
+      : capturedGote.find((p) => p.piece === piece);
+    return found ? found.num : 0;
+  }
 
-export function decrementCaptured(piece: PieceType, isSente: boolean) {
-  const index = isSente
-    ? capturedSente.findIndex((p) => p.piece === piece)
-    : capturedGote.findIndex((p) => p.piece === piece);
-  if (index !== -1) {
-    (isSente ? capturedSente : capturedGote)[index].num -= 1;
-    if ((isSente ? capturedSente : capturedGote)[index].num <= 0) {
-      (isSente ? capturedSente : capturedGote).splice(index, 1);
+  static increment(isSente: boolean, piece: PieceType) {
+    const found = isSente
+      ? capturedSente.find((p) => p.piece === piece)
+      : capturedGote.find((p) => p.piece === piece);
+    if (found) {
+      found.num += 1;
+    } else {
+      (isSente ? capturedSente : capturedGote).push({ piece, num: 1 });
+    }
+    (isSente ? capturedSente : capturedGote).sort(
+      (a, b) => TYPE_ORDER[a.piece] - TYPE_ORDER[b.piece]
+    );
+  }
+
+  static decrement(isSente: boolean, piece: PieceType) {
+    const index = isSente
+      ? capturedSente.findIndex((p) => p.piece === piece)
+      : capturedGote.findIndex((p) => p.piece === piece);
+    if (index !== -1) {
+      (isSente ? capturedSente : capturedGote)[index].num -= 1;
+      if ((isSente ? capturedSente : capturedGote)[index].num <= 0) {
+        (isSente ? capturedSente : capturedGote).splice(index, 1);
+      }
     }
   }
 }

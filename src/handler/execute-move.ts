@@ -6,9 +6,7 @@ import {
 import {
   GridStore,
   IsSenteTurnStore,
-  decrementCaptured,
-  getCaptured,
-  incrementCaptured,
+  CapturedStore,
   HandPieceStore,
 } from "@/store/game-board.svelte";
 import {
@@ -79,7 +77,7 @@ export async function executeMove(display: string, move: string) {
       throw new Error(`Square at (${from.row}, ${from.col}) does not exist.`);
     const toSquare = GridStore.getSquare(to.row, to.col);
     if (toSquare) {
-      incrementCaptured(originalPiece(toSquare.piece), !toSquare.isSente);
+      CapturedStore.increment(!toSquare.isSente, originalPiece(toSquare.piece));
     }
     GridStore.resetSquare(from.row, from.col);
     GridStore.setSquare(
@@ -96,7 +94,7 @@ export async function executeMove(display: string, move: string) {
     const { row, col } = strToPosition(`${toColStr}${toRowStr}`);
     const piece = charToPieceTypeMap[pieceChar];
     GridStore.setSquare(row, col, piece, isSente);
-    decrementCaptured(piece, isSente);
+    CapturedStore.decrement(!isSente, piece);
     LastPosStore.set(row, col);
   }
 
@@ -106,8 +104,8 @@ export async function executeMove(display: string, move: string) {
 
   const sfenx = shogiPositionToSfenx(
     GridStore.get(),
-    getCaptured(true),
-    getCaptured(false)
+    CapturedStore.get(true),
+    CapturedStore.get(false)
   );
   pushOrJumpToKifu(display, sfenx, !isSente, move);
 
