@@ -71,6 +71,7 @@ export interface KifuNode {
   isSente: boolean; // 手番
   move: string; // 直前の移動文字列（例: "7g7f"） 空文字ならば初期局面
   isFavorite: boolean; // お気に入りの一手かどうか
+  isSaved: boolean; // 保存済みかどうか (投了ノード等のみで使う想定)
 }
 
 // 集計済み統計データの型

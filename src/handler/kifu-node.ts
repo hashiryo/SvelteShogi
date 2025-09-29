@@ -45,6 +45,6 @@ export function jumpToKifu(nodeIndex: number) {
 
 export function switchBranch(nodeIndex: number) {
   setCurrentNode(nodeIndex);
-  if (nodeIndex !== 0)
-    NodesStore.setChildNode(NodesStore.getNode(nodeIndex).prev, nodeIndex);
+  const { prev } = NodesStore.getNode(nodeIndex);
+  if (prev !== -1) NodesStore.setChildNode(prev, nodeIndex);
 }

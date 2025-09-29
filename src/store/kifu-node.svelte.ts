@@ -38,6 +38,7 @@ export class NodesStore {
       isSente,
       move,
       isFavorite,
+      isSaved: false,
     });
   }
   static getNode(index: number) {

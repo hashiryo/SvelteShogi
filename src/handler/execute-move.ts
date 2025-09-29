@@ -128,5 +128,6 @@ export function executeResign() {
   BranchesStore.set(CurrentIndexStore.get());
   const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
   pushOrJumpToKifu("投了", sfenx, false, "resign");
+  BranchesStore.set(CurrentIndexStore.get());
   IsSenteTurnStore.set(!isSente);
 }
