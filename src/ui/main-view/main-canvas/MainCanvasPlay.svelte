@@ -138,38 +138,41 @@
   });
 
   let statisticsArrows: StatisticsFrom[] = $derived.by(() => {
+    let ret: StatisticsFrom[] = [];
     const stats = getCurrentStatistics(isSente, sfenx);
-    return stats.map((stat) => {
+    for (const stat of stats) {
       const match1 = stat.move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
       if (match1) {
         const [, fromColStr, fromRowStr, toColStr, toRowStr, prom] = match1;
         const from = strToPosition(`${fromColStr}${fromRowStr}`);
         const to = strToPosition(`${toColStr}${toRowStr}`);
-        return {
+        ret.push({
           startRow: from.row,
           startCol: from.col,
           endRow: to.row,
           endCol: to.col,
           apparentRate: stat.apparentRate,
           winRate: stat.winRate,
-        };
+        });
+        continue;
       }
       const match2 = stat.move.match(/^([A-Z])\*(\d)([a-i])$/);
       if (match2) {
         const [, pieceChar, toColStr, toRowStr] = match2;
         const { row, col } = strToPosition(`${toColStr}${toRowStr}`);
         const piece = charToPieceTypeMap[pieceChar];
-        return {
+        ret.push({
           piece,
           isSente: isSente,
           endRow: row,
           endCol: col,
           apparentRate: stat.apparentRate,
           winRate: stat.winRate,
-        };
+        });
+        continue;
       }
-      throw "Invalid favorite move";
-    });
+    }
+    return ret;
   });
 </script>
 

@@ -57,22 +57,76 @@ export async function fetchAndSetMoveStatistics(
   }
 }
 
-export function executeSave(nodeIndex: number) {
+export async function executeSave(nodeIndex: number) {
   const currentNode = NodesStore.getNode(nodeIndex);
-  if (currentNode.isSaved) return;
+  
+  // 入力検証
+  if (!currentNode) {
+    console.warn("無効なノードインデックスです");
+    return;
+  }
+  
+  if (currentNode.isSaved) {
+    console.log("既に保存済みです");
+    return;
+  }
+  
   if (currentNode.move !== "resign") {
     console.warn("セーブ機能は投了状態のみで使用できます");
     return;
   }
 
-  console.log(`投了ノード（インデックス: ${nodeIndex}）を保存しました`);
-  console.log(`ノード情報:`, {
-    display: currentNode.display,
-    move: currentNode.move,
-    isSente: currentNode.isSente,
-    sfenx: currentNode.sfenx,
-  });
+  try {
+    // 勝者判定 (投了した側の逆が勝者)
+    const winner = !currentNode.isSente;
+    
+    // 統計レコード配列を初期化
+    const statisticsArray: {
+      sfenx: string;
+      move: string;
+      win: boolean;
+      lose: boolean;
+      timeout: boolean;
+      userId?: string;
+    }[] = [];
 
-  // isSavedフラグを更新
-  NodesStore.setSaved(nodeIndex, true);
+    // 現在のノードから親ノードを遡りながら統計レコードを構築
+    let current = nodeIndex;
+    while (current !== -1) {
+      const node = NodesStore.getNode(current);
+      if (!node) break;
+      
+      // 初期局面（move が空文字）の場合は処理をスキップ
+      if (node.move === "") break;
+      
+      // 統計レコード生成
+      const win = node.isSente === winner;
+      const lose = !win;
+      
+      statisticsArray.push({
+        sfenx: node.sfenx,
+        move: node.move,
+        win,
+        lose,
+        timeout: false, // 投了による終了のため false 固定
+        userId: undefined // 匿名データとして保存
+      });
+      
+      // 親ノードに移動
+      current = node.prev;
+    }
+
+    // バルクインサート実行
+    if (statisticsArray.length > 0) {
+      await MoveStatisticsRepository.bulkInsert(statisticsArray);
+      console.log(`${statisticsArray.length}件の統計レコードを保存しました`);
+    }
+
+    // isSavedフラグを更新
+    NodesStore.setSaved(nodeIndex, true);
+    console.log(`投了ノード（インデックス: ${nodeIndex}）を保存しました`);
+  } catch (error) {
+    console.error("統計データの保存に失敗しました:", error);
+    throw error;
+  }
 }
