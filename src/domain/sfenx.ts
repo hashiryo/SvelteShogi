@@ -290,3 +290,11 @@ export function flipMove(move: string): string {
 
   throw new Error("入力形式が不正です");
 }
+
+export function isSpecialMove(move: string): boolean {
+  const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
+  if (match1) return false;
+  const match2 = move.match(/^([A-Z])\*(\d)([a-i])$/);
+  if (match2) return false;
+  return true;
+}

@@ -41,7 +41,7 @@ function pushOrJumpToKifu(
     let cur = curNextIndex;
     do {
       const node = NodesStore.getNode(cur);
-      if (node.display === display) {
+      if (node.move === move) {
         NodesStore.setChildNode(currentIndex, cur);
         CurrentIndexStore.set(cur);
         return;
@@ -116,5 +116,17 @@ export async function executeMove(display: string, move: string) {
   BranchesStore.set(CurrentIndexStore.get());
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
   await fetchAndSetMoveStatistics(!isSente, sfenx);
+  IsSenteTurnStore.set(!isSente);
+}
+
+export function executeResign() {
+  const isSente = IsSenteTurnStore.get();
+  LastPosStore.reset();
+  CanMoveStore.resetAll();
+  PromotionPosStore.reset();
+  HandPieceStore.reset();
+  BranchesStore.set(CurrentIndexStore.get());
+  const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
+  pushOrJumpToKifu("投了", sfenx, false, "resign");
   IsSenteTurnStore.set(!isSente);
 }

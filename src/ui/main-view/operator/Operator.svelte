@@ -2,6 +2,7 @@
   import { ReverseStore } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
+  import { executeResign } from "@/handler/execute-move";
 
   let reverse = $derived(ReverseStore.get());
 
@@ -129,7 +130,7 @@
     </svg>
   </button>
 
-  <!-- 既存の盤面反転ボタン -->
+  <button aria-label="resign" onclick={executeResign}> 投了 </button>
   <button
     class="reverse-btn {reverse ? 'reverse' : ''}"
     aria-label="reverse"

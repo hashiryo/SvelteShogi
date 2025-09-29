@@ -2,6 +2,7 @@
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { clickFavoriteIcon } from "@/handler/favorite-moves";
+  import { isSpecialMove } from "@/domain/sfenx";
 
   let ids = $derived(NodesStore.getPath(0));
   let currentIndex = $derived(CurrentIndexStore.get());
@@ -98,7 +99,7 @@
         <div class="kifu-history-item-display">
           {node.display}
         </div>
-        {#if id != 0}
+        {#if !isSpecialMove(node.move)}
           <div
             class="kifu-history-item-favorite"
             class:favorite={node.isFavorite}

@@ -26,6 +26,15 @@ import {
 } from "@/domain/display";
 
 import { executeMove } from "./execute-move";
+import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
+
+function isGameOver() {
+  const { move } = NodesStore.getNode(CurrentIndexStore.get());
+  if (move === "resign") {
+    return true;
+  }
+  return false;
+}
 
 function setCanMoveFromSquare(row: number, col: number) {
   CanMoveStore.resetAll();
@@ -93,6 +102,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
 
 export async function clickSquareHandler(row: number, col: number) {
   console.log(`clickSquareHandler: row=${row}, col=${col}`);
+  if (isGameOver()) return;
   const square = GridStore.getSquare(row, col);
   const handPiece = HandPieceStore.get();
   const isSenteTurn = IsSenteTurnStore.get();
@@ -156,6 +166,7 @@ export async function clickSquareHandler(row: number, col: number) {
 
 export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
   console.log(`clickCapturedHandler: piece=${piece}, isSente=${isSente}`);
+  if (isGameOver()) return;
   const handPiece = HandPieceStore.get();
   const isSenteTurn = IsSenteTurnStore.get();
   if (isSente === isSenteTurn) {
@@ -175,6 +186,7 @@ export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
 
 export async function clickPromotionHandler(getPromote: boolean) {
   console.log(`clickPromotionHandler: getPromote=${getPromote}`);
+  if (isGameOver()) return;
   const handPiece = HandPieceStore.get();
   if (!handPiece) throw new Error("No hand piece selected for promotion.");
   const handPiecePos = handPiece.position;

@@ -10,7 +10,11 @@ import {
   BranchesStore,
 } from "@/store/kifu-node.svelte";
 
-import { sfenxToShogiPosition, strToPosition } from "@/domain/sfenx";
+import {
+  isSpecialMove,
+  sfenxToShogiPosition,
+  strToPosition,
+} from "@/domain/sfenx";
 import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
 
 function setCurrentNode(nodeIndex: number) {
@@ -22,11 +26,11 @@ function setCurrentNode(nodeIndex: number) {
   GridStore.set(grid);
   CapturedStore.set(true, capturedSente);
   CapturedStore.set(false, capturedGote);
-  if (node.move) {
+  if (isSpecialMove(node.move)) {
+    LastPosStore.reset();
+  } else {
     const { row, col } = strToPosition(node.move.substring(2, 4));
     LastPosStore.set(row, col);
-  } else {
-    LastPosStore.reset();
   }
   CurrentIndexStore.set(nodeIndex);
   CanMoveStore.resetAll();
