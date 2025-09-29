@@ -160,6 +160,7 @@ export function getDisplayMoveFromMoveStr(
   isSente: boolean,
   lastPos: { row: number; col: number } | null
 ): string {
+  if (move === "resign") return "投了";
   let displayText = "";
   const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
   if (match1) {
