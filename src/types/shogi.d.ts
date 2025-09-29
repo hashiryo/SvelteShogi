@@ -82,3 +82,14 @@ export interface MoveStatistics {
   apparentRate: number;
   winRate: number;
 }
+
+// KIF形式のメタデータ
+export interface KifMetadata {
+  startTime?: string;
+  endTime?: string;
+  event?: string;
+  handicap?: string;
+  blackPlayer?: string;
+  whitePlayer?: string;
+  result?: string;
+}
