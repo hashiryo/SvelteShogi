@@ -1,10 +1,7 @@
 <script lang="ts">
   import { initialize } from "@/handler/initialize";
-  import GameCanvas from "@/ui/main-canvas/MainCanvasPlay.svelte";
-  import KifuHistory from "@/ui/kifu-history/KifuHistory.svelte";
-  import KifuBranch from "@/ui/kifu-history/KifuBranch.svelte";
-  import FavoriteNextMoves from "@/ui/FavoriteNextMoves.svelte";
-  import NextMoveStatistics from "./ui/NextMoveStatistics.svelte";
+  import MainView from "@/ui/main-view/MainView.svelte";
+  import SubView from "@/ui/sub-view/SubView.svelte";
 
   // 初期化処理
   await initialize();
@@ -12,13 +9,8 @@
 
 <main>
   <div class="container">
-    <GameCanvas />
-    <div class="subcanvas">
-      <KifuHistory />
-      <KifuBranch />
-      <FavoriteNextMoves />
-      <NextMoveStatistics />
-    </div>
+    <MainView />
+    <SubView />
   </div>
 </main>
 
@@ -30,12 +22,6 @@
     align-items: flex-start;
     max-width: 1200px;
     margin: 0 auto;
-  }
-
-  .subcanvas {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
   }
 
   :global(.container > :first-child) {
