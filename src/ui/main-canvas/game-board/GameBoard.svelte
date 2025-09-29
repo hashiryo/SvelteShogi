@@ -8,6 +8,7 @@
     GridStore,
     CapturedStore,
     HandPieceStore,
+    ReverseStore,
   } from "@/store/game-board.svelte";
 
   // --- 状態 (State) ---
@@ -16,7 +17,6 @@
     squareHeight = 60,
     pieceScale = 0.9,
     fontSize = 38,
-    reverse = $bindable(false),
     squareElements = $bindable([]) as HTMLDivElement[],
     capturedSenteElements = $bindable([]) as {
       piece: PieceType;
@@ -34,6 +34,7 @@
     },
   } = $props();
 
+  let reverse = $derived(ReverseStore.get());
   let handPiece = $derived(HandPieceStore.get());
 
   // 3. ボード全体のコンテナ要素とその座標

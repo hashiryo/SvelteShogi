@@ -14,7 +14,7 @@
     clickCapturedHandler,
     clickPromotionHandler,
   } from "@/handler/play-shogi";
-  import { HandPieceStore } from "@/store/game-board.svelte";
+  import { HandPieceStore, ReverseStore } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { getCurrentFavorites } from "@/handler/favorite-moves";
   import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
@@ -25,8 +25,6 @@
   const SQUARE_HEIGHT = 60;
   const FONT_SIZE = 38;
   const PIECE_SCALE = 0.9;
-
-  let reverse = $state(false); // 盤の向きを反転するかどうか
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -182,7 +180,6 @@
       squareHeight={SQUARE_HEIGHT}
       fontSize={FONT_SIZE}
       pieceScale={PIECE_SCALE}
-      bind:reverse
       {clickSquareHandler}
       {clickCapturedHandler}
       bind:squareElements
@@ -227,7 +224,9 @@
             fontSize={FONT_SIZE}
             pieceScale={PIECE_SCALE}
             piece={handPiece.piece}
-            reverse={handPiece.isSente ? reverse : !reverse}
+            reverse={ReverseStore.get()
+              ? handPiece.isSente
+              : !handPiece.isSente}
             clickHandler={clickPromotionHandler}
           />
         </div>

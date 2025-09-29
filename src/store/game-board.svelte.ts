@@ -121,3 +121,14 @@ export class IsSenteTurnStore {
     isSenteTurn = isSente;
   }
 }
+
+let reverse = $state(false);
+
+export class ReverseStore {
+  static get(): boolean {
+    return reverse;
+  }
+  static set(isReverse: boolean) {
+    reverse = isReverse;
+  }
+}
