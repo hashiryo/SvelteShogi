@@ -100,9 +100,17 @@ export async function executeSave(nodeIndex: number) {
       const win = node.isSente === winner;
       const lose = !win;
 
+      let sfenx = prevNode.sfenx;
+      let move = node.move;
+
+      if (node.isSente) {
+        sfenx = flipSfenx(sfenx);
+        move = flipMove(move);
+      }
+
       statisticsArray.push({
-        sfenx: prevNode.sfenx,
-        move: node.move,
+        sfenx,
+        move,
         win,
         lose,
         timeout: false, // 投了による終了のため false 固定
