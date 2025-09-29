@@ -53,6 +53,9 @@ export class NodesStore {
   static setFavorite(index: number, isFavorite: boolean) {
     nodes[index].isFavorite = isFavorite;
   }
+  static setSaved(index: number, isSaved: boolean) {
+    nodes[index].isSaved = isSaved;
+  }
   static getPath(root: number) {
     let ret = [];
     let cur = root;
