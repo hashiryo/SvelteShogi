@@ -52,6 +52,15 @@ export class NodesStore {
   static setFavorite(index: number, isFavorite: boolean) {
     nodes[index].isFavorite = isFavorite;
   }
+  static getPath(root: number) {
+    let ret = [];
+    let cur = root;
+    while (cur !== -1) {
+      ret.push(cur);
+      cur = nodes[cur].next;
+    }
+    return ret;
+  }
 }
 
 let branches: number[] = $state([]);

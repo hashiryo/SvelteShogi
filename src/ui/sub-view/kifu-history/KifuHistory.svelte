@@ -3,18 +3,7 @@
   import { jumpToKifu } from "@/handler/kifu-node";
   import { clickFavoriteIcon } from "@/handler/favorite-moves";
 
-  function getIds() {
-    let ret = [];
-    let cur = 0;
-    while (cur !== -1) {
-      ret.push(cur);
-      const node = NodesStore.getNode(cur);
-      cur = node.next;
-    }
-    return ret;
-  }
-
-  let ids = $derived(getIds());
+  let ids = $derived(NodesStore.getPath(0));
   let currentIndex = $derived(CurrentIndexStore.get());
   let containerRef: HTMLDivElement;
 

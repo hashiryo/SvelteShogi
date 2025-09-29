@@ -2,52 +2,40 @@
   import { ReverseStore } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
-  
+
   let reverse = $derived(ReverseStore.get());
-  
-  // 履歴IDsの取得（KifuHistory.svelteから参考）
-  function getIds() {
-    let ret = [];
-    let cur = 0;
-    while (cur !== -1) {
-      ret.push(cur);
-      const node = NodesStore.getNode(cur);
-      cur = node.next;
-    }
-    return ret;
-  }
-  
-  let ids = $derived(getIds());
+
+  let ids = $derived(NodesStore.getPath(0));
   let currentIndex = $derived(CurrentIndexStore.get());
-  
+
   // 現在位置の計算
   let currentPos = $derived(ids.indexOf(currentIndex));
-  
+
   // ボタンの有効/無効状態
   let canGoToFirst = $derived(ids.length > 0 && currentPos > 0);
   let canGoPrevious = $derived(ids.length > 0 && currentPos > 0);
   let canGoNext = $derived(ids.length > 0 && currentPos < ids.length - 1);
   let canGoToLast = $derived(ids.length > 0 && currentPos < ids.length - 1);
-  
+
   // ナビゲーション関数
   function goToFirst() {
     if (canGoToFirst) {
       jumpToKifu(ids[0]);
     }
   }
-  
+
   function goPrevious() {
     if (canGoPrevious) {
       jumpToKifu(ids[currentPos - 1]);
     }
   }
-  
+
   function goNext() {
     if (canGoNext) {
       jumpToKifu(ids[currentPos + 1]);
     }
   }
-  
+
   function goToLast() {
     if (canGoToLast) {
       jumpToKifu(ids[ids.length - 1]);
@@ -63,36 +51,84 @@
     disabled={!canGoToFirst}
     onclick={goToFirst}
   >
-    ⏮️
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M6 18V6h2v12zm11 0l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"
+        stroke-width="1"
+        stroke="currentColor"
+      />
+    </svg>
   </button>
-  
+
   <button
     class="nav-btn prev-btn"
     aria-label="一つ戻る"
     disabled={!canGoPrevious}
     onclick={goPrevious}
   >
-    ⏪
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"
+        stroke-width="1"
+        stroke="currentColor"
+      />
+    </svg>
   </button>
-  
+
   <button
     class="nav-btn next-btn"
     aria-label="一つ進む"
     disabled={!canGoNext}
     onclick={goNext}
   >
-    ⏩
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z"
+        stroke-width="1"
+        stroke="currentColor"
+      />
+    </svg>
   </button>
-  
+
   <button
     class="nav-btn last-btn"
     aria-label="最終局面へ"
     disabled={!canGoToLast}
     onclick={goToLast}
   >
-    ⏭️
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="m7 18l-1.4-1.4l4.6-4.6l-4.6-4.6L7 6l6 6zm9 0V6h2v12z"
+        stroke-width="1"
+        stroke="currentColor"
+      />
+    </svg>
   </button>
-  
+
   <!-- 既存の盤面反転ボタン -->
   <button
     class="reverse-btn {reverse ? 'reverse' : ''}"
@@ -125,7 +161,7 @@
     justify-content: center;
     width: 100%;
   }
-  
+
   .nav-btn {
     background-color: #f5f5f5;
     color: #333333;
@@ -141,17 +177,17 @@
     min-width: 40px;
     height: 36px;
   }
-  
+
   .nav-btn:hover:not(:disabled) {
     background-color: #e8e8e8;
     border-color: #999999;
   }
-  
+
   .nav-btn:active:not(:disabled) {
     background-color: #d8d8d8;
     transform: translateY(1px);
   }
-  
+
   .nav-btn:disabled {
     background-color: #f9f9f9;
     color: #cccccc;
@@ -159,9 +195,9 @@
     cursor: not-allowed;
     opacity: 0.6;
   }
-  
+
   .nav-btn:focus {
-    outline: 2px solid #4CAF50;
+    outline: 2px solid #4caf50;
     outline-offset: 2px;
   }
 
@@ -184,13 +220,13 @@
     background-color: rgb(2, 162, 109);
     color: white;
   }
-  
+
   .reverse-btn:hover {
     opacity: 0.8;
   }
-  
+
   .reverse-btn:focus {
-    outline: 2px solid #4CAF50;
+    outline: 2px solid #4caf50;
     outline-offset: 2px;
   }
 </style>
