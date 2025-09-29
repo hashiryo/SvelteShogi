@@ -3,12 +3,15 @@
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { executeResign } from "@/handler/execute-move";
+  import { executeSave } from "@/handler/move-statistics";
 
   let reverse = $derived(ReverseStore.get());
-
   let ids = $derived(NodesStore.getPath(0));
+
   let currentIndex = $derived(CurrentIndexStore.get());
-  let currentNode = $derived(currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null);
+  let currentNode = $derived(
+    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null
+  );
 
   // 現在位置の計算
   let currentPos = $derived(ids.indexOf(currentIndex));
@@ -48,25 +51,6 @@
     if (canGoToLast) {
       jumpToKifu(ids[ids.length - 1]);
     }
-  }
-
-  // セーブ機能の実装
-  function executeSave() {
-    if (!currentNode || !isResignState) {
-      console.warn("セーブ機能は投了状態のみで使用できます");
-      return;
-    }
-    
-    console.log(`投了ノード（インデックス: ${currentIndex}）を保存しました`);
-    console.log(`ノード情報:`, {
-      display: currentNode.display,
-      move: currentNode.move,
-      isSente: currentNode.isSente,
-      sfenx: currentNode.sfenx
-    });
-    
-    // isSavedフラグを更新
-    NodesStore.setSaved(currentIndex, true);
   }
 </script>
 
@@ -157,9 +141,11 @@
   </button>
 
   {#if shouldShowSaveButton}
-    <button 
-      aria-label="save" 
-      onclick={executeSave}
+    <button
+      aria-label="save"
+      onclick={() => {
+        executeSave(currentIndex);
+      }}
       disabled={isSaveButtonDisabled}
       class="save-btn {isSaveButtonDisabled ? 'disabled' : ''}"
     >

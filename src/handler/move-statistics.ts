@@ -1,5 +1,6 @@
 import { flipMove, flipSfenx } from "@/domain/sfenx";
 import { MoveStatisticsRepository } from "@/lib/supabase/move-statistics";
+import { NodesStore } from "@/store/kifu-node.svelte";
 import { MoveStatisticsStore } from "@/store/move-statistics.svelte";
 import type { MoveStatistics } from "@/types/shogi";
 
@@ -54,4 +55,24 @@ export async function fetchAndSetMoveStatistics(
     );
     MoveStatisticsStore.set(sfenx, data);
   }
+}
+
+export function executeSave(nodeIndex: number) {
+  const currentNode = NodesStore.getNode(nodeIndex);
+  if (currentNode.isSaved) return;
+  if (currentNode.move !== "resign") {
+    console.warn("セーブ機能は投了状態のみで使用できます");
+    return;
+  }
+
+  console.log(`投了ノード（インデックス: ${nodeIndex}）を保存しました`);
+  console.log(`ノード情報:`, {
+    display: currentNode.display,
+    move: currentNode.move,
+    isSente: currentNode.isSente,
+    sfenx: currentNode.sfenx,
+  });
+
+  // isSavedフラグを更新
+  NodesStore.setSaved(nodeIndex, true);
 }
