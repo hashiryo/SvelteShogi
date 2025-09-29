@@ -180,7 +180,7 @@
       class="reverse-btn {reverse ? 'reverse' : ''}"
       aria-label="reverse"
       onclick={() => {
-        reverse = !reverse;
+        ReverseStore.set(!reverse);
       }}
     >
       <svg
