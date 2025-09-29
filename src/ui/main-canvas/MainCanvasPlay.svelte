@@ -18,6 +18,7 @@
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { getCurrentFavorites } from "@/handler/favorite-moves";
   import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
+  import { getCurrentStatistics } from "@/handler/move-statistics";
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -103,8 +104,11 @@
     })()
   );
 
+  let { isSente, sfenx } = $derived(
+    NodesStore.getNode(CurrentIndexStore.get())
+  );
+
   let favoriteArrows: FavoriteFrom[] = $derived.by(() => {
-    const { isSente, sfenx } = NodesStore.getNode(CurrentIndexStore.get());
     const moves = getCurrentFavorites(isSente, sfenx);
     return moves.map((move) => {
       const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
@@ -126,7 +130,7 @@
         const piece = charToPieceTypeMap[pieceChar];
         return {
           piece,
-          is_sente: isSente,
+          isSente: isSente,
           endRow: row,
           endCol: col,
         };
@@ -135,80 +139,40 @@
     });
   });
 
-  let statisticsArrows: StatisticsFrom[] = [
-    {
-      startRow: 8,
-      startCol: 0,
-      endRow: 0,
-      endCol: 0,
-      apparentRate: 0.8,
-      winRate: 0.75,
-    },
-    {
-      startRow: 5,
-      startCol: 0,
-      endRow: 5,
-      endCol: 8,
-      apparentRate: 0.7,
-      winRate: 0.6,
-    },
-    {
-      startRow: 4,
-      startCol: 8,
-      endRow: 8,
-      endCol: 4,
-      apparentRate: 0.6,
-      winRate: 0.5,
-    },
-    {
-      startRow: 2,
-      startCol: 2,
-      endRow: 3,
-      endCol: 3,
-      apparentRate: 0.4,
-      winRate: 0.3,
-    },
-    {
-      startRow: 1,
-      startCol: 1,
-      endRow: 1,
-      endCol: 2,
-      apparentRate: 0.2,
-      winRate: 0.1,
-    },
-    {
-      startRow: 1,
-      startCol: 2,
-      endRow: 1,
-      endCol: 1,
-      apparentRate: 0.9,
-      winRate: 0.1,
-    },
-    {
-      startRow: 0,
-      startCol: 4,
-      endRow: 6,
-      endCol: 0,
-      apparentRate: 0.8,
-      winRate: 0.75,
-    },
-    {
-      piece: "歩",
-      is_sente: true,
-      endRow: 6,
-      endCol: 0,
-      apparentRate: 0.9,
-      winRate: 0.85,
-    },
-    {
-      piece: "銀",
-      is_sente: false,
-      endRow: 7,
-      endCol: 0,
-      apparentRate: 0.7,
-      winRate: 0.65,
-    },
-  ];
+  let statisticsArrows: StatisticsFrom[] = $derived.by(() => {
+    const stats = getCurrentStatistics(isSente, sfenx);
+    return stats.map((stat) => {
+      const match1 = stat.move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
+      if (match1) {
+        const [, fromColStr, fromRowStr, toColStr, toRowStr, prom] = match1;
+        const from = strToPosition(`${fromColStr}${fromRowStr}`);
+        const to = strToPosition(`${toColStr}${toRowStr}`);
+        return {
+          startRow: from.row,
+          startCol: from.col,
+          endRow: to.row,
+          endCol: to.col,
+          apparentRate: stat.apparentRate,
+          winRate: stat.winRate,
+        };
+      }
+      const match2 = stat.move.match(/^([A-Z])\*(\d)([a-i])$/);
+      if (match2) {
+        const [, pieceChar, toColStr, toRowStr] = match2;
+        const { row, col } = strToPosition(`${toColStr}${toRowStr}`);
+        const piece = charToPieceTypeMap[pieceChar];
+        return {
+          piece,
+          isSente: isSente,
+          endRow: row,
+          endCol: col,
+          apparentRate: stat.apparentRate,
+          winRate: stat.winRate,
+        };
+      }
+      throw "Invalid favorite move";
+    });
+  });
 </script>
 
 <div class="canvas" bind:this={canvasElement}>

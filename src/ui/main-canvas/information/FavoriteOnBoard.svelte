@@ -27,7 +27,7 @@
       };
     } else {
       // FromCaptured
-      const position = arrow.is_sente
+      const position = arrow.isSente
         ? relativeCapturedSentePositions.find((p) => p.piece === arrow.piece)
         : relativeCapturedGotePositions.find((p) => p.piece === arrow.piece);
       if (position) {

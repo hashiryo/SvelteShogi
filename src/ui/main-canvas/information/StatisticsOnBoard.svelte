@@ -18,13 +18,13 @@
 
   function getColorFromRate(rate: number): { r: number; g: number; b: number } {
     if (rate < 0.5) {
-      const r = Math.floor(255 * rate * 2);
-      const g = Math.floor(255 * rate * 2);
-      return { r, g, b: 255 }; // 青色から白色へのグラデーション
+      // 赤色から灰色へのグラデーション
+      const r = Math.floor(255 * (1 - rate));
+      return { r, g: 128, b: 128 };
     } else {
-      const g = Math.floor(255 * (1 - rate) * 2);
-      const b = Math.floor(255 * (1 - rate) * 2);
-      return { r: 255, g, b }; // 赤色から白色へのグラデーション
+      // 緑色から灰色へのグラデーション
+      const g = Math.floor(255 * rate);
+      return { r: 128, g, b: 128 };
     }
   }
 
@@ -60,7 +60,7 @@
       };
     } else {
       // FromCaptured
-      const position = arrow.is_sente
+      const position = arrow.isSente
         ? relativeCapturedSentePositions.find((p) => p.piece === arrow.piece)
         : relativeCapturedGotePositions.find((p) => p.piece === arrow.piece);
       const endIndex = arrow.endRow * 9 + arrow.endCol;

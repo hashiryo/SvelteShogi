@@ -28,7 +28,7 @@ type FavoriteFromSquare = {
 
 type FavoriteFromCaptured = {
   piece: PieceType;
-  is_sente: boolean;
+  isSente: boolean;
   endRow: number;
   endCol: number;
 };
@@ -46,7 +46,7 @@ type StatisticsFromSquare = {
 
 type StatisticsFromCaptured = {
   piece: PieceType;
-  is_sente: boolean;
+  isSente: boolean;
   endRow: number;
   endCol: number;
   apparentRate: number;
