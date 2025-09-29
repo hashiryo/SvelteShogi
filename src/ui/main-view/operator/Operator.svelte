@@ -8,9 +8,16 @@
 
   let ids = $derived(NodesStore.getPath(0));
   let currentIndex = $derived(CurrentIndexStore.get());
+  let currentNode = $derived(currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null);
 
   // 現在位置の計算
   let currentPos = $derived(ids.indexOf(currentIndex));
+
+  // 投了状態の判定
+  let isResignState = $derived(currentNode?.display === "投了");
+  let isSavedState = $derived(currentNode?.isSaved ?? false);
+  let shouldShowSaveButton = $derived(isResignState);
+  let isSaveButtonDisabled = $derived(isSavedState);
 
   // ボタンの有効/無効状態
   let canGoToFirst = $derived(ids.length > 0 && currentPos > 0);
@@ -41,6 +48,25 @@
     if (canGoToLast) {
       jumpToKifu(ids[ids.length - 1]);
     }
+  }
+
+  // セーブ機能の実装
+  function executeSave() {
+    if (!currentNode || !isResignState) {
+      console.warn("セーブ機能は投了状態のみで使用できます");
+      return;
+    }
+    
+    console.log(`投了ノード（インデックス: ${currentIndex}）を保存しました`);
+    console.log(`ノード情報:`, {
+      display: currentNode.display,
+      move: currentNode.move,
+      isSente: currentNode.isSente,
+      sfenx: currentNode.sfenx
+    });
+    
+    // isSavedフラグを更新
+    NodesStore.setSaved(currentIndex, true);
   }
 </script>
 
@@ -130,7 +156,18 @@
     </svg>
   </button>
 
-  <button aria-label="resign" onclick={executeResign}> 投了 </button>
+  {#if shouldShowSaveButton}
+    <button 
+      aria-label="save" 
+      onclick={executeSave}
+      disabled={isSaveButtonDisabled}
+      class="save-btn {isSaveButtonDisabled ? 'disabled' : ''}"
+    >
+      セーブ
+    </button>
+  {:else}
+    <button aria-label="resign" onclick={executeResign}> 投了 </button>
+  {/if}
   <button
     class="reverse-btn {reverse ? 'reverse' : ''}"
     aria-label="reverse"
@@ -227,6 +264,42 @@
   }
 
   .reverse-btn:focus {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
+  }
+
+  .save-btn {
+    background-color: #4caf50;
+    color: white;
+    border: 1px solid #45a049;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 60px;
+    height: 36px;
+  }
+
+  .save-btn:hover:not(.disabled) {
+    background-color: #45a049;
+    border-color: #3e8e41;
+  }
+
+  .save-btn:active:not(.disabled) {
+    background-color: #3e8e41;
+    transform: translateY(1px);
+  }
+
+  .save-btn.disabled {
+    background-color: #cccccc;
+    color: #666666;
+    border-color: #999999;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .save-btn:focus {
     outline: 2px solid #4caf50;
     outline-offset: 2px;
   }
