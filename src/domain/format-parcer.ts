@@ -1,3 +1,4 @@
+// http://kakinoki.o.oo7.jp/kif_format.html
 import type { KifMetadata } from "@/types/shogi";
 
 function zenkakuToNumber(char: string) {
@@ -85,6 +86,7 @@ export function parseKif(kifContent: string): {
   const moves: string[] = [];
 
   let isMovesSection = false;
+  let prevPosition = "";
 
   for (const line of lines) {
     if (!line) continue;
@@ -111,7 +113,6 @@ export function parseKif(kifContent: string): {
     }
 
     // 指し手の解析
-    let prevPosition = "";
     if (isMovesSection) {
       if (line.includes("まで") && line.includes("手で")) {
         // 結果行
@@ -167,7 +168,7 @@ export function parseKif(kifContent: string): {
           );
           // 駒の種類を抽出
           const pieceMatch = display.match(
-            /(玉|飛|龍|角|馬|金|銀|成銀|桂|成桂|香|成香|歩|と)/
+            /(玉|飛|龍|竜|角|馬|金|銀|成銀|全|桂|成桂|圭|香|成香|杏|歩|と)/
           );
           // 移動元座標を抽出
           const fromMatch = display.match(/\(([1-9])([1-9])\)/);
