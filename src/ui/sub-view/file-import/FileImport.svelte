@@ -1,7 +1,7 @@
 <script lang="ts">
   import { parseKif, readFileAsText } from "@/domain/format-parcer";
 
-  let files: FileList | undefined = $state();
+  let files: FileList | undefined | null = $state();
   let isLoading = $state(false);
   let error = $state<string | null>(null);
 
@@ -28,6 +28,7 @@
       console.error("ファイル処理エラー:", err);
     } finally {
       isLoading = false;
+      files = null;
     }
   }
 

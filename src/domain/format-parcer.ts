@@ -162,7 +162,9 @@ export function parseKif(kifContent: string): {
           }
         }
         if (display !== "") {
-          const positionMatch = display.match(/([１-９])([一-九])|同(　?)/);
+          const positionMatch = display.match(
+            /([１２３４５６７８９])([一二三四五六七八九])|同(　?)/
+          );
           // 駒の種類を抽出
           const pieceMatch = display.match(
             /(玉|飛|龍|角|馬|金|銀|成銀|桂|成桂|香|成香|歩|と)/
@@ -194,9 +196,9 @@ export function parseKif(kifContent: string): {
             const from = `${fromCol}${adjustFromRow}`;
             let move = `${from}${to}`;
             if (decorationMatch && decorationMatch[1] === "成") {
-              move += "成";
+              move += "+";
             }
-            moves.push(display);
+            moves.push(move);
           } else if (
             decorationMatch &&
             decorationMatch[1] === "打" &&
