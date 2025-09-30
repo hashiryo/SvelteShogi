@@ -165,7 +165,7 @@ export function parseKif(kifContent: string): {
           const positionMatch = display.match(/([１-９])([一-九])|同(　?)/);
           // 駒の種類を抽出
           const pieceMatch = display.match(
-            /(玉|飛|龍|竜|角|馬|金|銀|成銀|桂|成桂|香|成香|歩|と)/
+            /(玉|飛|龍|角|馬|金|銀|成銀|桂|成桂|香|成香|歩|と)/
           );
           // 移動元座標を抽出
           const fromMatch = display.match(/\(([1-9])([1-9])\)/);
