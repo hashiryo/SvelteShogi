@@ -28,23 +28,6 @@ export class GridStore {
 let capturedSente: Captures = $state([]);
 let capturedGote: Captures = $state([]);
 
-const TYPE_ORDER: Record<PieceType, number> = {
-  歩: 1,
-  香: 2,
-  桂: 3,
-  銀: 4,
-  金: 5,
-  角: 6,
-  飛: 7,
-  玉: 8,
-  と: 9,
-  杏: 10,
-  圭: 11,
-  全: 12,
-  馬: 13,
-  竜: 14,
-};
-
 export class CapturesStore {
   static get(isSente: boolean): Captures {
     return isSente ? capturedSente : capturedGote;
@@ -61,32 +44,6 @@ export class CapturesStore {
       ? capturedSente.find((p) => p.piece === piece)
       : capturedGote.find((p) => p.piece === piece);
     return found ? found.num : 0;
-  }
-
-  static increment(isSente: boolean, piece: PieceType) {
-    const found = isSente
-      ? capturedSente.find((p) => p.piece === piece)
-      : capturedGote.find((p) => p.piece === piece);
-    if (found) {
-      found.num += 1;
-    } else {
-      (isSente ? capturedSente : capturedGote).push({ piece, num: 1 });
-    }
-    (isSente ? capturedSente : capturedGote).sort(
-      (a, b) => TYPE_ORDER[a.piece] - TYPE_ORDER[b.piece]
-    );
-  }
-
-  static decrement(isSente: boolean, piece: PieceType) {
-    const index = isSente
-      ? capturedSente.findIndex((p) => p.piece === piece)
-      : capturedGote.findIndex((p) => p.piece === piece);
-    if (index !== -1) {
-      (isSente ? capturedSente : capturedGote)[index].num -= 1;
-      if ((isSente ? capturedSente : capturedGote)[index].num <= 0) {
-        (isSente ? capturedSente : capturedGote).splice(index, 1);
-      }
-    }
   }
 }
 
