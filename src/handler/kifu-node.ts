@@ -33,7 +33,6 @@ function setCurrentNode(nodeIndex: number) {
     LastPosStore.set(row, col);
   }
   CurrentIndexStore.set(nodeIndex);
-  CanMoveStore.resetAll();
   HandPieceStore.reset();
 }
 

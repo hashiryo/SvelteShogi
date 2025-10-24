@@ -102,7 +102,6 @@ export async function executeMove(display: string, move: string) {
     LastPosStore.set(row, col);
   }
 
-  CanMoveStore.resetAll();
   PromotionPosStore.reset();
   HandPieceStore.reset();
 
@@ -122,7 +121,6 @@ export async function executeMove(display: string, move: string) {
 export function executeResign() {
   const isSente = IsSenteTurnStore.get();
   LastPosStore.reset();
-  CanMoveStore.resetAll();
   PromotionPosStore.reset();
   HandPieceStore.reset();
   BranchesStore.set(CurrentIndexStore.get());

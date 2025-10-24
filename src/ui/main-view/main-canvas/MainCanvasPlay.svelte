@@ -19,6 +19,7 @@
   import { getCurrentFavorites } from "@/handler/favorite-moves";
   import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
   import { getCurrentStatistics } from "@/handler/move-statistics";
+  import { derived } from "svelte/store";
 
   // --- 定数 ---
   const SQUARE_WIDTH = 55;
@@ -105,6 +106,8 @@
   let { isSente, sfenx } = $derived(
     NodesStore.getNode(CurrentIndexStore.get())
   );
+
+  let canMove = $derived(CanMoveStore.get());
 
   let favoriteArrows: FavoriteFrom[] = $derived.by(() => {
     const moves = getCurrentFavorites(isSente, sfenx);
@@ -196,8 +199,8 @@
       <div class="can-move">
         {#each { length: 9 }, row}
           {#each { length: 9 }, col}
-            {#if !CanMoveStore.get(row, col)}
-              {@const index = row * 9 + col}
+            {@const index = row * 9 + col}
+            {#if !canMove[index]}
               {@const { x, y, width, height } = relativeSquareRect[index]}
               <div
                 class="cannot-move-square"

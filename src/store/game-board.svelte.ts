@@ -99,15 +99,8 @@ export class HandPieceStore {
   static reset() {
     handPiece = null;
   }
-  static setFromSquare(
-    piece: PieceType,
-    isSente: boolean,
-    position: { row: number; col: number }
-  ) {
-    handPiece = { piece, isSente, position };
-  }
-  static setFromCaptured(piece: PieceType, isSente: boolean) {
-    handPiece = { piece, isSente, position: null };
+  static set(value: HandPieceFrom) {
+    handPiece = value;
   }
 }
 

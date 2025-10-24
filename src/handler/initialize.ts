@@ -23,7 +23,6 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   GridStore.set(grid);
   CapturedStore.set(true, capturedSente);
   CapturedStore.set(false, capturedGote);
-  CanMoveStore.resetAll();
   HandPieceStore.reset();
   IsSenteTurnStore.set(isSente);
   LastPosStore.reset();
