@@ -29,8 +29,8 @@ export class LastPosStore {
   static get(): { row: number; col: number } | null {
     return lastPos;
   }
-  static set(row: number, col: number) {
-    lastPos = { row, col };
+  static set(pos: { row: number; col: number }) {
+    lastPos = pos;
   }
   static reset() {
     lastPos = null;

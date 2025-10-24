@@ -1,7 +1,7 @@
 import {
   IsSenteTurnStore,
   GridStore,
-  CapturedStore,
+  CapturesStore,
   HandPieceStore,
 } from "@/store/game-board.svelte";
 import {
@@ -24,13 +24,13 @@ function setCurrentNode(nodeIndex: number) {
     node.sfenx
   );
   GridStore.set(grid);
-  CapturedStore.set(true, capturedSente);
-  CapturedStore.set(false, capturedGote);
+  CapturesStore.set(true, capturedSente);
+  CapturesStore.set(false, capturedGote);
   if (isSpecialMove(node.move)) {
     LastPosStore.reset();
   } else {
-    const { row, col } = strToPosition(node.move.substring(2, 4));
-    LastPosStore.set(row, col);
+    const lastPos = strToPosition(node.move.substring(2, 4));
+    LastPosStore.set(lastPos);
   }
   CurrentIndexStore.set(nodeIndex);
   HandPieceStore.reset();

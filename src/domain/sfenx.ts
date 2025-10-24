@@ -1,4 +1,4 @@
-import type { PieceType, Square } from "@/types/shogi";
+import type { Captures, PieceType, Square } from "@/types/shogi";
 
 // | 駒   | 成り前 | 成り後 | 新記号       |
 // | --- | --- | --- | ------------ |
@@ -65,10 +65,8 @@ function strToGrid(gridString: string): (Square | null)[] {
   return grid;
 }
 
-function strToCapturedPieces(
-  capturedPiecesString: string
-): { piece: PieceType; num: number }[] {
-  let capturedPieces: { piece: PieceType; num: number }[] = [];
+function strToCapturedPieces(capturedPiecesString: string): Captures {
+  let capturedPieces: Captures = [];
   {
     const num = capturedPiecesString.charCodeAt(0) - "a".charCodeAt(0);
     if (num > 0) {
@@ -140,8 +138,8 @@ function strToCapturedPieces(
 
 export function sfenxToShogiPosition(sfenx: string): {
   grid: (Square | null)[];
-  capturedSente: { piece: PieceType; num: number }[];
-  capturedGote: { piece: PieceType; num: number }[];
+  capturedSente: Captures;
+  capturedGote: Captures;
 } {
   // SFEN形式の文字列を分解
   const match = sfenx.match(/^([a-zA-Z0-9]*) ([a-z]{8})$/);
@@ -181,9 +179,7 @@ function gridToStr(grid: (Square | null)[]): string {
   return ret;
 }
 
-function capturedPiecesToStr(
-  capturedPieces: { piece: PieceType; num: number }[]
-): string {
+function capturedPiecesToStr(capturedPieces: Captures): string {
   let nums: number[] = [
     "a".charCodeAt(0),
     "a".charCodeAt(0),
@@ -220,8 +216,8 @@ function capturedPiecesToStr(
 
 export function shogiPositionToSfenx(
   grid: (Square | null)[],
-  capturedSente: { piece: PieceType; num: number }[],
-  capturedGote: { piece: PieceType; num: number }[]
+  capturedSente: Captures,
+  capturedGote: Captures
 ): string {
   const gridString = gridToStr(grid);
   const capturedPiecesString =

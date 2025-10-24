@@ -14,52 +14,54 @@ export type PieceType =
   | "馬"
   | "竜";
 
-export type Square = {
+export interface Square {
   piece: PieceType;
   isSente: boolean;
-};
+}
 
-type FavoriteFromSquare = {
+export type Captures = { piece: PieceType; num: number }[];
+
+interface FavoriteFromSquare {
   startRow: number;
   startCol: number;
   endRow: number;
   endCol: number;
-};
+}
 
-type FavoriteFromCaptured = {
+interface FavoriteFromCaptured {
   piece: PieceType;
   isSente: boolean;
   endRow: number;
   endCol: number;
-};
+}
 
 export type FavoriteFrom = FavoriteFromSquare | FavoriteFromCaptured;
 
-type StatisticsFromSquare = {
+interface StatisticsFromSquare {
   startRow: number;
   startCol: number;
   endRow: number;
   endCol: number;
   apparentRate: number;
   winRate: number;
-};
+}
 
-type StatisticsFromCaptured = {
+interface StatisticsFromCaptured {
   piece: PieceType;
   isSente: boolean;
   endRow: number;
   endCol: number;
   apparentRate: number;
   winRate: number;
-};
+}
 
 export type StatisticsFrom = StatisticsFromSquare | StatisticsFromCaptured;
 
-export type HandPieceFrom = {
+export interface HandPieceFrom {
   piece: PieceType;
   isSente: boolean;
   position: { row: number; col: number } | null;
-};
+}
 
 // 棋譜履歴のノード
 export interface KifuNode {

@@ -12,18 +12,9 @@ import {
   LastPosStore,
 } from "@/store/play-game.svelte";
 
-import {
-  getPieceMoveVec,
-  promotePiece,
-  canPromotePos,
-} from "@/domain/shogi-rule";
+import { positionToStr } from "@/domain/sfenx";
 
-import { pieceTypeToCharMap, positionToStr } from "@/domain/sfenx";
-
-import {
-  getDisplayMoveFromGrid,
-  getDisplayMoveFromCaptured,
-} from "@/domain/display";
+import { getDisplayMoveFromGrid } from "@/domain/display";
 
 import { executeMove } from "./execute-move";
 import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
@@ -54,9 +45,9 @@ export async function clickSquareHandler(row: number, col: number) {
     PromotionPosStore.reset();
     return;
   }
-  if ("newHandPiece" in result) {
-    HandPieceStore.set(result.newHandPiece);
-    CanMoveStore.set(result.newCanMove);
+  if ("handPiece" in result) {
+    HandPieceStore.set(result.handPiece);
+    CanMoveStore.set(result.canMove);
     PromotionPosStore.reset();
     return;
   }
@@ -85,7 +76,7 @@ export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
     HandPieceStore.reset();
     return;
   }
-  HandPieceStore.set(result.newHandPiece);
+  HandPieceStore.set(result.handPiece);
   CanMoveStore.set(result.canMove);
 }
 

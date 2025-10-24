@@ -1,13 +1,13 @@
 <script lang="ts">
   import Piece from "./Piece.svelte";
-  import type { PieceType } from "@/types/shogi.d.ts";
+  import type { Captures, PieceType } from "@/types/shogi.d.ts";
 
   let {
     squareWidth = 40,
     squareHeight = 44,
     pieceScale = 0.9,
     fontSize = 32,
-    capturedPieces = [] as { piece: PieceType; num: number }[],
+    capturedPieces = [] as Captures,
     handPiece = null as PieceType | null,
     reverse = false,
     clickHandler = (piece: PieceType) => {

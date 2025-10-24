@@ -6,7 +6,7 @@
 
   import {
     GridStore,
-    CapturedStore,
+    CapturesStore,
     HandPieceStore,
     ReverseStore,
   } from "@/store/game-board.svelte";
@@ -67,7 +67,7 @@
         {squareWidth}
         {squareHeight}
         {pieceScale}
-        capturedPieces={CapturedStore.get(true)}
+        capturedPieces={CapturesStore.get(true)}
         reverse={true}
         handPiece={handPiece && !handPiece.position && handPiece.isSente
           ? handPiece.piece
@@ -81,7 +81,7 @@
         {squareWidth}
         {squareHeight}
         {pieceScale}
-        capturedPieces={CapturedStore.get(false)}
+        capturedPieces={CapturesStore.get(false)}
         reverse={true}
         handPiece={handPiece && !handPiece.position && !handPiece.isSente
           ? handPiece.piece
@@ -153,7 +153,7 @@
           {squareWidth}
           {squareHeight}
           {pieceScale}
-          capturedPieces={CapturedStore.get(false)}
+          capturedPieces={CapturesStore.get(false)}
           handPiece={handPiece && !handPiece.position && !handPiece.isSente
             ? handPiece.piece
             : null}
@@ -167,7 +167,7 @@
           {squareWidth}
           {squareHeight}
           {pieceScale}
-          capturedPieces={CapturedStore.get(true)}
+          capturedPieces={CapturesStore.get(true)}
           handPiece={handPiece && !handPiece.position && handPiece.isSente
             ? handPiece.piece
             : null}

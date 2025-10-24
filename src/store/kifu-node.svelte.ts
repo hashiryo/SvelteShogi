@@ -14,6 +14,12 @@ export class CurrentIndexStore {
 let nodes: KifuNode[] = $state([]);
 
 export class NodesStore {
+  static get() {
+    return nodes;
+  }
+  static set(value: KifuNode[]) {
+    nodes = value;
+  }
   static reset() {
     nodes = [];
   }

@@ -3,7 +3,7 @@ import {
   GridStore,
   IsSenteTurnStore,
   HandPieceStore,
-  CapturedStore,
+  CapturesStore,
 } from "@/store/game-board.svelte";
 import {
   CurrentIndexStore,
@@ -21,8 +21,8 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   BranchesStore.set(0);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
   GridStore.set(grid);
-  CapturedStore.set(true, capturedSente);
-  CapturedStore.set(false, capturedGote);
+  CapturesStore.set(true, capturedSente);
+  CapturesStore.set(false, capturedGote);
   HandPieceStore.reset();
   IsSenteTurnStore.set(isSente);
   LastPosStore.reset();

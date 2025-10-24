@@ -22,8 +22,8 @@ export function clickSquare(
       move: string;
     }
   | {
-      newHandPiece: HandPieceFrom;
-      newCanMove: boolean[];
+      handPiece: HandPieceFrom;
+      canMove: boolean[];
     }
   | {
       promotionPos: { row: number; col: number };
@@ -33,12 +33,12 @@ export function clickSquare(
   if (!handPiece) {
     if (square && square.isSente === isSente) {
       return {
-        newHandPiece: {
+        handPiece: {
           piece: square.piece,
           isSente: square.isSente,
           position: { row, col },
         },
-        newCanMove: getCanMoveFromSquare(grid, row, col),
+        canMove: getCanMoveFromSquare(grid, row, col),
       };
     }
     return null;
@@ -50,12 +50,12 @@ export function clickSquare(
   if (!canMove[row * 9 + col]) {
     if (square && square.isSente === isSente) {
       return {
-        newHandPiece: {
+        handPiece: {
           piece: square.piece,
           isSente: square.isSente,
           position: { row, col },
         },
-        newCanMove: getCanMoveFromSquare(grid, row, col),
+        canMove: getCanMoveFromSquare(grid, row, col),
       };
     } else {
       return null;
@@ -110,7 +110,7 @@ export function clickCaptured(
     piece: PieceType;
     isSente: boolean;
   }
-): { newHandPiece: HandPieceFrom; canMove: boolean[] } | null {
+): { handPiece: HandPieceFrom; canMove: boolean[] } | null {
   if (captured.isSente === isSenteTurn) {
     if (
       handPiece &&
@@ -121,7 +121,7 @@ export function clickCaptured(
       return null;
     } else {
       return {
-        newHandPiece: {
+        handPiece: {
           piece: captured.piece,
           isSente: captured.isSente,
           position: null,
@@ -131,26 +131,4 @@ export function clickCaptured(
     }
   }
   return null;
-}
-
-export function clickPromotion(
-  grid: (Square | null)[],
-  lastPos: { row: number; col: number } | null,
-  fromPos: { row: number; col: number },
-  toPos: { row: number; col: number },
-  getPromote: boolean
-): {
-  display: string;
-  move: string;
-} {
-  const { row, col } = toPos;
-  const display =
-    getDisplayMoveFromGrid(grid, fromPos, toPos, lastPos) +
-    (getPromote ? "成" : "不成");
-  const fs = positionToStr(fromPos.row, fromPos.col);
-  const ts = positionToStr(row, col);
-  return {
-    display,
-    move: `${fs}${ts}${getPromote ? "+" : ""}`,
-  };
 }

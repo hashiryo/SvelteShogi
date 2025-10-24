@@ -1,4 +1,4 @@
-import type { PieceType, Square, HandPieceFrom } from "@/types/shogi";
+import type { PieceType, Square, HandPieceFrom, Captures } from "@/types/shogi";
 
 let grid: (Square | null)[] = $state([]);
 
@@ -25,8 +25,8 @@ export class GridStore {
   }
 }
 
-let capturedSente: { piece: PieceType; num: number }[] = $state([]);
-let capturedGote: { piece: PieceType; num: number }[] = $state([]);
+let capturedSente: Captures = $state([]);
+let capturedGote: Captures = $state([]);
 
 const TYPE_ORDER: Record<PieceType, number> = {
   歩: 1,
@@ -45,11 +45,11 @@ const TYPE_ORDER: Record<PieceType, number> = {
   竜: 14,
 };
 
-export class CapturedStore {
-  static get(isSente: boolean): { piece: PieceType; num: number }[] {
+export class CapturesStore {
+  static get(isSente: boolean): Captures {
     return isSente ? capturedSente : capturedGote;
   }
-  static set(isSente: boolean, captured: { piece: PieceType; num: number }[]) {
+  static set(isSente: boolean, captured: Captures) {
     if (isSente) {
       capturedSente = captured;
     } else {
