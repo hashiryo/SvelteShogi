@@ -70,7 +70,7 @@
 
 <div class="kifu-history">
   <div class="card-header">
-    棋譜
+    指し手
     <div class="kifu-history-keyboard-hint">
       <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
     </div>

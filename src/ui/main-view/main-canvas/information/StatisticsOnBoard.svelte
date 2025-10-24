@@ -29,6 +29,17 @@
   }
 
   function getStartEndPositions(arrow: StatisticsFrom) {
+    if (!arrow) {
+      return {
+        startX: 0,
+        startY: 0,
+        endX: 0,
+        endY: 0,
+        width: 30,
+        color: { r: 255, g: 255, b: 255 },
+        info: "",
+      };
+    }
     if ("startRow" in arrow && "startCol" in arrow) {
       // FromSquare
       const startIndex = arrow.startRow * 9 + arrow.startCol;
