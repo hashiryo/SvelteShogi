@@ -1,4 +1,4 @@
-import type { PieceType } from "@/types/shogi";
+import type { PieceType, Square } from "@/types/shogi";
 
 function getGoldMoveVec(): { r: number; c: number; slide: boolean }[] {
   return [
@@ -129,4 +129,82 @@ export function canPromotePos(
   toRow: number
 ) {
   return isSente ? fromRow < 3 || toRow < 3 : fromRow > 5 || toRow > 5;
+}
+
+export function getCanMoveFromSquare(
+  grid: (Square | null)[],
+  row: number,
+  col: number
+): boolean[] {
+  let canMove: boolean[] = new Array(9 * 9).fill(false);
+  const square = grid[row * 9 + col];
+  if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
+  const vec = getPieceMoveVec(square.piece);
+  for (const { r, c, slide } of vec) {
+    const rv = square.isSente ? r : -r; // Reverse direction for gote
+    const cv = c;
+    let nr = row + rv;
+    let nc = col + cv;
+    while (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
+      const index = nr * 9 + nc;
+      const targetSquare = grid[index];
+      if (targetSquare) {
+        if (targetSquare.isSente !== square.isSente) {
+          canMove[index] = true;
+        }
+        break;
+      } else {
+        canMove[index] = true; // Empty square can be moved to
+      }
+      if (!slide) break; // If not sliding piece, stop here
+      nr += rv;
+      nc += cv;
+    }
+  }
+  return canMove;
+}
+
+export function getCanMoveFromCaptured(
+  grid: (Square | null)[],
+  piece: PieceType,
+  isSente: boolean
+): boolean[] {
+  let canMove: boolean[] = new Array(9 * 9).fill(true);
+  const vec = getPieceMoveVec(piece);
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const index = r * 9 + c;
+      if (grid[index]) canMove[index] = true; // Reset canMove for occupied squares
+    }
+  }
+  const top = isSente ? 0 : 8;
+  if (piece === "歩") {
+    for (let c = 0; c < 9; c++) {
+      canMove[top * 9 + c] = false;
+      let nifu = false;
+      for (let r = 0; r < 9; r++) {
+        const square = grid[r * 9 + c];
+        if (square && square.isSente === isSente) {
+          if (square.piece === "歩") {
+            nifu = true; // Found another pawn in the same column
+            break;
+          }
+        }
+      }
+      if (nifu) {
+        for (let r = 0; r < 9; r++) canMove[r * 9 + c] = false;
+      }
+    }
+  }
+  if (piece === "香") {
+    for (let c = 0; c < 9; c++) canMove[top * 9 + c] = false;
+  }
+  if (piece === "桂") {
+    const top2 = isSente ? 1 : 7;
+    for (let c = 0; c < 9; c++) {
+      canMove[top * 9 + c] = false;
+      canMove[top2 * 9 + c] = false;
+    }
+  }
+  return canMove;
 }

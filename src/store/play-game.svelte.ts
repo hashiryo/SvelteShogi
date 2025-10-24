@@ -1,4 +1,4 @@
-let canMove = $state(Array(81).fill(false));
+let canMove: boolean[] = $state(Array(81).fill(false));
 
 export class CanMoveStore {
   static get(row: number, col: number): boolean {
@@ -18,7 +18,7 @@ export class CanMoveStore {
   }
 }
 
-let promotionPos = $state(null) as { row: number; col: number } | null;
+let promotionPos: { row: number; col: number } | null = $state(null);
 
 export class PromotionPosStore {
   static get(): { row: number; col: number } | null {
@@ -32,7 +32,7 @@ export class PromotionPosStore {
   }
 }
 
-let lastPos = $state(null) as { row: number; col: number } | null;
+let lastPos: { row: number; col: number } | null = $state(null);
 
 export class LastPosStore {
   static get(): { row: number; col: number } | null {
