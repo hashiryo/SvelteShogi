@@ -174,7 +174,7 @@ export function getCanMoveFromCaptured(
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
       const index = r * 9 + c;
-      if (grid[index]) canMove[index] = true; // Reset canMove for occupied squares
+      if (grid[index]) canMove[index] = false; // Reset canMove for occupied squares
     }
   }
   const top = isSente ? 0 : 8;

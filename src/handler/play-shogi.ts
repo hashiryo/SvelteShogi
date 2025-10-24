@@ -86,6 +86,7 @@ export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
     return;
   }
   HandPieceStore.set(result.newHandPiece);
+  CanMoveStore.set(result.canMove);
 }
 
 export async function clickPromotionHandler(getPromote: boolean) {

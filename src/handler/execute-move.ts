@@ -98,7 +98,7 @@ export async function executeMove(display: string, move: string) {
     const { row, col } = strToPosition(`${toColStr}${toRowStr}`);
     const piece = charToPieceTypeMap[pieceChar];
     GridStore.setSquare(row, col, piece, isSente);
-    CapturedStore.decrement(!isSente, piece);
+    CapturedStore.decrement(isSente, piece);
     LastPosStore.set(row, col);
   }
 

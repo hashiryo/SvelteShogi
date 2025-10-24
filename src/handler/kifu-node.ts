@@ -15,7 +15,7 @@ import {
   sfenxToShogiPosition,
   strToPosition,
 } from "@/domain/sfenx";
-import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
+import { LastPosStore } from "@/store/play-game.svelte";
 
 function setCurrentNode(nodeIndex: number) {
   if (CurrentIndexStore.get() === nodeIndex) return;
