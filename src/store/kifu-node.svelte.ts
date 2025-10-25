@@ -23,9 +23,6 @@ export class NodesStore {
   static reset() {
     nodes = [];
   }
-  static size() {
-    return nodes.length;
-  }
   static getNode(index: number) {
     return nodes[index];
   }
@@ -34,9 +31,6 @@ export class NodesStore {
   }
   static setBranchNode(preIndex: number, nexIndex: number) {
     nodes[preIndex].br_next = nexIndex;
-  }
-  static setFavorite(index: number, isFavorite: boolean) {
-    nodes[index].isFavorite = isFavorite;
   }
   static setSaved(index: number, isSaved: boolean) {
     nodes[index].isSaved = isSaved;

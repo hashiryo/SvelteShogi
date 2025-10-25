@@ -35,6 +35,44 @@ export class FavroiteMovesRepository {
   }
 
   /**
+   * 複数の局面に対するお気に入りの手を取得
+   * @param sfenxes 局面のSFENX表記の配列
+   * @param userId ユーザーID（オプション）
+   * @returns お気に入りの手のリスト
+   * @throws データベースエラーが発生した場合
+   */
+  static async fetchMulti(
+    sfenxes: string[],
+    userId?: string
+  ): Promise<string[][]> {
+    let query = supabase.from(TABLE).select("sfenx,move").in("sfenx", sfenxes);
+
+    // user_idがnullの場合は is で比較、値がある場合は eq で比較
+    if (userId) {
+      query = query.eq("user_id", userId);
+    } else {
+      query = query.is("user_id", null);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("お気に入りの取得に失敗しました:", error);
+      throw error;
+    }
+    return data.reduce<string[][]>(
+      (acc, item) => {
+        const index = sfenxes.indexOf(item.sfenx);
+        if (index >= 0) {
+          acc[index].push(item.move);
+        }
+        return acc;
+      },
+      sfenxes.map(() => [])
+    );
+  }
+
+  /**
    * お気に入りの手を追加
    * @param sfenx 局面のSFENX表記
    * @param move 手の表記

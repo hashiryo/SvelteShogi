@@ -1,3 +1,4 @@
+import { setFavorite } from "@/domain/kifu-node";
 import { flipMove, flipSfenx } from "@/domain/sfenx";
 import { FavroiteMovesRepository } from "@/lib/supabase/favorite-moves";
 import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
@@ -24,6 +25,20 @@ export async function fetchAndSetFavoriteMoves(
   }
 }
 
+// とりあえず先手スタート固定
+export async function fetchAndSetFavoriteMovesMulti(sfenxes: string[]) {
+  sfenxes = sfenxes.map((sfenx, idx) =>
+    idx % 2 === 0 ? sfenx : flipSfenx(sfenx)
+  );
+  // ToDo: user?.id を使うようにする
+  const result = await FavroiteMovesRepository.fetchMulti(sfenxes);
+  for (let i = 0; i < sfenxes.length; ++i) {
+    if (!FavoriteMovesStore.get(sfenxes[i])) {
+      FavoriteMovesStore.set(sfenxes[i], result[i]);
+    }
+  }
+}
+
 export async function clickFavoriteIcon(index: number) {
   let { prev, move, isSente, isFavorite } = NodesStore.getNode(index);
   let { sfenx } = NodesStore.getNode(prev);
@@ -39,14 +54,6 @@ export async function clickFavoriteIcon(index: number) {
     await FavroiteMovesRepository.insert(sfenx, move);
     FavoriteMovesStore.insert(sfenx, move);
   }
-  const n = NodesStore.size();
-  for (let i = 1; i < n; ++i) {
-    let { prev, move: targetMove, isSente } = NodesStore.getNode(i);
-    if (isSente) targetMove = flipMove(targetMove);
-    if (move === targetMove) {
-      let { sfenx: targetSfenx } = NodesStore.getNode(prev);
-      if (isSente) targetSfenx = flipSfenx(targetSfenx);
-      if (sfenx === targetSfenx) NodesStore.setFavorite(i, !isFavorite);
-    }
-  }
+  const nodes = setFavorite(NodesStore.get(), sfenx, move, !isFavorite);
+  NodesStore.set(nodes);
 }

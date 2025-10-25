@@ -1,5 +1,5 @@
-import { getCurrentFavorites } from "@/handler/favorite-moves";
 import type { KifuNode } from "@/types/shogi";
+import { flipMove, flipSfenx } from "./sfenx";
 
 export function pushOrJumpToKifu(
   currentIndex: number,
@@ -30,9 +30,6 @@ export function pushOrJumpToKifu(
     nodes[curNextIndex].br_next = newIndex;
   }
 
-  const moves = getCurrentFavorites(currentNode.isSente, currentNode.sfenx);
-  const isFavorite = moves ? moves.includes(move) : false;
-
   nodes.push({
     display,
     sfenx,
@@ -41,7 +38,7 @@ export function pushOrJumpToKifu(
     br_next,
     isSente: isSenteNext,
     move,
-    isFavorite,
+    isFavorite: false,
     isSaved: false,
   });
   nodes[currentIndex].next = newIndex;
@@ -57,4 +54,23 @@ export function getBranches(nodes: KifuNode[], index: number): number[] {
     cur = nodes[cur].br_next;
   } while (cur !== index);
   return branches;
+}
+
+export function setFavorite(
+  nodes: KifuNode[],
+  sfenx: string,
+  move: string,
+  isFavorite: boolean
+): KifuNode[] {
+  const n = nodes.length;
+  for (let i = 1; i < n; ++i) {
+    let { prev, move: targetMove, isSente } = nodes[i];
+    if (isSente) targetMove = flipMove(targetMove);
+    if (move === targetMove) {
+      let { sfenx: targetSfenx } = nodes[prev];
+      if (isSente) targetSfenx = flipSfenx(targetSfenx);
+      if (sfenx === targetSfenx) nodes[i].isFavorite = isFavorite;
+    }
+  }
+  return nodes;
 }

@@ -2,6 +2,10 @@
   import { parseKif, readFileAsText } from "@/domain/format-parcer";
   import { movesToNodes } from "@/domain/move";
   import {
+    fetchAndSetFavoriteMovesMulti,
+    getCurrentFavorites,
+  } from "@/handler/favorite-moves";
+  import {
     CapturesStore,
     GridStore,
     IsSenteTurnStore,
@@ -28,8 +32,24 @@
       console.log("メタデータ:", metadata);
       console.log("指し手:", moves);
 
-      const { grid, capturedSente, capturedGote, isSente, nodes } =
+      let { grid, capturedSente, capturedGote, isSente, nodes } =
         movesToNodes(moves);
+
+      const sfenxes = nodes.map((node) => node.sfenx);
+      await fetchAndSetFavoriteMovesMulti(sfenxes);
+
+      const n = nodes.length;
+      for (let i = 0; i + 1 < n; i++) {
+        const favoriteMoves = getCurrentFavorites(
+          nodes[i].isSente,
+          nodes[i].sfenx
+        );
+        const move = nodes[i + 1].move;
+        const isFavorite = favoriteMoves ? favoriteMoves.includes(move) : false;
+        if (isFavorite) {
+          nodes[i + 1].isFavorite = true;
+        }
+      }
       GridStore.set(grid);
       CapturesStore.set(true, capturedSente);
       CapturesStore.set(false, capturedGote);

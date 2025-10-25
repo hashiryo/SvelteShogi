@@ -11,7 +11,10 @@ import {
   BranchesStore,
 } from "@/store/kifu-node.svelte";
 import { PromotionPosStore, LastPosStore } from "@/store/play-game.svelte";
-import { fetchAndSetFavoriteMoves } from "./favorite-moves";
+import {
+  fetchAndSetFavoriteMoves,
+  getCurrentFavorites,
+} from "./favorite-moves";
 import { fetchAndSetMoveStatistics } from "./move-statistics";
 import { moveToNextGridCaptures } from "@/domain/move";
 import { getBranches, pushOrJumpToKifu } from "@/domain/kifu-node";
@@ -65,8 +68,9 @@ export async function executeMove(display: string, move: string) {
     CapturesStore.get(true),
     CapturesStore.get(false)
   );
-  const { nodes, currentIndex } = pushOrJumpToKifu(
-    CurrentIndexStore.get(),
+  const cur = CurrentIndexStore.get();
+  let { nodes, currentIndex: next } = pushOrJumpToKifu(
+    cur,
     NodesStore.get(),
     display,
     sfenx,
@@ -74,9 +78,17 @@ export async function executeMove(display: string, move: string) {
     move
   );
 
-  CurrentIndexStore.set(currentIndex);
+  if (next === nodes.length - 1) {
+    const moves = getCurrentFavorites(nodes[cur].isSente, nodes[cur].sfenx);
+    const isFavorite = moves ? moves.includes(move) : false;
+    if (isFavorite) {
+      nodes[next].isFavorite = true;
+    }
+  }
+
+  CurrentIndexStore.set(next);
   NodesStore.set(nodes);
-  BranchesStore.set(getBranches(nodes, currentIndex));
+  BranchesStore.set(getBranches(nodes, next));
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
   await fetchAndSetMoveStatistics(!isSente, sfenx);
   IsSenteTurnStore.set(!isSente);
