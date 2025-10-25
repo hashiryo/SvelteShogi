@@ -98,8 +98,8 @@ E --> |いいえ| G["選択をリセット"]
 
 ```ts
 // game-board.svelte.ts 内
-let grid: (Square | null)[] = $state(initGrid());
-export function getSquare(row: number, col: number): Square | null {
+let grid: (PlayerPiece | null)[] = $state(initGrid());
+export function getSquare(row: number, col: number): PlayerPiece | null {
   return grid[row * 9 + col];
 }
 export function setSquare(
@@ -117,10 +117,10 @@ export function setSquare(
 ```mermaid
 classDiagram
 class GameBoardStore {
-+getSquare(row, col) Square | null
++getSquare(row, col) PlayerPiece | null
 +setSquare(row, col, piece, isSente)
 +resetSquare(row, col)
-+getGrid() (Square | null)[]
++getGrid() (PlayerPiece | null)[]
 +setGrid(newGrid)
 +getCaptured(isSente) CapturedPiece[]
 +incrementCaptured(piece, isSente)

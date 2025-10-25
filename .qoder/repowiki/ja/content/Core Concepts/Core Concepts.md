@@ -187,7 +187,7 @@ Converter-->>Game : ゲーム状態オブジェクトを返す
 ```typescript
 // display.test.tsからの例
 it("A", () => {
-  let grid: (Square | null)[] = Array(81).fill(null);
+  let grid: (PlayerPiece | null)[] = Array(81).fill(null);
   grid[1 * 9 + 6] = { piece: "金", isSente: true };
   grid[2 * 9 + 8] = { piece: "金", isSente: true };
   expect(
@@ -259,7 +259,7 @@ Calculate --> Result["方向カウントを返す"]
 ```typescript
 // display.test.tsからの3つ以上の駒の曖昧さをテストする例
 it("A", () => {
-  let grid: (Square | null)[] = Array(81).fill(null);
+  let grid: (PlayerPiece | null)[] = Array(81).fill(null);
   grid[2 * 9 + 3] = { piece: "金", isSente: true };
   grid[2 * 9 + 4] = { piece: "金", isSente: true };
   grid[2 * 9 + 5] = { piece: "金", isSente: true };

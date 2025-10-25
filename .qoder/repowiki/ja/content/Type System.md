@@ -63,12 +63,12 @@ export type PieceType =
 
 この型には、成っていない駒（歩, 香, 桂, 銀, 金, 角, 飛, 玉）と、成った駒（と, 杏, 圭, 全, 馬, 竜）が含まれます。ユニオン型を使用することで、アプリケーション全体で有効な駒の種類のみが使用されることが保証され、無効な駒の割り当てが防止されます。
 
-### Square
+### PlayerPiece
 
-`Square` インターフェースは、将棋盤上の1つのマスを表します：
+`PlayerPiece` インターフェースは、将棋盤上の1つのマスを表します：
 
 ```typescript
-export type Square = {
+export type PlayerPiece = {
   piece: PieceType;
   isSente: boolean;
 };
@@ -122,7 +122,7 @@ SvelteShogiのデータモデルは、ゲームエンティティ間の明確な
 ゲーム盤は81マス（9x9グリッド）の配列として表現され、各マスには駒があるか空かのいずれかです。`game-board.svelte.ts` ストアでは、盤面は次のように定義されています：
 
 ```typescript
-let grid: (Square | null)[] = $state(initGrid());
+let grid: (PlayerPiece | null)[] = $state(initGrid());
 ```
 
 この配列ベースの表現により、行と列のインデックスを使用して任意の盤面位置に効率的にアクセスできます。盤面とマスの関係は1対多であり、各マスは盤上の正確に1つの位置に属します。
@@ -188,7 +188,7 @@ SvelteShogiの型システムは、型安全性を確保するためにユニオ
 
 ```typescript
 const square = getSquare(row, col);
-if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
+if (!square) throw new Error(`PlayerPiece at (${row}, ${col}) does not exist.`);
 ```
 
 これらのランタイムチェックは静的型システムを補完し、無効なデータに対する防御を提供します。
@@ -211,7 +211,7 @@ class PieceType {
 +馬
 +竜
 }
-class Square {
+class PlayerPiece {
 +piece : PieceType
 +isSente : boolean
 }
@@ -230,9 +230,9 @@ class KifuNode {
 +move : string
 +isFavorite : boolean
 }
-Square --> PieceType : "contains"
+PlayerPiece --> PieceType : "contains"
 HandPieceFrom --> PieceType : "references"
-KifuNode --> Square : "represents board state"
+KifuNode --> PlayerPiece : "represents board state"
 ```
 
 **図式の出典**
@@ -253,7 +253,7 @@ KifuNode --> Square : "represents board state"
 アプリケーションは、Svelteの `$state` デコレータを使用して、ゲーム状態のリアクティブストアを作成します：
 
 ```typescript
-let grid: (Square | null)[] = $state(initGrid());
+let grid: (PlayerPiece | null)[] = $state(initGrid());
 let currentIndex: number = $state(-1);
 let nodes: KifuNode[] = $state([]);
 ```
@@ -322,7 +322,7 @@ export function pushKifuNode(
 
 ```typescript
 const square = getSquare(row, col);
-if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
+if (!square) throw new Error(`PlayerPiece at (${row}, ${col}) does not exist.`);
 if (fromSquare.isSente !== isSente)
   throw new Error(`fromSquare is not my piece {from: ${from.col},${from.row}}`);
 ```
@@ -335,7 +335,7 @@ if (fromSquare.isSente !== isSente)
 
 ```typescript
 export function sfenxToShogiBoard(sfenx: string): {
-  grid: (Square | null)[];
+  grid: (PlayerPiece | null)[];
   capturedSente: { piece: PieceType; num: number }[];
   capturedGote: { piece: PieceType; num: number }[];
 } {
@@ -386,7 +386,7 @@ export function promotePiece(piece: PieceType): PieceType {
 ### 初期盤面状態
 
 ```typescript
-const initialGrid: (Square | null)[] = Array(81).fill(null);
+const initialGrid: (PlayerPiece | null)[] = Array(81).fill(null);
 // 先手駒を設定（盤面の下部）
 initialGrid[9 * 8 + 0] = { piece: "香", isSente: true };
 initialGrid[9 * 8 + 1] = { piece: "桂", isSente: true };

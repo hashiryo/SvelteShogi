@@ -1,4 +1,9 @@
-import type { HandPieceFrom, PieceType, Position, Square } from "@/types/shogi";
+import type {
+  HandPieceFrom,
+  PieceType,
+  Position,
+  PlayerPiece,
+} from "@/types/shogi";
 import {
   canPromotePos,
   getCanMoveFromCaptured,
@@ -9,7 +14,7 @@ import { pieceTypeToCharMap, positionToStr } from "./sfenx";
 import { getDisplayMoveFromCaptured, getDisplayMoveFromGrid } from "./display";
 
 export function clickSquare(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   handPiece: HandPieceFrom | null,
   canMove: boolean[],
   isSente: boolean,
@@ -103,7 +108,7 @@ export function clickSquare(
 }
 
 export function clickCaptured(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   handPiece: HandPieceFrom | null,
   isSenteTurn: boolean,
   captured: {

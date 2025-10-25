@@ -93,7 +93,7 @@ HandSection --> GoteHand["後手持ち駒: '-'"]
 ### 主要な関数とデータフロー
 
 - **`sfenxToShogiBoard(sfenx: string)`**：入力文字列を分割し、パースを委任するメインエントリポイント。
-- **`strToGrid(gridString: string)`**：盤面部分を81個の`Square | null`値のフラット配列に変換。
+- **`strToGrid(gridString: string)`**：盤面部分を81個の`PlayerPiece | null`値のフラット配列に変換。
 - **`strToCapturedPieces(capturedString: string)`**：持ち駒部分を`{ piece: PieceType, num: number }`オブジェクトのリストにデコード。
 
 ### パースロジック
@@ -101,7 +101,7 @@ HandSection --> GoteHand["後手持ち駒: '-'"]
 盤面のパースは各文字を反復処理します：
 
 - 数字1～9：空きマスカウンタをインクリメントし、それに応じてインデックスを進めます。
-- 文字：`charToSquare`を使用して`Square`オブジェクトに変換し、駒の種類と所有者（先手/後手）を大文字小文字で判別します。
+- 文字：`charToSquare`を使用して`PlayerPiece`オブジェクトに変換し、駒の種類と所有者（先手/後手）を大文字小文字で判別します。
 
 持ち駒のパースは、文字コードの算術演算を使用してASCII値から数をデコードし、5進数符号化された値から個々の駒数を抽出するためにモジュラー算術を適用します。
 

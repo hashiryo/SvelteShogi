@@ -219,7 +219,7 @@ flowchart TD
 A["sfenxToShogiBoard(sfenx)"] --> B["sfenxを' 'で分割"]
 B --> C["gridString → strToGrid()"]
 B --> D["capturedPiecesString → strToCapturedPieces()"]
-C --> E["grid: (Square | null)[]"]
+C --> E["grid: (PlayerPiece | null)[]"]
 D --> F["capturedSente, capturedGote"]
 E --> G["return {grid, capturedSente, capturedGote}"]
 F --> G

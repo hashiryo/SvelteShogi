@@ -1,4 +1,4 @@
-import type { PieceType, Position, Square } from "@/types/shogi";
+import type { PieceType, Position, PlayerPiece } from "@/types/shogi";
 import { canPromotePos, getPieceMoveVec, promotePiece } from "./shogi-rule";
 import { charToPieceTypeMap, strToPosition } from "./sfenx";
 
@@ -18,7 +18,7 @@ export const ZENKAKU_NUM = [
 type VDirCnt = { up: number; none: number; down: number };
 
 function getFromVDirections(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   row: number,
   col: number,
   piece: PieceType,
@@ -56,7 +56,7 @@ function getFromVDirections(
 }
 
 export function getDisplayMoveFromCaptured(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   row: number,
   col: number,
   piece: PieceType,
@@ -76,7 +76,7 @@ export function getDisplayMoveFromCaptured(
 }
 
 export function getDisplayMoveFromGrid(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   from: Position,
   to: Position,
   lastPos: Position | null
@@ -155,7 +155,7 @@ export function getDisplayMoveFromGrid(
 }
 
 export function getDisplayMoveFromMoveStr(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   move: string,
   isSente: boolean,
   lastPos: Position | null

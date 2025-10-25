@@ -10,7 +10,7 @@ import type {
   KifuNode,
   PieceType,
   Position,
-  Square,
+  PlayerPiece,
 } from "@/types/shogi";
 import { getDisplayMoveFromMoveStr } from "./display";
 
@@ -54,13 +54,13 @@ function decrement(captures: Captures, piece: PieceType): Captures {
 }
 
 function executeFromGrid(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   captures: Captures,
   from: Position,
   to: Position,
   prom: boolean
 ): {
-  grid: (Square | null)[];
+  grid: (PlayerPiece | null)[];
   captures: Captures;
   lastPos: Position;
 } {
@@ -68,7 +68,9 @@ function executeFromGrid(
   const toIdx = to.row * 9 + to.col;
   const fromSquare = grid[fromIdx];
   if (!fromSquare)
-    throw new Error(`Square at (${from.row}, ${from.col}) does not exist.`);
+    throw new Error(
+      `PlayerPiece at (${from.row}, ${from.col}) does not exist.`
+    );
   const toSquare = grid[toIdx];
   if (toSquare) {
     captures = increment(captures, originalPiece(toSquare.piece));
@@ -82,13 +84,13 @@ function executeFromGrid(
 }
 
 function executeFromCaptures(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   captures: Captures,
   isSente: boolean,
   to: Position,
   piece: PieceType
 ): {
-  grid: (Square | null)[];
+  grid: (PlayerPiece | null)[];
   captures: Captures;
   lastPos: Position;
 } {
@@ -101,12 +103,12 @@ function executeFromCaptures(
 }
 
 export function moveToNextGridCaptures(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   captures: Captures,
   isSente: boolean,
   move: string
 ): {
-  grid: (Square | null)[];
+  grid: (PlayerPiece | null)[];
   captures: Captures;
   lastPos: Position;
 } {
@@ -130,7 +132,7 @@ export function moveToNextGridCaptures(
 }
 
 export function movesToNodes(moves: string[]): {
-  grid: (Square | null)[];
+  grid: (PlayerPiece | null)[];
   capturedSente: Captures;
   capturedGote: Captures;
   isSente: boolean;

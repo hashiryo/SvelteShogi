@@ -192,7 +192,7 @@ export type PieceType =
   | "全"
   | "馬"
   | "竜";
-export type Square = { piece: PieceType; isSente: boolean };
+export type PlayerPiece = { piece: PieceType; isSente: boolean };
 ```
 
 一般的な解析の問題には以下が含まれます：

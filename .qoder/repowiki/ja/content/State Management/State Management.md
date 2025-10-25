@@ -12,7 +12,9 @@
 </cite>
 
 ## 更新概要
-**変更内容**   
+
+**変更内容**
+
 - `kifu-node.svelte.ts` にノードの重複防止機能を実装し、`pushOrJumpToKifu` 関数を追加
 - 棋譜ノードの兄弟管理（`br_next`）のロジックを強化し、既存ノードとの重複を検出してナビゲーションを最適化
 - `kifu-node.ts` ハンドラに `pushOrJumpToKifu` 関数を追加し、手の追加時に重複をチェックして既存ノードにジャンプするように変更
@@ -21,6 +23,7 @@
 - 棋譜ノードの双方向リンク構造（`br_next`）の説明をコード実装に基づいて正確化
 
 ## 目次
+
 1. [はじめに](#はじめに)
 2. [コア状態ストア](#コア状態ストア)
 3. [$stateと$derivedによるリアクティビティ](#stateとderivedによるリアクティビティ)
@@ -31,9 +34,11 @@
 8. [よくある問題と解決策](#よくある問題と解決策)
 
 ## はじめに
+
 SvelteShogiアプリケーションは、Svelte 5の組み込みリアクティビティプリミティブ（特に `$state` および `$derived`）を使用してリアクティブな状態管理システムを実装しています。このアプローチにより、外部の状態管理ライブラリを必要とせずに、アプリケーション全体で効率的かつ細粒度の高いリアクティビティを提供します。状態システムは、将棋ゲームの異なる側面を管理する3つの専用ストアに分割されています：盤面状態、ゲームプレイロジック、および手の履歴です。このモジュール設計により、関心の分離が保たれると同時に、ストア間の明確に定義された相互作用を通じて一貫性が維持されます。
 
 **セクションのソース**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L165)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L49)
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)
@@ -41,10 +46,11 @@ SvelteShogiアプリケーションは、Svelte 5の組み込みリアクティ�
 ## コア状態ストア
 
 ### 盤面ストア
+
 `game-board.svelte.ts` ストアは、駒の位置や捕獲された駒を含む将棋盤の物理状態を管理します。`$state` を使用して、盤面グリッド、両プレイヤー（先手と後手）の捕獲駒、および手番情報をリアクティブ変数として作成します。
 
 ```typescript
-let grid: (Square | null)[] = $state(initGrid());
+let grid: (PlayerPiece | null)[] = $state(initGrid());
 let capturedSente: { piece: PieceType; num: number }[] = $state([]);
 let capturedGote: { piece: PieceType; num: number }[] = $state([]);
 let isSenteTurn = $state(true);
@@ -53,9 +59,11 @@ let isSenteTurn = $state(true);
 このストアは、マス目の取得・設定、捕獲駒の管理、現在のプレイヤーの手番の追跡を行う関数を提供します。`initGrid()` 関数は、すべての駒が初期位置にある初期将棋盤の構成をセットアップします。
 
 **セクションのソース**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L35-L103)
 
 ### ゲームプレイストア
+
 `play-game.svelte.ts` ストアは、有効な手やユーザーのインタラクションを決定するゲームプレイ状態を扱います。どのマスが移動可能か、成りの位置、最後に動かした駒の位置を追跡します。
 
 ```typescript
@@ -67,9 +75,11 @@ let lastPos = $state(null) as { row: number; col: number } | null;
 このストアは、ユーザー入力とゲームロジックの中間として機能し、有効な手や成りの機会といった特別なゲーム状態についての視覚的フィードバックを提供します。
 
 **セクションのソース**
+
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L49)
 
 ### 棋譜履歴ストア
+
 `kifu-node.svelte.ts` ストアは、分岐とナビゲーションをサポートして手の履歴（棋譜）を管理します。リンクされたノードを使用してツリー構造を実装し、ゲームプレイのバリエーションをサポートします。
 
 ```typescript
@@ -93,20 +103,23 @@ A --> I[isFavorite: boolean]
 ```
 
 **図のソース**
+
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)
 - [shogi.d.ts](file://src/types/shogi.d.ts#L50-L75)
 
 **セクションのソース**
+
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)
 - [shogi.d.ts](file://src/types/shogi.d.ts#L50-L75)
 
 ## $stateと$derivedによるリアクティビティ
 
 ### 状態の宣言と初期化
+
 Svelte 5の `$state` マクロは、変更時に自動的に更新をトリガーするリアクティブ変数を作成します。SvelteShogiでは、ストア内のすべての状態変数の宣言にこれを使用しています：
 
 ```typescript
-let grid: (Square | null)[] = $state(initGrid());
+let grid: (PlayerPiece | null)[] = $state(initGrid());
 let canMove = $state(Array(81).fill(false));
 let currentIndex: number = $state(-1);
 ```
@@ -114,6 +127,7 @@ let currentIndex: number = $state(-1);
 これらの変数が提供されたセッタ関数を通じて更新されると、Svelteは変更を自動的に追跡し、依存する値やUIコンポーネントを更新します。
 
 ### 導出状態のパターン
+
 提供されたコードでは明示的に示されていませんが、Svelte 5の `$derived` はリアクティブ状態に基づいて値を計算するために使用されます。たとえば、有効な手は現在の盤面状態と手番から導出できます：
 
 ```typescript
@@ -128,12 +142,14 @@ let validMoves = $derived(() => {
 このパターンにより、依存関係が変更されるたびに計算値が自動的に更新され、手動での更新呼び出しをせずに一貫性が保たれます。
 
 **セクションのソース**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L35-L165)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L49)
 
 ## ストア間の相互作用とデータフロー
 
 ### 駒の選択と有効な手
+
 プレイヤーが盤上で駒を選択すると、アプリケーションは複数のストアにわたって状態を更新します。このフローはUIコンポーネントから始まり、ストア間を調整するハンドラ関数を呼び出します：
 
 ```mermaid
@@ -152,15 +168,18 @@ Handler-->>UI : UIが自動的に更新
 ```
 
 **図のソース**
+
 - [kifu-node.ts](file://src/handler/kifu-node.ts#L54-L82)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L35-L165)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L49)
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)
 
 **セクションのソース**
+
 - [kifu-node.ts](file://src/handler/kifu-node.ts#L54-L82)
 
 ### 手番管理
+
 手番システムは、盤面ストアの `isSenteTurn` リアクティブ変数によって管理されます。有効な手が実行された後、手番は切り替えられます：
 
 ```typescript
@@ -174,6 +193,7 @@ export function toggleTurn() {
 ## 手の実行と履歴管理
 
 ### 手を指す
+
 プレイヤーが手を指すと、アプリケーションは3つのストアすべてにわたって調整されたシーケンスに従います：
 
 ```mermaid
@@ -194,6 +214,7 @@ M --> N["UIが自動的に更新"]
 ```
 
 **図のソース**
+
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)
 - [kifu-node.ts](file://src/handler/kifu-node.ts#L54-L82)
 
@@ -223,9 +244,11 @@ export function pushKifuNode(
 ```
 
 **セクションのソース**
+
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L23-L42)
 
 ### 履歴のナビゲーション
+
 履歴システムは、現在のインデックスを使用してゲームツリーをナビゲートします：
 
 ```typescript
@@ -294,12 +317,14 @@ export function pushOrJumpToKifu(
 ```
 
 **セクションのソース**
+
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)
 - [kifu-node.ts](file://src/handler/kifu-node.ts#L54-L82)
 
 ## UIリアクティビティチェーン
 
 ### 状態更新からUIレンダリングまで
+
 SvelteShogiのリアクティビティチェーンは、状態更新からUIレンダリングまでの明確なパスに従います：
 
 ```mermaid
@@ -319,12 +344,14 @@ DOM-->>User : 盤面上での視覚的フィードバック
 ```
 
 **図のソース**
+
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L49)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L35-L165)
 
 Svelte 5のリアクティビティの主な利点は、この一連の処理が自動的に行われる点です。`$state` 変数が更新されると、Svelteはその状態に依存するコンポーネントを追跡し、効率的に更新することでDOM操作を最小限に抑えます。
 
 ### 自動依存関係の追跡
+
 Svelteのリアクティビティシステムは、状態変数とコンポーネント間の依存関係を自動的に追跡します。たとえば、コンポーネントで `getCanMove(row, col)` が呼び出された場合：
 
 ```typescript
@@ -338,6 +365,7 @@ Svelteは、コンポーネントが `canMove` 配列に依存していること
 ## ベストプラクティスとアンチパターン
 
 ### 適切な状態更新パターン
+
 SvelteShogiの実装は、状態管理のベストプラクティスに従っています：
 
 **直接のミューテーションを避ける**: 配列を直接変更するのではなく、適切な更新関数を使用します：
@@ -345,20 +373,25 @@ SvelteShogiの実装は、状態管理のベストプラクティスに従って
 ```typescript
 // 良い例：専用関数を使用
 export function incrementCaptured(piece: PieceType, isSente: boolean) {
-  const found = isSente ? capturedSente.find((p) => p.piece === piece) : capturedGote.find((p) => p.piece === piece);
+  const found = isSente
+    ? capturedSente.find((p) => p.piece === piece)
+    : capturedGote.find((p) => p.piece === piece);
   if (found) {
     found.num += 1; // このミューテーションは$stateによって追跡される
   } else {
     (isSente ? capturedSente : capturedGote).push({ piece, num: 1 });
   }
   // 捕獲駒を種類順にソート
-  (isSente ? capturedSente : capturedGote).sort((a, b) => TYPE_ORDER[a.piece] - TYPE_ORDER[b.piece]);
+  (isSente ? capturedSente : capturedGote).sort(
+    (a, b) => TYPE_ORDER[a.piece] - TYPE_ORDER[b.piece]
+  );
 }
 ```
 
 **構造化された状態更新**: 状態の変更は、意図を説明する適切な名前の関数にカプセル化され、コードの保守性を高め、エラーを減らします。
 
 ### 避けるべきアンチパターン
+
 Svelteのリアクティビティを使用する際は、以下のアンチパターンを避けてください：
 
 1. **ストア関数のバイパス**: コンポーネントからストア変数を直接変更すると、カプセル化が破られ、状態の変更を追跡しにくくなります。
@@ -368,11 +401,13 @@ Svelteのリアクティビティを使用する際は、以下のアンチパ�
 3. **$stateの過剰使用**: すべての変数がリアクティブである必要はありません。UIに影響を与えるか、コンポーネント間で共有される状態のみが `$state` を使用するべきです。
 
 **セクションのソース**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L105-L165)
 
 ## よくある問題と解決策
 
 ### 古い状態の防止
+
 リアクティブシステムでよく発生する問題の一つは、コンポーネントが古くなった値を読み取る「古い状態」です。SvelteShogiはこれを以下で防止しています：
 
 1. **同期的な更新**: 状態の更新は同期的であり、関数が返されたときには状態が確実に更新されていることが保証されます。
@@ -382,6 +417,7 @@ Svelteのリアクティビティを使用する際は、以下のアンチパ�
 3. **アトミックな操作**: 関連する状態の変更は、単一の関数内でグループ化され、中間的な不整合状態を防ぎます。
 
 ### 状態の問題のデバッグ
+
 SvelteShogiで状態管理の問題をデバッグする際は、開発者は以下の手順を踏むべきです：
 
 1. **ストア関数の呼び出しを確認**: 正しいストア関数が正しいパラメータで呼び出されているかを検証します。
@@ -393,6 +429,7 @@ SvelteShogiで状態管理の問題をデバッグする際は、開発者は以
 モジュール化されたストア設計により、各ストアが明確な責任と明確なインターフェースを持つため、デバッグが容易になります。
 
 **セクションのソース**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L165)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L49)
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L82)

@@ -1,4 +1,4 @@
-import type { Captures, PieceType, Position, Square } from "@/types/shogi";
+import type { Captures, PieceType, Position, PlayerPiece } from "@/types/shogi";
 
 // | 駒   | 成り前 | 成り後 | 新記号       |
 // | --- | --- | --- | ------------ |
@@ -43,7 +43,7 @@ export const charToPieceTypeMap: Record<string, PieceType> = {
   D: "竜",
 };
 
-function charToSquare(char: string): Square {
+function charToSquare(char: string): PlayerPiece {
   const charU = char.toUpperCase();
   return {
     piece: charToPieceTypeMap[charU],
@@ -51,8 +51,8 @@ function charToSquare(char: string): Square {
   };
 }
 
-function strToGrid(gridString: string): (Square | null)[] {
-  const grid: (Square | null)[] = Array(81).fill(null);
+function strToGrid(gridString: string): (PlayerPiece | null)[] {
+  const grid: (PlayerPiece | null)[] = Array(81).fill(null);
   let index = 0;
   for (const char of gridString) {
     if (char >= "1" && char <= "9") {
@@ -137,7 +137,7 @@ function strToCapturedPieces(capturedPiecesString: string): Captures {
 }
 
 export function sfenxToShogiBoard(sfenx: string): {
-  grid: (Square | null)[];
+  grid: (PlayerPiece | null)[];
   capturedSente: Captures;
   capturedGote: Captures;
 } {
@@ -151,12 +151,12 @@ export function sfenxToShogiBoard(sfenx: string): {
   return { grid, capturedSente, capturedGote };
 }
 
-function squareToChar(square: Square): string {
+function squareToChar(square: PlayerPiece): string {
   const ret = pieceTypeToCharMap[square.piece];
   return square.isSente ? ret : ret.toLowerCase();
 }
 
-function gridToStr(grid: (Square | null)[]): string {
+function gridToStr(grid: (PlayerPiece | null)[]): string {
   let ret = "";
   for (let y = 0; y < 9; y++) {
     let emptyCount = 0;
@@ -215,7 +215,7 @@ function capturedPiecesToStr(capturedPieces: Captures): string {
 }
 
 export function shogiBoardToSfenx(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   capturedSente: Captures,
   capturedGote: Captures
 ): string {

@@ -14,7 +14,7 @@ export type PieceType =
   | "馬"
   | "竜";
 
-export interface Square {
+export interface PlayerPiece {
   piece: PieceType;
   isSente: boolean;
 }

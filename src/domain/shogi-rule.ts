@@ -1,4 +1,4 @@
-import type { PieceType, Square } from "@/types/shogi";
+import type { PieceType, PlayerPiece } from "@/types/shogi";
 
 function getGoldMoveVec(): { r: number; c: number; slide: boolean }[] {
   return [
@@ -132,13 +132,14 @@ export function canPromotePos(
 }
 
 export function getCanMoveFromSquare(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   row: number,
   col: number
 ): boolean[] {
   let canMove: boolean[] = new Array(9 * 9).fill(false);
   const square = grid[row * 9 + col];
-  if (!square) throw new Error(`Square at (${row}, ${col}) does not exist.`);
+  if (!square)
+    throw new Error(`PlayerPiece at (${row}, ${col}) does not exist.`);
   const vec = getPieceMoveVec(square.piece);
   for (const { r, c, slide } of vec) {
     const rv = square.isSente ? r : -r; // Reverse direction for gote
@@ -165,7 +166,7 @@ export function getCanMoveFromSquare(
 }
 
 export function getCanMoveFromCaptured(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   piece: PieceType,
   isSente: boolean
 ): boolean[] {

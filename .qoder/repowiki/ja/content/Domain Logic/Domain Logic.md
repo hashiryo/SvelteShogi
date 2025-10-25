@@ -177,12 +177,12 @@ export function originalPiece(piece: PieceType): PieceType {
 classDiagram
 class sfenxToShogiBoard {
 +sfenxToShogiBoard(sfenx : string) : ShogiPosition
-+strToGrid(gridString : string) : (Square | null)[]
++strToGrid(gridString : string) : (PlayerPiece | null)[]
 +strToCapturedPieces(capturedString : string) : CapturedPieces[]
 }
 class shogiBoardToSfenx {
-+shogiBoardToSfenx(grid : (Square | null)[], capturedSente : CapturedPieces[], capturedGote : CapturedPieces[]) : string
-+gridToStr(grid : (Square | null)[]) : string
++shogiBoardToSfenx(grid : (PlayerPiece | null)[], capturedSente : CapturedPieces[], capturedGote : CapturedPieces[]) : string
++gridToStr(grid : (PlayerPiece | null)[]) : string
 +capturedPiecesToStr(captured : CapturedPieces[]) : string
 }
 class UtilityFunctions {
@@ -253,7 +253,7 @@ function capturedPiecesToStr(
 ボード位置は、連続する空のマスを表す数字を使用して、標準SFEN規則でエンコードされています：
 
 ```typescript
-function gridToStr(grid: (Square | null)[]): string {
+function gridToStr(grid: (PlayerPiece | null)[]): string {
   let ret = "";
   for (let y = 0; y < 9; y++) {
     let emptyCount = 0;
@@ -310,7 +310,7 @@ E --> I[昇格ステータスを含める]
 
 ```typescript
 function getFromVDirections(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   row: number,
   col: number,
   piece: PieceType,

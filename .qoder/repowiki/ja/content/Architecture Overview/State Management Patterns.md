@@ -91,15 +91,15 @@ E --> C
 
 ### グリッドと駒の状態
 
-盤面は81要素の配列（9x9グリッド）として表現され、各セルには `Square` オブジェクトまたは `null` が含まれます。初期設定は `initGrid()` で定義され、盤面を標準の初期位置で駒で埋めます。
+盤面は81要素の配列（9x9グリッド）として表現され、各セルには `PlayerPiece` オブジェクトまたは `null` が含まれます。初期設定は `initGrid()` で定義され、盤面を標準の初期位置で駒で埋めます。
 
 ```ts
-function initGrid(): (Square | null)[] {
-  let grid: (Square | null)[] = Array(81).fill(null);
+function initGrid(): (PlayerPiece | null)[] {
+  let grid: (PlayerPiece | null)[] = Array(81).fill(null);
   // 初期駒配置...
   return grid;
 }
-let grid: (Square | null)[] = $state(initGrid());
+let grid: (PlayerPiece | null)[] = $state(initGrid());
 ```
 
 グリッドは `$state` を通じてリアクティブであり、変更はUIの更新をトリガーします。`setSquare`、`resetSquare`、`getSquare` などの関数は、グリッドへの制御されたアクセスを提供します。

@@ -260,7 +260,7 @@ GetVector --> Loop["For each direction"]
 Loop --> Calculate["Calculate next position"]
 Calculate --> Boundary["Within Board?"]
 Boundary --> |No| EndLoop
-Boundary --> |Yes| Occupied["Square Occupied?"]
+Boundary --> |Yes| Occupied["PlayerPiece Occupied?"]
 Occupied --> |No| Valid["Mark as valid move"]
 Occupied --> |Yes| Friendly["Friendly Piece?"]
 Friendly --> |Yes| EndDirection["Stop in this direction"]
@@ -410,7 +410,7 @@ The `getDisplayMoveFromGrid` function analyzes the board state to determine the 
 
 ```typescript
 export function getDisplayMoveFromGrid(
-  grid: (Square | null)[],
+  grid: (PlayerPiece | null)[],
   from: { row: number; col: number },
   to: { row: number; col: number },
   lastPos: { row: number; col: number } | null

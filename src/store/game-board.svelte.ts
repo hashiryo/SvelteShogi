@@ -1,12 +1,17 @@
-import type { PieceType, Square, HandPieceFrom, Captures } from "@/types/shogi";
+import type {
+  PieceType,
+  PlayerPiece,
+  HandPieceFrom,
+  Captures,
+} from "@/types/shogi";
 
-let grid: (Square | null)[] = $state([]);
+let grid: (PlayerPiece | null)[] = $state([]);
 
 export class GridStore {
-  static get(): (Square | null)[] {
+  static get(): (PlayerPiece | null)[] {
     return grid;
   }
-  static set(newGrid: (Square | null)[]) {
+  static set(newGrid: (PlayerPiece | null)[]) {
     grid = newGrid;
   }
 }
