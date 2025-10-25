@@ -9,20 +9,6 @@ export class GridStore {
   static set(newGrid: (Square | null)[]) {
     grid = newGrid;
   }
-  static getSquare(row: number, col: number): Square | null {
-    return grid[row * 9 + col];
-  }
-  static setSquare(
-    row: number,
-    col: number,
-    piece: PieceType,
-    isSente: boolean
-  ) {
-    grid[row * 9 + col] = { piece, isSente };
-  }
-  static resetSquare(row: number, col: number) {
-    grid[row * 9 + col] = null;
-  }
 }
 
 let capturedSente: Captures = $state([]);
@@ -38,12 +24,6 @@ export class CapturesStore {
     } else {
       capturedGote = captured;
     }
-  }
-  static getNum(isSente: boolean, piece: PieceType): number {
-    const found = isSente
-      ? capturedSente.find((p) => p.piece === piece)
-      : capturedGote.find((p) => p.piece === piece);
-    return found ? found.num : 0;
   }
 }
 

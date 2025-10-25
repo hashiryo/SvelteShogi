@@ -1,6 +1,6 @@
 import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
 import { originalPiece, promotePiece } from "@/domain/shogi-rule";
-import type { Captures, PieceType, Square } from "@/types/shogi";
+import type { Captures, PieceType, Position, Square } from "@/types/shogi";
 
 function increment(captures: Captures, piece: PieceType): Captures {
   const TYPE_ORDER: Record<PieceType, number> = {
@@ -44,13 +44,13 @@ function decrement(captures: Captures, piece: PieceType): Captures {
 function executeFromGrid(
   grid: (Square | null)[],
   captures: Captures,
-  from: { row: number; col: number },
-  to: { row: number; col: number },
+  from: Position,
+  to: Position,
   prom: boolean
 ): {
   grid: (Square | null)[];
   captures: Captures;
-  lastPos: { row: number; col: number };
+  lastPos: Position;
 } {
   const fromIdx = from.row * 9 + from.col;
   const toIdx = to.row * 9 + to.col;
@@ -73,12 +73,12 @@ function executeFromCaptures(
   grid: (Square | null)[],
   captures: Captures,
   isSente: boolean,
-  to: { row: number; col: number },
+  to: Position,
   piece: PieceType
 ): {
   grid: (Square | null)[];
   captures: Captures;
-  lastPos: { row: number; col: number };
+  lastPos: Position;
 } {
   grid[to.row * 9 + to.col] = {
     piece,
@@ -96,7 +96,7 @@ export function moveToNextGridCaptures(
 ): {
   grid: (Square | null)[];
   captures: Captures;
-  lastPos: { row: number; col: number };
+  lastPos: Position;
 } {
   const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
   if (match1) {

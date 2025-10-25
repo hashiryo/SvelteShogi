@@ -1,3 +1,5 @@
+import type { Position } from "@/types/shogi";
+
 let canMove: boolean[] = $state(Array(81).fill(false));
 
 export class CanMoveStore {
@@ -9,13 +11,13 @@ export class CanMoveStore {
   }
 }
 
-let promotionPos: { row: number; col: number } | null = $state(null);
+let promotionPos: Position | null = $state(null);
 
 export class PromotionPosStore {
-  static get(): { row: number; col: number } | null {
+  static get(): Position | null {
     return promotionPos;
   }
-  static set(value: { row: number; col: number }) {
+  static set(value: Position) {
     promotionPos = { ...value };
   }
   static reset() {
@@ -23,13 +25,13 @@ export class PromotionPosStore {
   }
 }
 
-let lastPos: { row: number; col: number } | null = $state(null);
+let lastPos: Position | null = $state(null);
 
 export class LastPosStore {
-  static get(): { row: number; col: number } | null {
+  static get(): Position | null {
     return lastPos;
   }
-  static set(pos: { row: number; col: number }) {
+  static set(pos: Position) {
     lastPos = pos;
   }
   static reset() {

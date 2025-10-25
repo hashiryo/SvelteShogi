@@ -77,9 +77,9 @@ export function getDisplayMoveFromCaptured(
 
 export function getDisplayMoveFromGrid(
   grid: (Square | null)[],
-  from: { row: number; col: number },
-  to: { row: number; col: number },
-  lastPos: { row: number; col: number } | null
+  from: Position,
+  to: Position,
+  lastPos: Position | null
 ): string {
   const fromSquare = grid[from.row * 9 + from.col];
   if (!fromSquare)
@@ -158,7 +158,7 @@ export function getDisplayMoveFromMoveStr(
   grid: (Square | null)[],
   move: string,
   isSente: boolean,
-  lastPos: { row: number; col: number } | null
+  lastPos: Position | null
 ): string {
   if (move === "resign") return "投了";
   let displayText = "";

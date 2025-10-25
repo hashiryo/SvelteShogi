@@ -26,27 +26,6 @@ export class NodesStore {
   static size() {
     return nodes.length;
   }
-  static push(
-    display: string,
-    sfenx: string,
-    prev: number,
-    br_next: number,
-    isSente: boolean,
-    move: string,
-    isFavorite: boolean
-  ) {
-    nodes.push({
-      display,
-      sfenx,
-      prev,
-      next: -1,
-      br_next,
-      isSente,
-      move,
-      isFavorite,
-      isSaved: false,
-    });
-  }
   static getNode(index: number) {
     return nodes[index];
   }

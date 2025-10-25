@@ -57,6 +57,8 @@
       return squareElements.map(() => ({ x: 0, y: 0 }));
     })()
   );
+
+  let grid = $derived(GridStore.get());
 </script>
 
 <div class="canvas">
@@ -109,7 +111,7 @@
         {#each { length: 9 }, row}
           {#each { length: 9 }, col}
             {@const index = row * 9 + col}
-            {@const square = GridStore.getSquare(row, col)}
+            {@const square = grid[index]}
             {#if square}
               <!-- 駒が存在する場合のみ表示 -->
               <!-- 駒を配置するためのラッパー -->

@@ -1,4 +1,4 @@
-import type { HandPieceFrom, PieceType, Square } from "@/types/shogi";
+import type { HandPieceFrom, PieceType, Position, Square } from "@/types/shogi";
 import {
   canPromotePos,
   getCanMoveFromCaptured,
@@ -13,7 +13,7 @@ export function clickSquare(
   handPiece: HandPieceFrom | null,
   canMove: boolean[],
   isSente: boolean,
-  lastPos: { row: number; col: number } | null,
+  lastPos: Position | null,
   row: number,
   col: number
 ):
@@ -26,7 +26,7 @@ export function clickSquare(
       canMove: boolean[];
     }
   | {
-      promotionPos: { row: number; col: number };
+      promotionPos: Position;
     }
   | null {
   const square = grid[row * 9 + col];

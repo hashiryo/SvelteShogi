@@ -21,6 +21,11 @@ export interface Square {
 
 export type Captures = { piece: PieceType; num: number }[];
 
+export interface Position {
+  row: number;
+  col: number;
+}
+
 interface FavoriteFromSquare {
   startRow: number;
   startCol: number;

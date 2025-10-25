@@ -1,4 +1,4 @@
-import type { Captures, PieceType, Square } from "@/types/shogi";
+import type { Captures, PieceType, Position, Square } from "@/types/shogi";
 
 // | 駒   | 成り前 | 成り後 | 新記号       |
 // | --- | --- | --- | ------------ |
@@ -225,7 +225,7 @@ export function shogiPositionToSfenx(
   return `${gridString} ${capturedPiecesString}`;
 }
 
-export function strToPosition(posString: string): { row: number; col: number } {
+export function strToPosition(posString: string): Position {
   const match = posString.match(/^(\d)([a-i])$/);
   if (!match) throw new Error(`Invalid position string: ${posString}`);
   const [, colString, rowString] = match;

@@ -13,10 +13,22 @@ import {
 import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 import { fetchAndSetMoveStatistics } from "./move-statistics";
+import type { KifuNode } from "@/types/shogi";
 
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
-  NodesStore.reset();
-  NodesStore.push("初期局面", sfenx, -1, 0, isSente, "", false);
+  NodesStore.set([
+    {
+      display: "初期局面",
+      sfenx: sfenx,
+      prev: -1,
+      next: -1,
+      br_next: 0,
+      isSente: isSente,
+      move: "",
+      isFavorite: false,
+      isSaved: false,
+    },
+  ]);
   CurrentIndexStore.set(0);
   BranchesStore.set(0);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
