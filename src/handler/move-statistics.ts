@@ -57,6 +57,39 @@ export async function fetchAndSetMoveStatistics(
   }
 }
 
+// とりあえず先手スタート前提
+export async function fetchAndSetMoveStatisticsMulti(sfenxes: string[]) {
+  sfenxes = sfenxes.map((sfenx, idx) =>
+    idx % 2 === 0 ? sfenx : flipSfenx(sfenx)
+  );
+  // ToDo: user?.id を使うようにする
+  const result = await MoveStatisticsRepository.fetchMulti(sfenxes);
+  for (let i = 0; i < sfenxes.length; ++i) {
+    if (!MoveStatisticsStore.get(sfenxes[i])) {
+      const total = result[i].length;
+      const moveStats = new Map<string, { apparents: number; wins: number }>();
+      for (const record of result[i]) {
+        const move = record.move;
+        const existing = moveStats.get(move) || { apparents: 0, wins: 0 };
+        moveStats.set(move, {
+          apparents: existing.apparents + 1,
+          wins: existing.wins + (record.win ? 1 : 0),
+        });
+      }
+      const data: MoveStatistics[] = Array.from(moveStats.entries()).map(
+        ([move, { apparents, wins }]) => ({
+          move,
+          apparentCount: apparents,
+          winCount: wins,
+          apparentRate: apparents / total,
+          winRate: wins / apparents,
+        })
+      );
+      MoveStatisticsStore.set(sfenxes[i], data);
+    }
+  }
+}
+
 export async function executeSave(nodeIndex: number) {
   const currentNode = NodesStore.getNode(nodeIndex);
 

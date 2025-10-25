@@ -5,6 +5,7 @@
     fetchAndSetFavoriteMovesMulti,
     getCurrentFavorites,
   } from "@/handler/favorite-moves";
+  import { fetchAndSetMoveStatisticsMulti } from "@/handler/move-statistics";
   import {
     CapturesStore,
     GridStore,
@@ -37,6 +38,7 @@
 
       const sfenxes = nodes.map((node) => node.sfenx);
       await fetchAndSetFavoriteMovesMulti(sfenxes);
+      await fetchAndSetMoveStatisticsMulti(sfenxes);
 
       const n = nodes.length;
       for (let i = 0; i + 1 < n; i++) {

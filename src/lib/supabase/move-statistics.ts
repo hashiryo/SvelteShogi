@@ -50,6 +50,47 @@ export class MoveStatisticsRepository {
   }
 
   /**
+   * 複数の局面と手の統計情報を取得
+   * @param sfenxes 対象局面のSFENX表記の配列（必須）
+   * @param userId ユーザーID（オプション、未指定時は匿名データのみ取得）
+   * @returns 統計情報レコードの配列
+   * @throws データベースエラーが発生した場合
+   */
+  static async fetchMulti(
+    sfenxes: string[],
+    userId?: string
+  ): Promise<MoveStatisticsRow[][]> {
+    let query = supabase.from(TABLE).select("*").in("sfenx", sfenxes);
+
+    // user_idがnullの場合は is で比較、値がある場合は eq で比較
+    if (userId) {
+      query = query.eq("user_id", userId);
+    } else {
+      query = query.is("user_id", null);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("統計情報の取得に失敗しました:", error);
+      throw error;
+    }
+
+    return (
+      data?.reduce<MoveStatisticsRow[][]>(
+        (acc, cur) => {
+          const index = sfenxes.indexOf(cur.sfenx);
+          if (index !== -1) {
+            acc[index].push(cur);
+          }
+          return acc;
+        },
+        sfenxes.map(() => [])
+      ) || []
+    );
+  }
+
+  /**
    * 複数の統計情報レコードを一括挿入
    * @param paramsArray 挿入パラメータの配列
    * @throws データベースエラーが発生した場合
