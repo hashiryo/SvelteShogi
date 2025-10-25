@@ -1,6 +1,18 @@
-import { charToPieceTypeMap, strToPosition } from "@/domain/sfenx";
+import {
+  charToPieceTypeMap,
+  sfenxToShogiBoard,
+  shogiBoardToSfenx,
+  strToPosition,
+} from "@/domain/sfenx";
 import { originalPiece, promotePiece } from "@/domain/shogi-rule";
-import type { Captures, PieceType, Position, Square } from "@/types/shogi";
+import type {
+  Captures,
+  KifuNode,
+  PieceType,
+  Position,
+  Square,
+} from "@/types/shogi";
+import { getDisplayMoveFromMoveStr } from "./display";
 
 function increment(captures: Captures, piece: PieceType): Captures {
   const TYPE_ORDER: Record<PieceType, number> = {
@@ -115,4 +127,73 @@ export function moveToNextGridCaptures(
   }
 
   throw new Error(`Invalid move: ${move}`);
+}
+
+export function movesToNodes(moves: string[]): {
+  grid: (Square | null)[];
+  capturedSente: Captures;
+  capturedGote: Captures;
+  isSente: boolean;
+  lastPos: Position | null;
+  nodes: KifuNode[];
+} {
+  let sfenx = "lnsgkgsnl1b5r1ppppppppp999PPPPPPPPP1R5B1LNSGKGSNL aaaaaaaa";
+  let { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
+  let isSente = true;
+  let display = "初期局面";
+  let nodes = [
+    {
+      display,
+      sfenx,
+      prev: -1,
+      next: -1,
+      br_next: 0,
+      isSente: true,
+      move: "",
+      isFavorite: false,
+      isSaved: false,
+    },
+  ];
+  let lastPos: Position | null = null;
+  for (let i = 0; i < moves.length; i++) {
+    nodes[i].next = i + 1;
+    const move = moves[i];
+    if (move === "resign") {
+      display = "投了";
+      lastPos = null;
+    } else {
+      display = getDisplayMoveFromMoveStr(grid, move, isSente, lastPos);
+      const { grid: nextGrid, captures: nextCaptures } = moveToNextGridCaptures(
+        grid,
+        isSente ? capturedSente : capturedGote,
+        isSente,
+        move
+      );
+      grid = nextGrid;
+      if (isSente) capturedSente = nextCaptures;
+      else capturedGote = nextCaptures;
+      sfenx = shogiBoardToSfenx(grid, capturedSente, capturedGote);
+      lastPos = strToPosition(move.substring(2, 4));
+    }
+    isSente = !isSente;
+    nodes.push({
+      display,
+      sfenx,
+      prev: i,
+      next: -1,
+      br_next: i + 1,
+      isSente,
+      move,
+      isFavorite: false,
+      isSaved: false,
+    });
+  }
+  return {
+    grid,
+    capturedSente,
+    capturedGote,
+    isSente,
+    lastPos,
+    nodes,
+  };
 }

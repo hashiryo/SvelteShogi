@@ -1,5 +1,13 @@
 <script lang="ts">
   import { parseKif, readFileAsText } from "@/domain/format-parcer";
+  import { movesToNodes } from "@/domain/move";
+  import {
+    CapturesStore,
+    GridStore,
+    IsSenteTurnStore,
+  } from "@/store/game-board.svelte";
+  import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
+  import Captured from "@/ui/main-view/main-canvas/game-board/Captured.svelte";
 
   let files: FileList | undefined | null = $state();
   let isLoading = $state(false);
@@ -17,10 +25,18 @@
       console.log("ファイル内容:", content);
 
       // KIF形式をパース
-      const result = parseKif(content);
-      console.log("パース結果:", result);
-      console.log("メタデータ:", result.metadata);
-      console.log("指し手:", result.moves);
+      const { metadata, moves } = parseKif(content);
+      console.log("メタデータ:", metadata);
+      console.log("指し手:", moves);
+
+      const { grid, capturedSente, capturedGote, isSente, nodes } =
+        movesToNodes(moves);
+      GridStore.set(grid);
+      CapturesStore.set(true, capturedSente);
+      CapturesStore.set(false, capturedGote);
+      IsSenteTurnStore.set(isSente);
+      NodesStore.set(nodes);
+      CurrentIndexStore.set(nodes.length - 1);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "不明なエラーが発生しました";
