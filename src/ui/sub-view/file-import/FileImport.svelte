@@ -7,7 +7,6 @@
     IsSenteTurnStore,
   } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
-  import Captured from "@/ui/main-view/main-canvas/game-board/Captured.svelte";
 
   let files: FileList | undefined | null = $state();
   let isLoading = $state(false);
@@ -60,7 +59,7 @@
 <div>
   <h3>棋譜のimport</h3>
 
-  <input accept=".kif" bind:files type="file" />
+  <input class="file-input" accept=".kif" bind:files type="file" />
 
   {#if isLoading}
     <p>ファイルを処理中...</p>
@@ -74,3 +73,9 @@
     <p>選択されたファイル: {files[0].name}</p>
   {/if}
 </div>
+
+<style>
+  .file-input {
+    cursor: pointer;
+  }
+</style>
