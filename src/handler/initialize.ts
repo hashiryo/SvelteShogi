@@ -30,7 +30,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
     },
   ]);
   CurrentIndexStore.set(0);
-  BranchesStore.set(0);
+  BranchesStore.set([0]);
   const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
   GridStore.set(grid);
   CapturesStore.set(true, capturedSente);

@@ -16,6 +16,7 @@ import {
   strToPosition,
 } from "@/domain/sfenx";
 import { LastPosStore } from "@/store/play-game.svelte";
+import { getBranches } from "@/domain/kifu-node";
 
 function setCurrentNode(nodeIndex: number) {
   if (CurrentIndexStore.get() === nodeIndex) return;
@@ -39,7 +40,8 @@ function setCurrentNode(nodeIndex: number) {
 export function jumpToKifu(nodeIndex: number) {
   setCurrentNode(nodeIndex);
   IsSenteTurnStore.set(NodesStore.getNode(nodeIndex).isSente);
-  BranchesStore.set(nodeIndex);
+  const nodes = NodesStore.get();
+  BranchesStore.set(getBranches(nodes, nodeIndex));
 }
 
 export function switchBranch(nodeIndex: number) {

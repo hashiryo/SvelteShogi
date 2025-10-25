@@ -14,7 +14,7 @@ import { PromotionPosStore, LastPosStore } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 import { fetchAndSetMoveStatistics } from "./move-statistics";
 import { moveToNextGridCaptures } from "@/domain/move";
-import { pushOrJumpToKifu } from "@/domain/kifu-node";
+import { getBranches, pushOrJumpToKifu } from "@/domain/kifu-node";
 
 export async function executeMove(display: string, move: string) {
   const isSente = IsSenteTurnStore.get();
@@ -48,8 +48,7 @@ export async function executeMove(display: string, move: string) {
 
   CurrentIndexStore.set(currentIndex);
   NodesStore.set(nodes);
-
-  BranchesStore.set(CurrentIndexStore.get());
+  BranchesStore.set(getBranches(nodes, currentIndex));
   await fetchAndSetFavoriteMoves(!isSente, sfenx);
   await fetchAndSetMoveStatistics(!isSente, sfenx);
   IsSenteTurnStore.set(!isSente);
@@ -60,7 +59,7 @@ export function executeResign() {
   LastPosStore.reset();
   PromotionPosStore.reset();
   HandPieceStore.reset();
-  BranchesStore.set(CurrentIndexStore.get());
+
   const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
   const { nodes, currentIndex } = pushOrJumpToKifu(
     CurrentIndexStore.get(),
@@ -74,6 +73,6 @@ export function executeResign() {
   CurrentIndexStore.set(currentIndex);
   NodesStore.set(nodes);
 
-  BranchesStore.set(CurrentIndexStore.get());
+  BranchesStore.set(getBranches(nodes, currentIndex));
   IsSenteTurnStore.set(!isSente);
 }

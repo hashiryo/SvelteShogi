@@ -48,3 +48,13 @@ export function pushOrJumpToKifu(
 
   return { nodes, currentIndex: newIndex };
 }
+
+export function getBranches(nodes: KifuNode[], index: number): number[] {
+  let cur = index;
+  let branches = [];
+  do {
+    branches.push(cur);
+    cur = nodes[cur].br_next;
+  } while (cur !== index);
+  return branches;
+}
