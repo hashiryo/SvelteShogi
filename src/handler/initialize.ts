@@ -1,4 +1,4 @@
-import { sfenxToShogiPosition } from "@/domain/sfenx";
+import { sfenxToShogiBoard } from "@/domain/sfenx";
 import {
   GridStore,
   IsSenteTurnStore,
@@ -19,11 +19,11 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   NodesStore.set([
     {
       display: "初期局面",
-      sfenx: sfenx,
+      sfenx,
       prev: -1,
       next: -1,
       br_next: 0,
-      isSente: isSente,
+      isSente,
       move: "",
       isFavorite: false,
       isSaved: false,
@@ -31,7 +31,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   ]);
   CurrentIndexStore.set(0);
   BranchesStore.set([0]);
-  const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
+  const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
   GridStore.set(grid);
   CapturesStore.set(true, capturedSente);
   CapturesStore.set(false, capturedGote);

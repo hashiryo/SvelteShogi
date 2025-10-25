@@ -13,7 +13,9 @@
 </cite>
 
 ## 更新概要
-**変更内容**   
+
+**変更内容**
+
 - display.tsの移動記号生成に関する包括的なテストカバレッジの詳細を追加
 - 新しいテストケースに基づく曖昧さ解消ロジックの文書化を強化
 - テストケースからの追加シナリオで移動記号の例を更新
@@ -22,6 +24,7 @@
 - 既存のドメインロジック実装に関する正確な情報を維持
 
 ## 目次
+
 1. [はじめに](#はじめに)
 2. [コアドメインモジュール](#コアドメインモジュール)
 3. [駒の移動とルール検証](#駒の移動とルール検証)
@@ -32,14 +35,17 @@
 8. [パフォーマンスに関する考慮事項](#パフォーマンスに関する考慮事項)
 
 ## はじめに
+
 SvelteShogiアプリケーションは、`src/domain`ディレクトリにカプセル化された将棋（日本チェス）エンジンの完全な実装を提供しています。本ドキュメントは、将棋のルール、ゲームステートのシリアル化、移動記号の生成に関するドメインロジック層の包括的な分析を提供します。システムは、ドメインロジックをUIおよび状態管理の関心事から分離するクリーンアーキテクチャパターンに従っています。コア機能は、`shogi-rule.ts`（移動および昇格ルール）、`sfenx.ts`（ゲームステートの永続化）、`display.ts`（人間が読める移動記号）の3つの主要モジュールを中心に構築されています。
 
 **セクションソース**
+
 - [shogi-rule.ts](file://src/domain/shogi-rule.ts#L0-L105)
 - [sfenx.ts](file://src/domain/sfenx.ts#L0-L239)
 - [display.ts](file://src/domain/display.ts#L0-L155)
 
 ## コアドメインモジュール
+
 ドメイン層は、将棋ゲームロジックの異なる側面を処理する3つの専門モジュールで構成されています：
 
 1. **shogi-rule.ts**: 移動ベクトル、昇格ルール、および基本的な検証を実装
@@ -69,6 +75,7 @@ style C fill:#f9f,stroke:#333
 ```
 
 **図のソース**
+
 - [shogi-rule.ts](file://src/domain/shogi-rule.ts)
 - [sfenx.ts](file://src/domain/sfenx.ts)
 - [display.ts](file://src/domain/display.ts)
@@ -77,6 +84,7 @@ style C fill:#f9f,stroke:#333
 ## 駒の移動とルール検証
 
 ### 移動ベクトルの実装
+
 `shogi-rule.ts`モジュールは、方向ベクトルを使用して各将棋駒の移動パターンを定義します。各ベクトルは、相対的な行と列の変位、および駒がスライド（複数マス移動）できるかどうかを指定します。
 
 ```mermaid
@@ -95,12 +103,15 @@ Switch --> |金,と,杏,圭,全| Gold[Return getGoldMoveVec()]
 ```
 
 **図のソース**
+
 - [shogi-rule.ts](file://src/domain/shogi-rule.ts#L0-L105)
 
 **セクションソース**
+
 - [shogi-rule.ts](file://src/domain/shogi-rule.ts#L0-L105)
 
 #### 桂馬の移動の例
+
 桂馬のL字型の移動は、2行前進し、1列左または右に移動する2つのベクトルで実装されています：
 
 ```typescript
@@ -111,30 +122,45 @@ case "桂":
 この実装は、他の駒を飛び越えるユニークな桂馬の移動パターンを正しく捉えています。負の行値（-2）は、先手（先攻プレイヤー）の視点から相手側への移動を示しています。
 
 #### 昇格ルール
+
 このモジュールは、2つの補完的な関数で将棋の昇格ルールを実装しています：
 
 ```typescript
 export function promotePiece(piece: PieceType): PieceType {
   switch (piece) {
-    case "歩": return "と";
-    case "香": return "杏";
-    case "桂": return "圭";
-    case "銀": return "全";
-    case "角": return "馬";
-    case "飛": return "竜";
-    default: return piece; // 金と玉は昇格しない
+    case "歩":
+      return "と";
+    case "香":
+      return "杏";
+    case "桂":
+      return "圭";
+    case "銀":
+      return "全";
+    case "角":
+      return "馬";
+    case "飛":
+      return "竜";
+    default:
+      return piece; // 金と玉は昇格しない
   }
 }
 
 export function originalPiece(piece: PieceType): PieceType {
   switch (piece) {
-    case "と": return "歩";
-    case "杏": return "香";
-    case "圭": return "桂";
-    case "全": return "銀";
-    case "馬": return "角";
-    case "竜": return "飛";
-    default: return piece; // 金と玉は元の駒
+    case "と":
+      return "歩";
+    case "杏":
+      return "香";
+    case "圭":
+      return "桂";
+    case "全":
+      return "銀";
+    case "馬":
+      return "角";
+    case "竜":
+      return "飛";
+    default:
+      return piece; // 金と玉は元の駒
   }
 }
 ```
@@ -144,17 +170,18 @@ export function originalPiece(piece: PieceType): PieceType {
 ## SFENXゲームステートのシリアル化
 
 ### SFENXフォーマットの実装
+
 `sfenx.ts`モジュールは、将棋ゲームステートをシリアル化するカスタムSFENXフォーマットを実装しています。このフォーマットは、標準SFEN表記を拡張し、捕獲された駒のデータ圧縮を追加しています。
 
 ```mermaid
 classDiagram
-class sfenxToShogiPosition {
-+sfenxToShogiPosition(sfenx : string) : ShogiPosition
+class sfenxToShogiBoard {
++sfenxToShogiBoard(sfenx : string) : ShogiPosition
 +strToGrid(gridString : string) : (Square | null)[]
 +strToCapturedPieces(capturedString : string) : CapturedPieces[]
 }
-class shogiPositionToSfenx {
-+shogiPositionToSfenx(grid : (Square | null)[], capturedSente : CapturedPieces[], capturedGote : CapturedPieces[]) : string
+class shogiBoardToSfenx {
++shogiBoardToSfenx(grid : (Square | null)[], capturedSente : CapturedPieces[], capturedGote : CapturedPieces[]) : string
 +gridToStr(grid : (Square | null)[]) : string
 +capturedPiecesToStr(captured : CapturedPieces[]) : string
 }
@@ -164,22 +191,32 @@ class UtilityFunctions {
 +strToPosition(posString : string) : Position
 +positionToStr(row : number, col : number) : string
 }
-sfenxToShogiPosition --> UtilityFunctions
-shogiPositionToSfenx --> UtilityFunctions
+sfenxToShogiBoard --> UtilityFunctions
+shogiBoardToSfenx --> UtilityFunctions
 ```
 
 **図のソース**
+
 - [sfenx.ts](file://src/domain/sfenx.ts#L0-L239)
 
 **セクションソース**
+
 - [sfenx.ts](file://src/domain/sfenx.ts#L0-L239)
 
 ### 捕獲された駒のエンコーディング
+
 SFENXフォーマットは、ASCII文字を使用してカウントを圧縮する、捕獲された駒の革新的なエンコーディング方式を使用しています：
 
 ```typescript
-function capturedPiecesToStr(capturedPieces: { piece: PieceType; num: number }[]): string {
-  let nums: number[] = ["a".charCodeAt(0), "a".charCodeAt(0), "a".charCodeAt(0), "a".charCodeAt(0)];
+function capturedPiecesToStr(
+  capturedPieces: { piece: PieceType; num: number }[]
+): string {
+  let nums: number[] = [
+    "a".charCodeAt(0),
+    "a".charCodeAt(0),
+    "a".charCodeAt(0),
+    "a".charCodeAt(0),
+  ];
   for (const { piece, num } of capturedPieces) {
     switch (piece) {
       case "歩":
@@ -212,6 +249,7 @@ function capturedPiecesToStr(capturedPieces: { piece: PieceType; num: number }[]
 このエンコーディングは、任意の種類の捕獲された駒の最大数が制限されている（例：最大18歩、4香など）という事実を利用しています。特定の駒の組み合わせに5進数エンコーディングを使用することで、各プレイヤーの捕獲された駒のカウントを4つのASCII文字に効率的にパックしています。
 
 ### ボード位置のエンコーディング
+
 ボード位置は、連続する空のマスを表す数字を使用して、標準SFEN規則でエンコードされています：
 
 ```typescript
@@ -244,6 +282,7 @@ function gridToStr(grid: (Square | null)[]): string {
 ## 移動記号の生成
 
 ### 表示移動関数
+
 `display.ts`モジュールは、伝統的な日本将棋フォーマットで人間が読める移動記号を生成します。主に2つの関数を提供しています：
 
 ```mermaid
@@ -258,12 +297,15 @@ E --> I[昇格ステータスを含める]
 ```
 
 **図のソース**
+
 - [display.ts](file://src/domain/display.ts#L0-L155)
 
 **セクションソース**
+
 - [display.ts](file://src/domain/display.ts#L0-L155)
 
 ### 曖昧さ解消ロジック
+
 システムは、同じ種類の複数の駒が同じ手を指せる場合を処理する洗練された曖昧さ解消ロジックを実装しています。`getFromVDirections`関数は、ボードを分析して、同じ種類の駒が異なる方向から目的地のマスに到達できる数を決定します：
 
 ```typescript
@@ -304,32 +346,46 @@ function getFromVDirections(
 この関数は、左、中央、右の位置から、または上、直、下の移動から、同じ種類の駒がターゲットマスに到達できる数をカウントします。この情報は、その後、「左」（左）、「右」（右）、「上」（上）、「引」（下）、「寄」（横）などの適切な曖昧さ解消マーカーを生成するために使用されます。
 
 ### 包括的な曖昧さ解消シナリオ
+
 `display.test.ts`に新たに追加されたテストに基づき、システムはさまざまな複雑な曖昧さ解消シナリオを処理します：
 
 **3つ以上の同一駒**: 3つ以上の同一駒が同じマスに到達できる場合、システムは位置と方向の指示子の組み合わせを使用します：
+
 - **左/右/中央**: 同じ行の駒の場合
 - **上/下/直**: 垂直移動の曖昧さ解消の場合
 - **直/左/右**: 金と銀の特殊ケースの場合
 
 **昇格駒のエッジケース**: テストは、「と」（昇格歩）などの昇格駒の特定の処理を明らかにしています：
+
 ```typescript
 // テストからの例：複数の昇格歩が同じマスに到達
-expect(getDisplayMoveFromGrid(grid, {row: 8, col: 7}, {row: 7, col: 7}, null)).toBe("☗８八と直");
-expect(getDisplayMoveFromGrid(grid, {row: 8, col: 8}, {row: 7, col: 7}, null)).toBe("☗８八と左上");
+expect(
+  getDisplayMoveFromGrid(grid, { row: 8, col: 7 }, { row: 7, col: 7 }, null)
+).toBe("☗８八と直");
+expect(
+  getDisplayMoveFromGrid(grid, { row: 8, col: 8 }, { row: 7, col: 7 }, null)
+).toBe("☗８八と左上");
 ```
 
 **竜と馬の特殊ルール**: 竜（竜）や馬（馬）のような強力な駒の場合、システムは位置よりも移動方向を優先します：
+
 ```typescript
 // 竜駒の曖昧さ解消
-expect(getDisplayMoveFromGrid(grid, {row: 0, col: 8}, {row: 1, col: 7}, null)).toBe("☗８二竜引");
-expect(getDisplayMoveFromGrid(grid, {row: 3, col: 7}, {row: 1, col: 7}, null)).toBe("☗８二竜上");
+expect(
+  getDisplayMoveFromGrid(grid, { row: 0, col: 8 }, { row: 1, col: 7 }, null)
+).toBe("☗８二竜引");
+expect(
+  getDisplayMoveFromGrid(grid, { row: 3, col: 7 }, { row: 1, col: 7 }, null)
+).toBe("☗８二竜上");
 ```
 
 **セクションソース**
+
 - [display.ts](file://src/domain/display.ts#L0-L155)
-- [display.test.ts](file://src/test/domain/display.test.ts#L0-L1139) - *曖昧さ解消ロジックの包括的なテストカバレッジ*
+- [display.test.ts](file://src/test/domain/display.test.ts#L0-L1139) - _曖昧さ解消ロジックの包括的なテストカバレッジ_
 
 ### 例：移動記号
+
 システムは、伝統的な日本将棋の慣習に従った移動記号を生成します：
 
 - **☗５五歩**: 先手プレイヤーが5-5に歩を打つ
@@ -344,6 +400,7 @@ expect(getDisplayMoveFromGrid(grid, {row: 3, col: 7}, {row: 1, col: 7}, null)).t
 ## アプリケーション層との統合
 
 ### ハンドラー統合
+
 ドメインロジックモジュールは、UIとドメインロジックの中間として機能する`play-shogi.ts`ハンドラーによって消費されます：
 
 ```mermaid
@@ -367,16 +424,19 @@ Handler->>Store : addHistoryNode()
 ```
 
 **図のソース**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts)
 - [shogi-rule.ts](file://src/domain/shogi-rule.ts)
 - [display.ts](file://src/domain/display.ts)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts)
 
 **セクションソース**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts)
 
 ### 手の検証プロセス
+
 ハンドラーは、ドメインロジックとゲームステートチェックを組み合わせて包括的な手の検証を実装しています：
 
 1. **駒の選択**: マスがクリックされると、ハンドラーは駒が現在のプレイヤーのものかどうかをチェックします
@@ -428,6 +488,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
 ```
 
 この実装は、将棋の厳格な打つ手ルールを正しく強制しています：
+
 - 最終段への歩の打つ手禁止
 - 最終段への香の打つ手禁止
 - 最終2段への桂の打つ手禁止
@@ -436,6 +497,7 @@ function setCanMoveFromCaptured(piece: PieceType, isSente: boolean) {
 ## 特殊な手の処理
 
 ### 昇格ロジック
+
 システムは、多段階のプロセスで駒の昇格を処理します：
 
 1. **昇格位置の検出**: 駒が昇格ゾーン（先手は最後の3段、後手は最初の3段）に入ったとき、システムは昇格位置を設定します
@@ -451,7 +513,8 @@ export function clickPromotionHandler(getPromote: boolean) {
   const promotionPos = getPromotionPos();
   const { row, col } = promotionPos;
   const fromSquare = getSquare(handPiecePos.row, handPiecePos.col);
-  const display = getDisplayMoveFromGrid(/*...*/) + (getPromote ? "成" : "不成");
+  const display =
+    getDisplayMoveFromGrid(/*...*/) + (getPromote ? "成" : "不成");
   setSquare(
     row,
     col,
@@ -463,14 +526,19 @@ export function clickPromotionHandler(getPromote: boolean) {
 ```
 
 ### ゲームステートの永続化
+
 SFENXフォーマットは、堅牢なゲームステートの永続化と共有を可能にします：
 
 ```typescript
 // 現在のゲームステートを保存
-const sfenx = shogiPositionToSfenx(getGrid(), getCaptured(true), getCaptured(false));
+const sfenx = shogiBoardToSfenx(
+  getGrid(),
+  getCaptured(true),
+  getCaptured(false)
+);
 
 // ゲームステートを復元
-const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
+const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
 setGrid(grid);
 setCaptured(true, capturedSente);
 setCaptured(false, capturedGote);
@@ -481,6 +549,7 @@ setCaptured(false, capturedGote);
 ## パフォーマンスに関する考慮事項
 
 ### ルールチェックの最適化
+
 実装は、効率的なルールチェックを保証するためにいくつかの最適化技術を使用しています：
 
 1. **事前計算された移動ベクトル**: 移動パターンは、実行時に計算されるのではなく、静的データ構造として定義されています
@@ -489,6 +558,7 @@ setCaptured(false, capturedGote);
 4. **最小限のステート複製**: ドメイン関数は、不要なコピーを作成せずに既存のゲームステート上で動作します
 
 ### 複雑性分析
+
 - **移動検証**: O(n)、nはスライドする駒が移動できる最大マス数（将棋では最大8）
 - **打つ手検証**: 多くの駒ではO(1)、二歩ルールの検証のため歩の打つ手チェックではO(n)
 - **記号生成**: O(n)、nは同じ手を指せる可能性のあるボード上の駒の数
@@ -497,7 +567,9 @@ setCaptured(false, capturedGote);
 実装は、極端な最適化よりも正しさと読みやすさを優先しており、将棋のようなターン制ゲームではパフォーマンスが重要な懸念事項ではないため、適切です。
 
 ### メモリ効率
+
 SFENXフォーマットは非常にメモリ効率が高く、コンパクトな文字列で完全なゲームステートをエンコードします：
+
 - ボード位置：駒の密度に応じて約20-40文字
 - 捕獲された駒：8文字（プレイヤーごとに4文字）
 - 合計：通常、完全なゲームステートで50文字未満

@@ -23,7 +23,7 @@
 | `getDisplayMoveFromGrid`     | 盤上手の表示形式変換        | `@/domain/display`              |
 | `getDisplayMoveFromCaptured` | 持ち駒手の表示形式変換      | `@/domain/display`              |
 | `getGrid`                    | 盤面状態の取得              | `@/store/game-board.svelte`     |
-| `sfenxToShogiPosition`       | SFENX形式から将棋盤面へ変換 | `@/domain/sfenx`                |
+| `sfenxToShogiBoard`          | SFENX形式から将棋盤面へ変換 | `@/domain/sfenx`                |
 
 ## データ処理の詳細仕様
 

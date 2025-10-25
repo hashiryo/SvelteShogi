@@ -136,7 +136,7 @@ function strToCapturedPieces(capturedPiecesString: string): Captures {
   return capturedPieces;
 }
 
-export function sfenxToShogiPosition(sfenx: string): {
+export function sfenxToShogiBoard(sfenx: string): {
   grid: (Square | null)[];
   capturedSente: Captures;
   capturedGote: Captures;
@@ -214,7 +214,7 @@ function capturedPiecesToStr(capturedPieces: Captures): string {
   return String.fromCharCode(...nums);
 }
 
-export function shogiPositionToSfenx(
+export function shogiBoardToSfenx(
   grid: (Square | null)[],
   capturedSente: Captures,
   capturedGote: Captures

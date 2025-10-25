@@ -12,7 +12,7 @@ import {
 
 import {
   isSpecialMove,
-  sfenxToShogiPosition,
+  sfenxToShogiBoard,
   strToPosition,
 } from "@/domain/sfenx";
 import { LastPosStore } from "@/store/play-game.svelte";
@@ -21,9 +21,7 @@ import { getBranches } from "@/domain/kifu-node";
 function setCurrentNode(nodeIndex: number) {
   if (CurrentIndexStore.get() === nodeIndex) return;
   const node = NodesStore.getNode(nodeIndex);
-  const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(
-    node.sfenx
-  );
+  const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(node.sfenx);
   GridStore.set(grid);
   CapturesStore.set(true, capturedSente);
   CapturesStore.set(false, capturedGote);

@@ -2,15 +2,15 @@ import { describe, it, expect } from "vitest";
 import {
   flipMove,
   flipSfenx,
-  sfenxToShogiPosition,
-  shogiPositionToSfenx,
+  sfenxToShogiBoard,
+  shogiBoardToSfenx,
   strToPosition,
 } from "@/domain/sfenx";
 
-describe("sfenxToShogiPosition", () => {
+describe("sfenxToShogiBoard", () => {
   it("空の場合", () => {
     const sfenx = "999999999 aaaaaaaa";
-    const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
+    const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
     expect(grid).toEqual(Array(81).fill(null));
     expect(capturedSente).toEqual([]);
     expect(capturedGote).toEqual([]);
@@ -18,7 +18,7 @@ describe("sfenxToShogiPosition", () => {
 
   it("すべての持ち駒を持った場合", () => {
     const sfenx = "999999999 syymaaaa";
-    const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
+    const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
     expect(grid).toEqual(Array(81).fill(null));
     expect(capturedSente).toEqual([
       { piece: "歩", num: 18 },
@@ -35,7 +35,7 @@ describe("sfenxToShogiPosition", () => {
   it("盤面がすべて先手の歩の場合", () => {
     const sfenx =
       "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP aaaaaaaa";
-    const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
+    const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
     expect(grid).toEqual(Array(81).fill({ piece: "歩", isSente: true }));
     expect(capturedSente).toEqual([]);
     expect(capturedGote).toEqual([]);
@@ -44,23 +44,23 @@ describe("sfenxToShogiPosition", () => {
   it("盤面がすべて後手の歩の場合", () => {
     const sfenx =
       "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp aaaaaaaa";
-    const { grid, capturedSente, capturedGote } = sfenxToShogiPosition(sfenx);
+    const { grid, capturedSente, capturedGote } = sfenxToShogiBoard(sfenx);
     expect(grid).toEqual(Array(81).fill({ piece: "歩", isSente: false }));
     expect(capturedSente).toEqual([]);
     expect(capturedGote).toEqual([]);
   });
 });
 
-describe("shogiPositionToSfenx", () => {
+describe("shogiBoardToSfenx", () => {
   it("空の場合", () => {
-    expect(shogiPositionToSfenx(Array(81).fill(null), [], [])).toEqual(
+    expect(shogiBoardToSfenx(Array(81).fill(null), [], [])).toEqual(
       "999999999 aaaaaaaa"
     );
   });
 
   it("すべての持ち駒を持った場合", () => {
     expect(
-      shogiPositionToSfenx(
+      shogiBoardToSfenx(
         Array(81).fill(null),
         [
           { piece: "歩", num: 18 },
@@ -78,11 +78,7 @@ describe("shogiPositionToSfenx", () => {
 
   it("盤面がすべて先手の歩の場合", () => {
     expect(
-      shogiPositionToSfenx(
-        Array(81).fill({ piece: "歩", isSente: true }),
-        [],
-        []
-      )
+      shogiBoardToSfenx(Array(81).fill({ piece: "歩", isSente: true }), [], [])
     ).toEqual(
       "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP aaaaaaaa"
     );
@@ -90,11 +86,7 @@ describe("shogiPositionToSfenx", () => {
 
   it("盤面がすべて後手の歩の場合", () => {
     expect(
-      shogiPositionToSfenx(
-        Array(81).fill({ piece: "歩", isSente: false }),
-        [],
-        []
-      )
+      shogiBoardToSfenx(Array(81).fill({ piece: "歩", isSente: false }), [], [])
     ).toEqual(
       "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp aaaaaaaa"
     );

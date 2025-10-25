@@ -13,13 +13,16 @@
 </cite>
 
 ## 更新サマリー
-**更新内容**   
+
+**更新内容**
+
 - 棋譜管理の中心が `kifu-history` から `kifu-node` に移行したため、関連するハンドラとストアの記述を更新
 - `kifu-history.ts` の削除と `kifu-node.ts` の導入に伴い、データフローの説明を再構成
 - `pushOrJumpToKifu` 関数の重複防止ロジックを詳細に記述
 - 図式およびセクションの参照ファイルを最新のファイル構成に合わせて修正
 
 ## 目次
+
 1. [データフロー概要](#データフロー概要)
 2. [ユーザー操作とイベント処理](#ユーザー操作とイベント処理)
 3. [ストア管理と状態更新](#ストア管理と状態更新)
@@ -41,6 +44,7 @@ SvelteShogiは、ユーザー操作がハンドラを介して中央集権的な
 このアーキテクチャにより、関心の分離、予測可能な状態遷移、効率的なレンダリングが実現されています。
 
 **セクションの出典**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L1-L270)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 
@@ -51,6 +55,7 @@ SvelteShogiは、ユーザー操作がハンドラを介して中央集権的な
 ### クリックハンドラ
 
 主な操作ポイントは以下の通りです。
+
 - `clickSquareHandler(row, col)`: 盤上のクリックを処理
 - `clickCapturedHandler(piece, isSente)`: 駒台の駒選択を処理
 - `clickPromotionHandler(getPromote)`: 成否の決定を処理
@@ -69,11 +74,13 @@ E --> |いいえ| G["選択をリセット"]
 ```
 
 **図式の出典**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L150-L270)
 
 **セクションの出典**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L150-L270)
-- [kifu-node.ts](file://src/handler/kifu-node.ts#L1-L82) - *棋譜ナビゲーションの新規実装*
+- [kifu-node.ts](file://src/handler/kifu-node.ts#L1-L82) - _棋譜ナビゲーションの新規実装_
 
 ## ストア管理と状態更新
 
@@ -81,11 +88,11 @@ E --> |いいえ| G["選択をリセット"]
 
 ### 主要なストア
 
-| ストア | 担当 |
-|------|----------------|
-| `game-board.svelte.ts` | 盤面グリッド、駒台、手番、選択中の手持ち駒 |
-| `play-game.svelte.ts` | 有効手の表示、直前の手の位置、成りの状態 |
-| `kifu-node.svelte.ts` | リンクされたノード構造としての棋譜履歴（`kifu-history.svelte.ts` に代わる） |
+| ストア                 | 担当                                                                        |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `game-board.svelte.ts` | 盤面グリッド、駒台、手番、選択中の手持ち駒                                  |
+| `play-game.svelte.ts`  | 有効手の表示、直前の手の位置、成りの状態                                    |
+| `kifu-node.svelte.ts`  | リンクされたノード構造としての棋譜履歴（`kifu-history.svelte.ts` に代わる） |
 
 各ストアは内部の `$state` 変数を保持し、それらを読み書きするためのエクスポートされた関数を提供します。例えば：
 
@@ -95,7 +102,12 @@ let grid: (Square | null)[] = $state(initGrid());
 export function getSquare(row: number, col: number): Square | null {
   return grid[row * 9 + col];
 }
-export function setSquare(row: number, col: number, piece: PieceType, isSente: boolean) {
+export function setSquare(
+  row: number,
+  col: number,
+  piece: PieceType,
+  isSente: boolean
+) {
   grid[row * 9 + col] = { piece, isSente };
 }
 ```
@@ -143,11 +155,13 @@ PlayGameStore <.. KifuNodeStore : "使用"
 ```
 
 **図式の出典**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L50)
-- [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L77) - *新規棋譜管理ストア*
+- [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L77) - _新規棋譜管理ストア_
 
 **セクションの出典**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L50)
 - [kifu-node.svelte.ts](file://src/store/kifu-node.svelte.ts#L1-L77)
@@ -163,6 +177,7 @@ Svelteの組み込みリアクティビティシステム（`$state`, `$derived`
 この細粒度のリアクティビティにより、不要な再レンダリングが最小限に抑えられ、低スペックデバイスでも高いパフォーマンスが保証されます。
 
 **セクションの出典**
+
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L50)
 
@@ -204,7 +219,7 @@ participant ドメイン as "sfenx.ts"
 ハンドラ->>盤面ストア : resetSquare(6,4)
 ハンドラ->>手ストア : setLastPos(5,4)
 ハンドラ->>盤面ストア : toggleTurn()
-ハンドラ->>ドメイン : shogiPositionToSfenx()
+ハンドラ->>ドメイン : shogiBoardToSfenx()
 ドメイン-->>ハンドラ : SFENX文字列
 ハンドラ->>棋譜ストア : pushOrJumpToKifu(..., SFENX, ...)
 棋譜ストア-->>ハンドラ : ノードが追加またはジャンプ
@@ -212,6 +227,7 @@ participant ドメイン as "sfenx.ts"
 ```
 
 **図式の出典**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L150-L270)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L50)
@@ -219,6 +235,7 @@ participant ドメイン as "sfenx.ts"
 - [sfenx.ts](file://src/domain/sfenx.ts#L1-L240)
 
 **セクションの出典**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L150-L270)
 
 ## SFENXによるゲーム状態のシリアル化
@@ -226,21 +243,26 @@ participant ドメイン as "sfenx.ts"
 `sfenx.ts` モジュールは、メモリ内のゲーム状態とSFENX文字列形式の間の双方向変換を扱い、履歴記録や永続化に使用されます。
 
 ### SFENXフォーマット
+
 SFENXは、駒台の駒をASCII文字でコンパクトに符号化するためにSFENを拡張しています。例：
+
 - `"r...gbsk/...p.../..." aaab"` は盤面と駒台を表す。
 
 ### 主な関数
-- `shogiPositionToSfenx(grid, capturedSente, capturedGote)` → `string`
-- `sfenxToShogiPosition(sfenx)` → `{grid, capturedSente, capturedGote}`
 
-各手の終了時、`turnEnd()` は `shogiPositionToSfenx()` を呼び出して現在の状態をシリアル化し、`pushOrJumpToKifu()` を介して履歴に格納します。
+- `shogiBoardToSfenx(grid, capturedSente, capturedGote)` → `string`
+- `sfenxToShogiBoard(sfenx)` → `{grid, capturedSente, capturedGote}`
+
+各手の終了時、`turnEnd()` は `shogiBoardToSfenx()` を呼び出して現在の状態をシリアル化し、`pushOrJumpToKifu()` を介して履歴に格納します。
 
 これにより以下の機能が可能になります。
+
 - `jumpToKifu()` によるアンドゥ/リドゥ
 - ゲーム状態のインポート/エクスポート
 - 分岐するゲームツリー
 
 **セクションの出典**
+
 - [sfenx.ts](file://src/domain/sfenx.ts#L1-L240)
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L130-L140)
 
@@ -254,12 +276,17 @@ function turnEnd(display: string, move: string) {
   resetCanMoveAll();
   resetPromotionPos();
   resetHandPiece();
-  const sfenx = shogiPositionToSfenx(getGrid(), getCaptured(true), getCaptured(false));
+  const sfenx = shogiBoardToSfenx(
+    getGrid(),
+    getCaptured(true),
+    getCaptured(false)
+  );
   pushOrJumpToKifu(display, sfenx, getIsSenteTurn(), move);
 }
 ```
 
 この関数は以下の処理を行います。
+
 - 手番状態の更新
 - 一時的なUI状態（手持ち駒、有効手）のクリア
 - 現在の位置のシリアル化
@@ -270,6 +297,7 @@ Svelteの `$state` は同期的であり、更新は単一のティック内で�
 さらに、`setCanMoveFromCaptured()` 内で駒の配置ルール（例：二歩）が強制されるため、違法な配置が防止されます。
 
 **セクションの出典**
+
 - [play-shogi.ts](file://src/handler/play-shogi.ts#L130-L145)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 
@@ -278,24 +306,29 @@ Svelteの `$state` は同期的であり、更新は単一のティック内で�
 SvelteShogiは、応答性と最小限の再レンダリングを最適化しています。
 
 ### 効率的な状態サブスクリプション
+
 - ストアは細かい `$state` 変数（例：`canMove`, `grid`）を使用。
 - コンポーネントは必要な値にのみサブスクライブ（例：単一セルの `getSquare()`）。
 
 ### 再レンダリングの最小化
+
 - Svelteのコンパイラはリアクティビティを静的に解析し、仮想DOMのオーバーヘッドを回避。
 - `resetCanMoveAll()` と `setCanMoveAll()` はO(1)の配列変更に `fill()` を使用。
 
 ### 最適化された手の妥当性検証
+
 - 滑る駒の移動（例：`角`, `飛`）は早期ループ終了を使用。
 - 駒台の配置ルール（例：二歩）は選択ごとに1回だけ計算。
 
 ### メモリ効率
+
 - SFENXエンコーディングにより履歴ノードのサイズが削減。
 - 履歴ノードは `prev`, `next`, `br_*` ポインタを持つリンク構造で、分岐の効率的な管理を可能に。
 
 これらの最適化により、深く複雑な局面や大きなゲームツリーでもスムーズなプレイが保証されます。
 
 **セクションの出典**
+
 - [play-game.svelte.ts](file://src/store/play-game.svelte.ts#L1-L50)
 - [game-board.svelte.ts](file://src/store/game-board.svelte.ts#L1-L166)
 - [sfenx.ts](file://src/domain/sfenx.ts#L1-L240)
