@@ -235,8 +235,8 @@ export function strToPosition(posString: string): Position {
   };
 }
 
-export function positionToStr(row: number, col: number): string {
-  return `${col + 1}${String.fromCharCode("a".charCodeAt(0) + row)}`;
+export function positionToStr(pos: Position): string {
+  return `${pos.col + 1}${String.fromCharCode("a".charCodeAt(0) + pos.row)}`;
 }
 
 export function flipSfenx(sfenx: string): string {

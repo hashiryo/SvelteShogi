@@ -19,10 +19,8 @@ type VDirCnt = { up: number; none: number; down: number };
 
 function getFromVDirections(
   grid: (PlayerPiece | null)[],
-  row: number,
-  col: number,
-  piece: PieceType,
-  isSente: boolean
+  to: Position,
+  putPiece: PlayerPiece
 ): {
   left: VDirCnt;
   none: VDirCnt;
@@ -34,15 +32,18 @@ function getFromVDirections(
     none: { up: 0, none: 0, down: 0 },
     right: { up: 0, none: 0, down: 0 },
   };
-  const vec = getPieceMoveVec(piece);
+  const vec = getPieceMoveVec(putPiece.piece);
   for (const { r, c, slide } of vec) {
-    const rv = isSente ? r : -r;
-    const cv = isSente ? c : -c;
-    let nr = row - rv;
-    let nc = col - cv;
+    const rv = putPiece.isSente ? r : -r;
+    const cv = putPiece.isSente ? c : -c;
+    let nr = to.row - rv;
+    let nc = to.col - cv;
     while (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
       const square = grid[nr * 9 + nc];
-      if (square?.isSente === isSente && square.piece === piece) {
+      if (
+        square?.isSente === putPiece.isSente &&
+        square.piece === putPiece.piece
+      ) {
         const relPos = c > 0 ? "right" : c < 0 ? "left" : "none";
         const move = r > 0 ? "down" : r < 0 ? "up" : "none";
         dirCnt[relPos][move]++;
@@ -57,21 +58,19 @@ function getFromVDirections(
 
 export function getDisplayMoveFromCaptured(
   grid: (PlayerPiece | null)[],
-  row: number,
-  col: number,
-  piece: PieceType,
-  isSente: boolean
+  to: Position,
+  capture: PlayerPiece
 ): string {
-  const dirCnt = getFromVDirections(grid, row, col, piece, isSente);
+  const dirCnt = getFromVDirections(grid, to, capture);
   const total = Object.values(dirCnt).reduce((sum, direction) => {
     return (
       sum +
       Object.values(direction).reduce((subSum, value) => subSum + value, 0)
     );
   }, 0);
-  const display = `${isSente ? "☗" : "☖"}${ZENKAKU_NUM[col]}${
-    KANJI_NUM[row]
-  }${piece}${total > 0 ? "打" : ""}`;
+  const display = `${capture.isSente ? "☗" : "☖"}${ZENKAKU_NUM[to.col]}${
+    KANJI_NUM[to.row]
+  }${capture.piece}${total > 0 ? "打" : ""}`;
   return display;
 }
 
@@ -89,13 +88,7 @@ export function getDisplayMoveFromGrid(
   const myRelPos = dc < 0 ? "left" : dc > 0 ? "right" : "none";
   const myMove = dr < 0 ? "up" : dr > 0 ? "down" : "none";
 
-  let dirCnt = getFromVDirections(
-    grid,
-    to.row,
-    to.col,
-    fromSquare.piece,
-    fromSquare.isSente
-  );
+  let dirCnt = getFromVDirections(grid, to, fromSquare);
   dirCnt[myRelPos][myMove]--;
 
   const vSum =
@@ -182,9 +175,9 @@ export function getDisplayMoveFromMoveStr(
   const match2 = move.match(/^([A-Z])\*(\d)([a-i])$/);
   if (match2) {
     const [, pieceChar, colStr, rowStr] = match2;
-    const { row, col } = strToPosition(`${colStr}${rowStr}`);
+    const to = strToPosition(`${colStr}${rowStr}`);
     const piece = charToPieceTypeMap[pieceChar];
-    return getDisplayMoveFromCaptured(grid, row, col, piece, isSente);
+    return getDisplayMoveFromCaptured(grid, to, { piece, isSente });
   }
 
   throw new Error("不正な形式の手");

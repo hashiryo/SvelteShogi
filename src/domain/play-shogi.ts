@@ -19,8 +19,7 @@ export function clickSquare(
   canMove: boolean[],
   isSente: boolean,
   lastPos: Position | null,
-  row: number,
-  col: number
+  pos: Position
 ):
   | {
       display: string;
@@ -34,33 +33,37 @@ export function clickSquare(
       promotionPos: Position;
     }
   | null {
-  const square = grid[row * 9 + col];
+  const square = grid[pos.row * 9 + pos.col];
   if (!handPiece) {
     if (square && square.isSente === isSente) {
       return {
         handPiece: {
           piece: square.piece,
           isSente: square.isSente,
-          position: { row, col },
+          position: pos,
         },
-        canMove: getCanMoveFromSquare(grid, row, col),
+        canMove: getCanMoveFromSquare(grid, pos),
       };
     }
     return null;
   }
   const handPiecePos = handPiece.position;
-  if (handPiecePos && handPiecePos.row === row && handPiecePos.col === col) {
+  if (
+    handPiecePos &&
+    handPiecePos.row === pos.row &&
+    handPiecePos.col === pos.col
+  ) {
     return null;
   }
-  if (!canMove[row * 9 + col]) {
+  if (!canMove[pos.row * 9 + pos.col]) {
     if (square && square.isSente === isSente) {
       return {
         handPiece: {
           piece: square.piece,
           isSente: square.isSente,
-          position: { row, col },
+          position: pos,
         },
-        canMove: getCanMoveFromSquare(grid, row, col),
+        canMove: getCanMoveFromSquare(grid, pos),
       };
     } else {
       return null;
@@ -68,14 +71,11 @@ export function clickSquare(
   }
 
   if (!handPiecePos) {
-    const display = getDisplayMoveFromCaptured(
-      grid,
-      row,
-      col,
-      handPiece.piece,
-      isSente
-    );
-    const move = `${pieceTypeToCharMap[handPiece.piece]}*${positionToStr(row, col)}`;
+    const display = getDisplayMoveFromCaptured(grid, pos, {
+      piece: handPiece.piece,
+      isSente,
+    });
+    const move = `${pieceTypeToCharMap[handPiece.piece]}*${positionToStr(pos)}`;
     return {
       display,
       move,
@@ -83,24 +83,16 @@ export function clickSquare(
   }
 
   if (
-    canPromotePos(isSente, handPiecePos.row, row) &&
+    canPromotePos(isSente, handPiecePos.row, pos.row) &&
     promotePiece(handPiece.piece) !== handPiece.piece
   ) {
     return {
-      promotionPos: {
-        row,
-        col,
-      },
+      promotionPos: pos,
     };
   }
-  const display = getDisplayMoveFromGrid(
-    grid,
-    handPiecePos,
-    { row, col },
-    lastPos
-  );
-  const fs = positionToStr(handPiecePos.row, handPiecePos.col);
-  const ts = positionToStr(row, col);
+  const display = getDisplayMoveFromGrid(grid, handPiecePos, pos, lastPos);
+  const fs = positionToStr(handPiecePos);
+  const ts = positionToStr(pos);
   return {
     display,
     move: `${fs}${ts}`,

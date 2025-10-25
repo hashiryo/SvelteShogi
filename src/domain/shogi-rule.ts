@@ -1,4 +1,4 @@
-import type { PieceType, PlayerPiece } from "@/types/shogi";
+import type { PieceType, PlayerPiece, Position } from "@/types/shogi";
 
 function getGoldMoveVec(): { r: number; c: number; slide: boolean }[] {
   return [
@@ -133,19 +133,20 @@ export function canPromotePos(
 
 export function getCanMoveFromSquare(
   grid: (PlayerPiece | null)[],
-  row: number,
-  col: number
+  from: Position
 ): boolean[] {
   let canMove: boolean[] = new Array(9 * 9).fill(false);
-  const square = grid[row * 9 + col];
+  const square = grid[from.row * 9 + from.col];
   if (!square)
-    throw new Error(`PlayerPiece at (${row}, ${col}) does not exist.`);
+    throw new Error(
+      `PlayerPiece at (${from.row}, ${from.col}) does not exist.`
+    );
   const vec = getPieceMoveVec(square.piece);
   for (const { r, c, slide } of vec) {
     const rv = square.isSente ? r : -r; // Reverse direction for gote
     const cv = c;
-    let nr = row + rv;
-    let nc = col + cv;
+    let nr = from.row + rv;
+    let nc = from.col + cv;
     while (nr >= 0 && nr < 9 && nc >= 0 && nc < 9) {
       const index = nr * 9 + nc;
       const targetSquare = grid[index];

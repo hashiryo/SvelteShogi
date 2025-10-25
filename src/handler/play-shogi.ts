@@ -37,8 +37,10 @@ export async function clickSquareHandler(row: number, col: number) {
     CanMoveStore.get(),
     IsSenteTurnStore.get(),
     LastPosStore.get(),
-    row,
-    col
+    {
+      row,
+      col,
+    }
   );
   if (!result) {
     HandPieceStore.reset();
@@ -89,15 +91,14 @@ export async function clickPromotionHandler(getPromote: boolean) {
   if (!handPiecePos) throw new Error("Hand piece is not from a square.");
   const promotionPos = PromotionPosStore.get();
   if (!promotionPos) throw new Error("No promotion position set.");
-  const { row, col } = promotionPos;
   const display =
     getDisplayMoveFromGrid(
       GridStore.get(),
       handPiecePos,
-      { row, col },
+      promotionPos,
       LastPosStore.get()
     ) + (getPromote ? "成" : "不成");
-  const fs = positionToStr(handPiecePos.row, handPiecePos.col);
-  const ts = positionToStr(row, col);
+  const fs = positionToStr(handPiecePos);
+  const ts = positionToStr(promotionPos);
   await executeMove(display, `${fs}${ts}${getPromote ? "+" : ""}`);
 }
