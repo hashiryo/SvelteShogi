@@ -1,6 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, expectTypeOf } from "vitest";
 import type { Square } from "@/types/shogi";
-import { getDisplayMoveFromGrid } from "@/domain/display";
+import {
+  getDisplayMoveFromGrid,
+  getDisplayMoveFromMoveStr,
+} from "@/domain/display";
 
 describe("getDisplayMoveFromGrid", () => {
   // https://www.shogi.or.jp/faq/kihuhyouki.html
@@ -1134,5 +1137,27 @@ describe("getDisplayMoveFromGrid", () => {
         )
       ).toBe("☖８一馬右");
     });
+  });
+});
+
+describe("getDisplayMoveFromMoveStr", () => {
+  it("金と玉と成り駒は成・不成はつけない", () => {
+    let grid: (Square | null)[] = Array(81).fill(null);
+    grid[0 * 9 + 0] = { piece: "と", isSente: true };
+    grid[0 * 9 + 1] = { piece: "杏", isSente: true };
+    grid[0 * 9 + 2] = { piece: "圭", isSente: true };
+    grid[0 * 9 + 3] = { piece: "全", isSente: true };
+    grid[0 * 9 + 4] = { piece: "金", isSente: true };
+    grid[0 * 9 + 5] = { piece: "玉", isSente: true };
+    grid[0 * 9 + 6] = { piece: "馬", isSente: true };
+    grid[0 * 9 + 7] = { piece: "竜", isSente: true };
+    expect(getDisplayMoveFromMoveStr(grid, "1a1b", true, null)).toBe("☗１二と");
+    expect(getDisplayMoveFromMoveStr(grid, "2a2b", true, null)).toBe("☗２二杏");
+    expect(getDisplayMoveFromMoveStr(grid, "3a3b", true, null)).toBe("☗３二圭");
+    expect(getDisplayMoveFromMoveStr(grid, "4a4b", true, null)).toBe("☗４二全");
+    expect(getDisplayMoveFromMoveStr(grid, "5a5b", true, null)).toBe("☗５二金");
+    expect(getDisplayMoveFromMoveStr(grid, "6a6b", true, null)).toBe("☗６二玉");
+    expect(getDisplayMoveFromMoveStr(grid, "7a7b", true, null)).toBe("☗７二馬");
+    expect(getDisplayMoveFromMoveStr(grid, "8a8b", true, null)).toBe("☗８二竜");
   });
 });

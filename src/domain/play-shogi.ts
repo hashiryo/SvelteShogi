@@ -77,16 +77,16 @@ export function clickSquare(
     };
   }
 
-  if (canPromotePos(isSente, handPiecePos.row, row)) {
-    const promotedPiece = promotePiece(handPiece.piece);
-    if (promotedPiece !== handPiece.piece) {
-      return {
-        promotionPos: {
-          row,
-          col,
-        },
-      };
-    }
+  if (
+    canPromotePos(isSente, handPiecePos.row, row) &&
+    promotePiece(handPiece.piece) !== handPiece.piece
+  ) {
+    return {
+      promotionPos: {
+        row,
+        col,
+      },
+    };
   }
   const display = getDisplayMoveFromGrid(
     grid,

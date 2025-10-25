@@ -1,5 +1,5 @@
-import type { PieceType, Square } from "@/types/shogi";
-import { canPromotePos, getPieceMoveVec } from "./shogi-rule";
+import type { PieceType, Position, Square } from "@/types/shogi";
+import { canPromotePos, getPieceMoveVec, promotePiece } from "./shogi-rule";
 import { charToPieceTypeMap, strToPosition } from "./sfenx";
 
 export const KANJI_NUM = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
@@ -168,7 +168,12 @@ export function getDisplayMoveFromMoveStr(
     const from = strToPosition(`${fromColStr}${fromRowStr}`);
     const to = strToPosition(`${toColStr}${toRowStr}`);
     displayText = getDisplayMoveFromGrid(grid, from, to, lastPos);
-    if (canPromotePos(isSente, from.row, to.row)) {
+    const square = grid[from.row * 9 + from.col];
+    if (!square) throw new Error("square is null");
+    if (
+      canPromotePos(isSente, from.row, to.row) &&
+      square.piece !== promotePiece(square.piece)
+    ) {
       displayText += prom ? "成" : "不成";
     }
     return displayText;

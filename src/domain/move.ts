@@ -158,11 +158,10 @@ export function movesToNodes(moves: string[]): {
   for (let i = 0; i < moves.length; i++) {
     nodes[i].next = i + 1;
     const move = moves[i];
+    display = getDisplayMoveFromMoveStr(grid, move, isSente, lastPos);
     if (move === "resign") {
-      display = "投了";
       lastPos = null;
     } else {
-      display = getDisplayMoveFromMoveStr(grid, move, isSente, lastPos);
       const { grid: nextGrid, captures: nextCaptures } = moveToNextGridCaptures(
         grid,
         isSente ? capturedSente : capturedGote,
