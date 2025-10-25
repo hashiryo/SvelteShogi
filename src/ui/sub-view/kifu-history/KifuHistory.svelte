@@ -14,7 +14,7 @@
     if (currentPos !== -1 && containerRef) {
       const currentItem = containerRef.children[currentPos] as HTMLElement;
       currentItem?.scrollIntoView({
-        behavior: "smooth",
+        behavior: "instant",
         block: "nearest", // 必要最小限のスクロール
       });
     }
