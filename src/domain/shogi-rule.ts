@@ -167,25 +167,24 @@ export function getCanMoveFromSquare(
 
 export function getCanMoveFromCaptured(
   grid: (PlayerPiece | null)[],
-  piece: PieceType,
-  isSente: boolean
+  capture: PlayerPiece
 ): boolean[] {
   let canMove: boolean[] = new Array(9 * 9).fill(true);
-  const vec = getPieceMoveVec(piece);
+  const vec = getPieceMoveVec(capture.piece);
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
       const index = r * 9 + c;
       if (grid[index]) canMove[index] = false; // Reset canMove for occupied squares
     }
   }
-  const top = isSente ? 0 : 8;
-  if (piece === "歩") {
+  const top = capture.isSente ? 0 : 8;
+  if (capture.piece === "歩") {
     for (let c = 0; c < 9; c++) {
       canMove[top * 9 + c] = false;
       let nifu = false;
       for (let r = 0; r < 9; r++) {
         const square = grid[r * 9 + c];
-        if (square && square.isSente === isSente) {
+        if (square && square.isSente === capture.isSente) {
           if (square.piece === "歩") {
             nifu = true; // Found another pawn in the same column
             break;
@@ -197,11 +196,11 @@ export function getCanMoveFromCaptured(
       }
     }
   }
-  if (piece === "香") {
+  if (capture.piece === "香") {
     for (let c = 0; c < 9; c++) canMove[top * 9 + c] = false;
   }
-  if (piece === "桂") {
-    const top2 = isSente ? 1 : 7;
+  if (capture.piece === "桂") {
+    const top2 = capture.isSente ? 1 : 7;
     for (let c = 0; c < 9; c++) {
       canMove[top * 9 + c] = false;
       canMove[top2 * 9 + c] = false;

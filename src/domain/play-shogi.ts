@@ -111,27 +111,24 @@ export function clickCaptured(
   grid: (PlayerPiece | null)[],
   handPiece: HandPieceFrom | null,
   isSenteTurn: boolean,
-  captured: {
-    piece: PieceType;
-    isSente: boolean;
-  }
+  capture: PlayerPiece
 ): { handPiece: HandPieceFrom; canMove: boolean[] } | null {
-  if (captured.isSente === isSenteTurn) {
+  if (capture.isSente === isSenteTurn) {
     if (
       handPiece &&
       !handPiece.position &&
-      handPiece.piece === captured.piece &&
-      handPiece.isSente === captured.isSente
+      handPiece.piece === capture.piece &&
+      handPiece.isSente === capture.isSente
     ) {
       return null;
     } else {
       return {
         handPiece: {
-          piece: captured.piece,
-          isSente: captured.isSente,
+          piece: capture.piece,
+          isSente: capture.isSente,
           position: null,
         },
-        canMove: getCanMoveFromCaptured(grid, captured.piece, captured.isSente),
+        canMove: getCanMoveFromCaptured(grid, capture),
       };
     }
   }
