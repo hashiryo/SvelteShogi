@@ -284,7 +284,7 @@ export function flipMove(move: string): string {
     return upper + "*" + newD + newL;
   }
 
-  throw new Error("入力形式が不正です");
+  throw new Error(`入力形式が不正です: ${move}`);
 }
 
 export function isSpecialMove(move: string): boolean {

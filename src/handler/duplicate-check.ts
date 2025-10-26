@@ -10,6 +10,7 @@ export async function checkGameDuplicate(
 ): Promise<CheckGameDuplicateResult> {
   // Phase 1: 日時情報による確実な重複検知（最優先）
   if (metadata?.startTime || metadata?.endTime) {
+    console.log("日時情報による重複チェックを実行");
     const dateTimeRecords = await GameRecordsRepository.fetchByDateTime(
       metadata.startTime,
       metadata.endTime
@@ -40,15 +41,9 @@ export async function checkGameDuplicate(
       };
     }
   }
-
   // Phase 2: ハッシュベースの重複検知（メタ情報がある場合）
-  const hasMetadata =
-    metadata?.startTime ||
-    metadata?.endTime ||
-    metadata?.blackPlayer ||
-    metadata?.whitePlayer ||
-    metadata?.result;
-  if (hasMetadata) {
+  else if (metadata?.blackPlayer || metadata?.whitePlayer || metadata?.result) {
+    console.log("ハッシュベースの重複チェックを実行");
     const record = await GameRecordsRepository.fetchByGameHash(gameHash);
 
     if (record) {
@@ -69,9 +64,9 @@ export async function checkGameDuplicate(
       };
     }
   }
-
   // Phase 3: 1日以内の同じハッシュをチェック（メタ情報がない場合）
-  if (!hasMetadata) {
+  else {
+    console.log("1日以内の同じハッシュをチェック（メタ情報がない場合）");
     const recentRecords = await GameRecordsRepository.fetchByGameHashWithinDay(
       gameHash,
       1

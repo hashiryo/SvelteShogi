@@ -14,6 +14,7 @@ import { CanMoveStore, LastPosStore } from "@/store/play-game.svelte";
 import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 import { fetchAndSetMoveStatistics } from "./move-statistics";
 import type { KifuNode } from "@/types/shogi";
+import { MetadataStore } from "@/store/metadata.svelte";
 
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   NodesStore.set([
@@ -38,6 +39,7 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   HandPieceStore.reset();
   IsSenteTurnStore.set(isSente);
   LastPosStore.reset();
+  MetadataStore.reset();
   await fetchAndSetFavoriteMoves(isSente, sfenx);
   await fetchAndSetMoveStatistics(isSente, sfenx);
 }

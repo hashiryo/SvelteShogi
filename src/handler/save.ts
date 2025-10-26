@@ -32,7 +32,10 @@ export async function executeSave(nodeIndex: number) {
     const metadata = MetadataStore.get();
     const gameHash = await generateGameHash(nodes, 0, metadata);
 
+    console.log(gameHash);
+
     const duplicateResult = await checkGameDuplicate(gameHash, metadata);
+    console.log(duplicateResult);
 
     // 重複がある場合、ユーザーに確認
     if (duplicateResult.isDuplicate) {

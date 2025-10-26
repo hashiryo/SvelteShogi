@@ -59,7 +59,7 @@ export class GameRecordsRepository {
       query = query.is("user_id", null);
     }
 
-    const { data, error } = await query.single();
+    const { data, error } = await query.maybeSingle();
 
     if (error && error.code !== "PGRST116") {
       // PGRST116は「見つからない」エラーなので無視
