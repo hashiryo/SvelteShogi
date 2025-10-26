@@ -2,7 +2,7 @@ import { flipMove, flipSfenx } from "@/domain/sfenx";
 import { MoveStatisticsRepository } from "@/lib/supabase/move-statistics";
 import { NodesStore } from "@/store/kifu-node.svelte";
 import { MoveStatisticsStore } from "@/store/move-statistics.svelte";
-import type { MoveStatistics } from "@/types/shogi";
+import type { MoveStatistics, MoveStatisticsInsertParams } from "@/types/shogi";
 
 export function getCurrentStatistics(
   isSente: boolean,
@@ -114,14 +114,7 @@ export async function executeSave(nodeIndex: number) {
     const winner = !currentNode.isSente;
 
     // 統計レコード配列を初期化
-    const statisticsArray: {
-      sfenx: string;
-      move: string;
-      win: boolean;
-      lose: boolean;
-      timeout: boolean;
-      userId?: string;
-    }[] = [];
+    const statisticsArray: MoveStatisticsInsertParams[] = [];
 
     // 現在のノードから親ノードを遡りながら統計レコードを構築
     let current = nodeIndex;
@@ -147,7 +140,6 @@ export async function executeSave(nodeIndex: number) {
         win,
         lose,
         timeout: false, // 投了による終了のため false 固定
-        userId: undefined, // 匿名データとして保存
       });
 
       // 親ノードに移動

@@ -1,3 +1,4 @@
+import type { MoveStatisticsInsertParams } from "@/types/shogi";
 import { supabase } from "./client";
 import type { Database } from "./types";
 
@@ -5,15 +6,6 @@ type MoveStatisticsRow =
   Database["public"]["Tables"]["shogi_moves_statistics"]["Row"];
 type MoveStatisticsInsert =
   Database["public"]["Tables"]["shogi_moves_statistics"]["Insert"];
-
-interface MoveStatisticsInsertParams {
-  sfenx: string;
-  move: string;
-  win: boolean;
-  lose: boolean;
-  timeout: boolean;
-  userId?: string;
-}
 
 const TABLE = "shogi_moves_statistics";
 
@@ -96,7 +88,8 @@ export class MoveStatisticsRepository {
    * @throws データベースエラーが発生した場合
    */
   static async bulkInsert(
-    paramsArray: MoveStatisticsInsertParams[]
+    paramsArray: MoveStatisticsInsertParams[],
+    userId?: string
   ): Promise<void> {
     const insertDataArray: MoveStatisticsInsert[] = paramsArray.map(
       (params) => ({
@@ -105,7 +98,7 @@ export class MoveStatisticsRepository {
         win: params.win,
         lose: params.lose,
         timeout: params.timeout,
-        user_id: params.userId || null,
+        user_id: userId || null,
       })
     );
 

@@ -81,6 +81,30 @@ export interface KifuNode {
   isSaved: boolean; // 保存済みかどうか (投了ノード等のみで使う想定)
 }
 
+export interface MoveStatisticsInsertParams {
+  sfenx: string;
+  move: string;
+  win: boolean;
+  lose: boolean;
+  timeout: boolean;
+}
+
+export interface GameRecordsInsertParams {
+  blackPlayer?: string | null;
+  createdAt?: string;
+  endTime?: string | null;
+  event?: string | null;
+  gameHash: string;
+  handicap?: string | null;
+  id?: number;
+  moveCount: number;
+  recordedAt?: string;
+  result?: string | null;
+  startTime?: string | null;
+  userId?: string | null;
+  whitePlayer?: string | null;
+}
+
 // 集計済み統計データの型
 export interface MoveStatistics {
   move: string;

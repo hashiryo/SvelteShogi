@@ -1,10 +1,9 @@
 import { supabase } from "./client";
 import type { Database } from "./types";
 
+const TABLE = "favorite_shogi_moves";
 type FavoriteMoveInsert =
   Database["public"]["Tables"]["favorite_shogi_moves"]["Insert"];
-
-const TABLE = "favorite_shogi_moves";
 
 export class FavroiteMovesRepository {
   /**
