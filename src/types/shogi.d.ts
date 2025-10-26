@@ -124,3 +124,9 @@ export interface KifMetadata {
   whitePlayer?: string;
   result?: string;
 }
+
+export interface CheckGameDuplicateResult {
+  isDuplicate: boolean;
+  reason: string;
+  comment: string;
+}

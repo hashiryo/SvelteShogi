@@ -1,8 +1,4 @@
-import type {
-  GameRecordsInsertParams,
-  KifMetadata,
-  KifuNode,
-} from "@/types/shogi";
+import type { KifMetadata } from "@/types/shogi";
 import { supabase } from "./client";
 import type { Database } from "./types";
 
@@ -49,7 +45,7 @@ export class GameRecordsRepository {
   /**
    * ゲームハッシュで既存記録を検索
    */
-  static async getByGameHash(
+  static async fetchByGameHash(
     gameHash: string,
     userId?: string
   ): Promise<GameRecordsRow | null> {
@@ -77,7 +73,7 @@ export class GameRecordsRepository {
   /**
    * 日時情報で既存記録を検索（確実な重複検知）
    */
-  static async getByDateTime(
+  static async fetchByDateTime(
     startTime?: string,
     endTime?: string,
     userId?: string
@@ -118,7 +114,7 @@ export class GameRecordsRepository {
   /**
    *
    */
-  static async getByGameHashWithDay(
+  static async fetchByGameHashWithinDay(
     gameHash: string,
     day: number,
     userId?: string
