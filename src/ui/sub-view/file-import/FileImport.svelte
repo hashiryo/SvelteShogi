@@ -12,17 +12,20 @@
     IsSenteTurnStore,
   } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
+  import { MetadataStore } from "@/store/metadata.svelte";
   import type { KifMetadata } from "@/types/shogi";
+  import { parse } from "svelte/compiler";
 
   let files: FileList | undefined | null = $state();
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  let metadata: KifMetadata | null = $state(null); // メタデータ表示用の状態変数を追加
+  let metadata = $derived(MetadataStore.get()); // メタデータ表示用の状態変数を追加
 
   async function handleFileImport(file: File) {
     isLoading = true;
     error = null;
-    metadata = null; // 新しいファイルインポート時にメタデータをリセット
+    MetadataStore.reset();
+    // 新しいファイルインポート時にメタデータをリセット
 
     try {
       console.log(`ファイル読み込み開始: ${file.name} (${file.size} bytes)`);
@@ -33,8 +36,8 @@
 
       // KIF形式をパース
       const parsedData = parseKif(content);
-      metadata = parsedData.metadata; // メタデータを状態変数に保存
       const moves = parsedData.moves;
+      MetadataStore.set(parsedData.metadata);
       console.log("メタデータ:", metadata);
       console.log("指し手:", moves);
 

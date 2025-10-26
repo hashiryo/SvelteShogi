@@ -28,6 +28,9 @@ export async function checkGameDuplicate(
       if (record.black_player && record.white_player) {
         message += `対戦者: ${record.black_player} vs ${record.white_player}\n`;
       }
+      if (record.event) {
+        message += `イベント: ${record.event}\n`;
+      }
 
       message += "\n本当に重複記録しますか？";
       return {
@@ -43,7 +46,8 @@ export async function checkGameDuplicate(
     metadata?.startTime ||
     metadata?.endTime ||
     metadata?.blackPlayer ||
-    metadata?.whitePlayer;
+    metadata?.whitePlayer ||
+    metadata?.result;
   if (hasMetadata) {
     const record = await GameRecordsRepository.fetchByGameHash(gameHash);
 
@@ -52,6 +56,9 @@ export async function checkGameDuplicate(
 
       if (record.black_player && record.white_player) {
         message += `対戦者: ${record.black_player} vs ${record.white_player}\n`;
+      }
+      if (record.event) {
+        message += `イベント: ${record.event}\n`;
       }
 
       message += "\n本当に重複記録しますか？";
