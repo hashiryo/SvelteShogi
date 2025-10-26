@@ -6,7 +6,7 @@ import type { KifMetadata, KifuNode } from "@/types/shogi";
 export async function generateGameHash(
   nodes: KifuNode[],
   root: number,
-  metadata?: KifMetadata
+  metadata: KifMetadata | null
 ): Promise<string> {
   let moves = [];
   let cur = root;

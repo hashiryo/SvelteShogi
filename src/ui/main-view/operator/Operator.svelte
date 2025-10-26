@@ -3,7 +3,7 @@
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { executeResign } from "@/handler/execute-move";
-  import { executeSave } from "@/handler/move-statistics";
+  import { executeSave } from "@/handler/save";
 
   let reverse = $derived(ReverseStore.get());
   let ids = $derived(NodesStore.getPath(0));

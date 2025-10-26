@@ -13,8 +13,6 @@
   } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { MetadataStore } from "@/store/metadata.svelte";
-  import type { KifMetadata } from "@/types/shogi";
-  import { parse } from "svelte/compiler";
 
   let files: FileList | undefined | null = $state();
   let isLoading = $state(false);

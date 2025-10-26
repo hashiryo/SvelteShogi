@@ -6,7 +6,7 @@ import type { CheckGameDuplicateResult, KifMetadata } from "@/types/shogi";
  */
 export async function checkGameDuplicate(
   gameHash: string,
-  metadata?: KifMetadata
+  metadata: KifMetadata | null
 ): Promise<CheckGameDuplicateResult> {
   // Phase 1: 日時情報による確実な重複検知（最優先）
   if (metadata?.startTime || metadata?.endTime) {
