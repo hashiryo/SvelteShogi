@@ -4,9 +4,11 @@
   import FavoriteNextMoves from "./favorite-next-moves/FavoriteNextMoves.svelte";
   import NextMoveStatistics from "./next-move-statistics/NextMoveStatistics.svelte";
   import FileImport from "./file-import/FileImport.svelte";
+  import UserAuth from "./user-auth/UserAuth.svelte";
 </script>
 
 <div class="sub-view">
+  <UserAuth />
   <KifuHistory />
   <KifuBranch />
   <FavoriteNextMoves />
