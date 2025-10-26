@@ -22,7 +22,7 @@
   async function handleFileImport(file: File) {
     isLoading = true;
     error = null;
-    MetadataStore.reset();
+    MetadataStore.clear();
     // 新しいファイルインポート時にメタデータをリセット
 
     try {

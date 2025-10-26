@@ -21,9 +21,9 @@ import { getBranches, pushOrJumpToKifu } from "@/domain/kifu-node";
 
 export function executeResign() {
   const isSente = IsSenteTurnStore.get();
-  LastPosStore.reset();
-  PromotionPosStore.reset();
-  HandPieceStore.reset();
+  LastPosStore.clear();
+  PromotionPosStore.clear();
+  HandPieceStore.clear();
 
   const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
   const { nodes, currentIndex } = pushOrJumpToKifu(
@@ -57,8 +57,8 @@ export async function executeMove(display: string, move: string) {
     move
   );
 
-  PromotionPosStore.reset();
-  HandPieceStore.reset();
+  PromotionPosStore.clear();
+  HandPieceStore.clear();
   GridStore.set(grid);
   LastPosStore.set(lastPos);
   CapturesStore.set(isSente, captures);

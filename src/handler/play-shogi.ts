@@ -43,14 +43,14 @@ export async function clickSquareHandler(row: number, col: number) {
     }
   );
   if (!result) {
-    HandPieceStore.reset();
-    PromotionPosStore.reset();
+    HandPieceStore.clear();
+    PromotionPosStore.clear();
     return;
   }
   if ("handPiece" in result) {
     HandPieceStore.set(result.handPiece);
     CanMoveStore.set(result.canMove);
-    PromotionPosStore.reset();
+    PromotionPosStore.clear();
     return;
   }
   if ("promotionPos" in result) {
@@ -73,9 +73,9 @@ export async function clickCapturedHandler(piece: PieceType, isSente: boolean) {
     }
   );
 
-  PromotionPosStore.reset();
+  PromotionPosStore.clear();
   if (!result) {
-    HandPieceStore.reset();
+    HandPieceStore.clear();
     return;
   }
   HandPieceStore.set(result.handPiece);

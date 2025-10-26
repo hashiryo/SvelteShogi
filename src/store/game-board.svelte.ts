@@ -38,7 +38,7 @@ export class HandPieceStore {
   static get(): HandPieceFrom | null {
     return handPiece;
   }
-  static reset() {
+  static clear() {
     handPiece = null;
   }
   static set(value: HandPieceFrom) {

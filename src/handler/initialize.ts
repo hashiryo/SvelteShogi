@@ -36,10 +36,10 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   GridStore.set(grid);
   CapturesStore.set(true, capturedSente);
   CapturesStore.set(false, capturedGote);
-  HandPieceStore.reset();
+  HandPieceStore.clear();
   IsSenteTurnStore.set(isSente);
-  LastPosStore.reset();
-  MetadataStore.reset();
+  LastPosStore.clear();
+  MetadataStore.clear();
   await fetchAndSetFavoriteMoves(isSente, sfenx);
   await fetchAndSetMoveStatistics(isSente, sfenx);
 }

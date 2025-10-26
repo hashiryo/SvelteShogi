@@ -20,7 +20,7 @@ export class PromotionPosStore {
   static set(value: Position) {
     promotionPos = { ...value };
   }
-  static reset() {
+  static clear() {
     promotionPos = null;
   }
 }
@@ -34,7 +34,7 @@ export class LastPosStore {
   static set(pos: Position) {
     lastPos = pos;
   }
-  static reset() {
+  static clear() {
     lastPos = null;
   }
 }

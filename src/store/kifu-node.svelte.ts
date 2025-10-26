@@ -20,7 +20,7 @@ export class NodesStore {
   static set(value: KifuNode[]) {
     nodes = value;
   }
-  static reset() {
+  static clear() {
     nodes = [];
   }
   static getNode(index: number) {

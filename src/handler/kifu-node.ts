@@ -26,13 +26,13 @@ function setCurrentNode(nodeIndex: number) {
   CapturesStore.set(true, capturedSente);
   CapturesStore.set(false, capturedGote);
   if (isSpecialMove(node.move)) {
-    LastPosStore.reset();
+    LastPosStore.clear();
   } else {
     const lastPos = strToPosition(node.move.substring(2, 4));
     LastPosStore.set(lastPos);
   }
   CurrentIndexStore.set(nodeIndex);
-  HandPieceStore.reset();
+  HandPieceStore.clear();
 }
 
 export function jumpToKifu(nodeIndex: number) {

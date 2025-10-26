@@ -11,7 +11,7 @@ export class MetadataStore {
     return metadata;
   }
 
-  static reset() {
+  static clear() {
     metadata = null;
   }
 }
