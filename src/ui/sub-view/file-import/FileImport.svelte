@@ -17,27 +17,26 @@
   let files: FileList | undefined | null = $state();
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  let metadata = $derived(MetadataStore.get()); // メタデータ表示用の状態変数を追加
+  let isDragging = $state(false);
+  let fileInput: HTMLInputElement;
+  let metadata = $derived(MetadataStore.get());
 
   async function handleFileImport(file: File) {
+    if (!file.name.endsWith(".kif")) {
+      error = "KIFファイルのみ対応しています";
+      return;
+    }
+
     isLoading = true;
     error = null;
     MetadataStore.clear();
-    // 新しいファイルインポート時にメタデータをリセット
 
     try {
       console.log(`ファイル読み込み開始: ${file.name} (${file.size} bytes)`);
-
-      // ファイルをテキストとして読み込み
       const content = await readFileAsText(file);
-      console.log("ファイル内容:", content);
-
-      // KIF形式をパース
       const parsedData = parseKif(content);
       const moves = parsedData.moves;
       MetadataStore.set(parsedData.metadata);
-      console.log("メタデータ:", metadata);
-      console.log("指し手:", moves);
 
       let { grid, capturedSente, capturedGote, isSente, nodes } =
         movesToNodes(moves);
@@ -50,7 +49,7 @@
       for (let i = 0; i + 1 < n; i++) {
         const favoriteMoves = getCurrentFavorites(
           nodes[i].isSente,
-          nodes[i].sfenx
+          nodes[i].sfenx,
         );
         const move = nodes[i + 1].move;
         const isFavorite = favoriteMoves ? favoriteMoves.includes(move) : false;
@@ -75,77 +74,122 @@
     }
   }
 
-  $effect(() => {
-    if (files && files.length > 0) {
-      // 最初のファイルを処理
-      const file = files[0];
-      handleFileImport(file);
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
+    isDragging = false;
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+      handleFileImport(e.dataTransfer.files[0]);
     }
-  });
+  }
+
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
+    isDragging = true;
+  }
+
+  function handleDragLeave() {
+    isDragging = false;
+  }
+
+  function handleClick() {
+    fileInput.click();
+  }
+
+  function handleFileSelect(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      handleFileImport(target.files[0]);
+    }
+  }
 </script>
 
-<div>
-  <h3>棋譜のimport</h3>
+<div class="import-container">
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="drop-zone"
+    class:dragging={isDragging}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
+    onclick={handleClick}
+  >
+    <input
+      type="file"
+      accept=".kif"
+      bind:this={fileInput}
+      onchange={handleFileSelect}
+      style="display: none;"
+    />
 
-  <input class="file-input" accept=".kif" bind:files type="file" />
-
-  {#if isLoading}
-    <p>ファイルを処理中...</p>
-  {/if}
+    <div class="icon-container">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+    </div>
+    <p class="drop-text">
+      {#if isLoading}
+        読み込み中...
+      {:else}
+        KIFファイルをドロップ<br />またはクリックして選択
+      {/if}
+    </p>
+  </div>
 
   {#if error}
-    <p style="color: red;">エラー: {error}</p>
+    <p class="error-message">{error}</p>
   {/if}
 
-  {#if files && files.length > 0}
-    <p>選択されたファイル: {files[0].name}</p>
-  {/if}
-
-  <!-- メタデータ表示セクションを追加 -->
   {#if metadata}
     <div class="metadata-section">
-      <h4>棋譜メタデータ</h4>
+      <h4>棋譜情報</h4>
       <table>
         <tbody>
           {#if metadata.startTime}
             <tr>
-              <td>開始日時:</td>
+              <td>開始日時</td>
               <td>{metadata.startTime}</td>
             </tr>
           {/if}
           {#if metadata.endTime}
             <tr>
-              <td>終了日時:</td>
+              <td>終了日時</td>
               <td>{metadata.endTime}</td>
             </tr>
           {/if}
           {#if metadata.event}
             <tr>
-              <td>棋戦:</td>
+              <td>棋戦</td>
               <td>{metadata.event}</td>
-            </tr>
-          {/if}
-          {#if metadata.handicap}
-            <tr>
-              <td>手合割:</td>
-              <td>{metadata.handicap}</td>
             </tr>
           {/if}
           {#if metadata.blackPlayer}
             <tr>
-              <td>先手:</td>
+              <td>先手</td>
               <td>{metadata.blackPlayer}</td>
             </tr>
           {/if}
           {#if metadata.whitePlayer}
             <tr>
-              <td>後手:</td>
+              <td>後手</td>
               <td>{metadata.whitePlayer}</td>
             </tr>
           {/if}
           {#if metadata.result}
             <tr>
-              <td>結果:</td>
+              <td>結果</td>
               <td>{metadata.result}</td>
             </tr>
           {/if}
@@ -156,35 +200,86 @@
 </div>
 
 <style>
-  .file-input {
-    cursor: pointer;
+  .import-container {
+    width: 100%;
   }
 
-  /* メタデータ表示用のスタイルを追加 */
+  .drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #fafafa;
+    color: #666;
+  }
+
+  .drop-zone:hover {
+    border-color: #4caf50;
+    background-color: #f0fdf4;
+    color: #2e7d32;
+  }
+
+  .drop-zone.dragging {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+    transform: scale(1.02);
+  }
+
+  .icon-container {
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+
+  .drop-text {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .error-message {
+    color: #d32f2f;
+    font-size: 13px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
   .metadata-section {
-    margin-top: 1rem;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background-color: #fff;
   }
 
   .metadata-section h4 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 4px;
   }
 
   .metadata-section table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 13px;
   }
 
   .metadata-section td {
-    padding: 0.25rem 0.5rem;
-    border-bottom: 1px solid #eee;
+    padding: 4px 0;
+    vertical-align: top;
   }
 
   .metadata-section td:first-child {
-    font-weight: bold;
-    width: 30%;
+    color: #666;
+    width: 70px;
+    white-space: nowrap;
+  }
+
+  .metadata-section td:last-child {
+    color: #333;
+    font-weight: 500;
   }
 </style>
