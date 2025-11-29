@@ -261,6 +261,10 @@ export function flipSfenx(sfenx: string): string {
 }
 
 export function flipMove(move: string): string {
+  if (move === "resign") {
+    return move;
+  }
+
   function transformLetter(ch: string): string {
     return String.fromCharCode(
       "i".charCodeAt(0) - (ch.charCodeAt(0) - "a".charCodeAt(0))
