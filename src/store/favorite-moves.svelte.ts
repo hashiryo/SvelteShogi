@@ -18,4 +18,7 @@ export class FavoriteMovesStore {
     if (!data[sfenx]) throw new Error(`Invalid sfenx: ${sfenx}`);
     data[sfenx] = data[sfenx].filter((m) => m !== move);
   }
+  static clear() {
+    data = {};
+  }
 }

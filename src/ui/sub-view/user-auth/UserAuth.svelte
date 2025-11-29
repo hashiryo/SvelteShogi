@@ -1,6 +1,11 @@
 <script lang="ts">
   import { AuthAPI } from "@/lib/supabase/auth";
   import { CurrentUserStore } from "@/store/auth.svelte";
+  import { FavoriteMovesStore } from "@/store/favorite-moves.svelte";
+  import { MoveStatisticsStore } from "@/store/move-statistics.svelte";
+  import { NodesStore } from "@/store/kifu-node.svelte";
+  import { fetchAndSetFavoriteMovesMulti } from "@/handler/favorite-moves";
+  import { fetchAndSetMoveStatisticsMulti } from "@/handler/move-statistics";
 
   const authAPI = new AuthAPI();
 
@@ -14,6 +19,17 @@
 
   let user = $derived(CurrentUserStore.get());
 
+  async function refreshData() {
+    FavoriteMovesStore.clear();
+    MoveStatisticsStore.clear();
+    const nodes = NodesStore.get();
+    const sfenxes = nodes.map((node) => node.sfenx);
+    await Promise.all([
+      fetchAndSetFavoriteMovesMulti(sfenxes),
+      fetchAndSetMoveStatisticsMulti(sfenxes),
+    ]);
+  }
+
   async function handleAuth() {
     error = "";
     isLoading = true;
@@ -23,12 +39,14 @@
         const newUser = await authAPI.signUp(email, password);
         if (newUser) {
           CurrentUserStore.set(newUser);
+          await refreshData();
           dialog?.close();
         }
       } else {
         const authenticatedUser = await authAPI.signIn(email, password);
         if (authenticatedUser) {
           CurrentUserStore.set(authenticatedUser);
+          await refreshData();
           dialog?.close();
         }
       }
@@ -43,6 +61,7 @@
     try {
       await authAPI.signOut();
       CurrentUserStore.clear();
+      await refreshData();
       isMenuOpen = false;
     } catch (err) {
       error =

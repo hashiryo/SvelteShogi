@@ -12,4 +12,7 @@ export class MoveStatisticsStore {
   static set(sfenx: string, statistics: MoveStatistics[]): void {
     data[sfenx] = statistics;
   }
+  static clear(): void {
+    data = {};
+  }
 }
