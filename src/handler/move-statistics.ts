@@ -7,6 +7,7 @@ import { MetadataStore } from "@/store/metadata.svelte";
 import { generateGameHash } from "@/domain/game-records";
 import { checkGameDuplicate } from "@/handler/duplicate-check";
 import type { MoveStatistics, MoveStatisticsInsertParams } from "@/types/shogi";
+import { CurrentUserStore } from "@/store/auth.svelte";
 
 export function getCurrentStatistics(
   isSente: boolean,
@@ -35,9 +36,9 @@ export async function fetchAndSetMoveStatistics(
   if (!isSente) {
     sfenx = flipSfenx(sfenx);
   }
-  // ToDo: user?.id を使うようにする
+  const user = CurrentUserStore.get();
   if (!MoveStatisticsStore.get(sfenx)) {
-    const records = await MoveStatisticsRepository.fetch(sfenx);
+    const records = await MoveStatisticsRepository.fetch(sfenx, user?.id);
     const total = records.length;
     const moveStats = new Map<string, { apparents: number; wins: number }>();
     for (const record of records) {
@@ -66,8 +67,8 @@ export async function fetchAndSetMoveStatisticsMulti(sfenxes: string[]) {
   sfenxes = sfenxes.map((sfenx, idx) =>
     idx % 2 === 0 ? sfenx : flipSfenx(sfenx)
   );
-  // ToDo: user?.id を使うようにする
-  const result = await MoveStatisticsRepository.fetchMulti(sfenxes);
+  const user = CurrentUserStore.get();
+  const result = await MoveStatisticsRepository.fetchMulti(sfenxes, user?.id);
   for (let i = 0; i < sfenxes.length; ++i) {
     if (!MoveStatisticsStore.get(sfenxes[i])) {
       const total = result[i].length;
