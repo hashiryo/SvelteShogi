@@ -10,7 +10,7 @@
 
   let currentIndex = $derived(CurrentIndexStore.get());
   let currentNode = $derived(
-    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null
+    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null,
   );
 
   // 現在位置の計算
@@ -184,6 +184,13 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 500px) {
+    .operator-container {
+      gap: 6px;
+    }
   }
 
   .nav-btn {
@@ -220,6 +227,14 @@
     opacity: 0.6;
   }
 
+  @media (max-width: 500px) {
+    .nav-btn {
+      padding: 10px 14px;
+      min-width: 44px;
+      height: 44px;
+    }
+  }
+
   .nav-btn:focus {
     outline: 2px solid #4caf50;
     outline-offset: 2px;
@@ -252,6 +267,14 @@
   .reverse-btn:focus {
     outline: 2px solid #4caf50;
     outline-offset: 2px;
+  }
+
+  @media (max-width: 500px) {
+    .reverse-btn {
+      padding: 10px 14px;
+      min-width: 44px;
+      height: 44px;
+    }
   }
 
   .save-btn {
@@ -288,5 +311,33 @@
   .save-btn:focus {
     outline: 2px solid #4caf50;
     outline-offset: 2px;
+  }
+
+  @media (max-width: 500px) {
+    .save-btn {
+      padding: 10px 14px;
+      min-width: 70px;
+      height: 44px;
+      font-size: 14px;
+    }
+  }
+
+  button {
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 60px;
+    height: 36px;
+  }
+
+  @media (max-width: 500px) {
+    button {
+      padding: 10px 14px;
+      min-width: 70px;
+      height: 44px;
+      font-size: 14px;
+    }
   }
 </style>

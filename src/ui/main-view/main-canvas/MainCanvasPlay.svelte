@@ -21,11 +21,18 @@
   import { getCurrentStatistics } from "@/handler/move-statistics";
   import { derived } from "svelte/store";
 
-  // --- 定数 ---
-  const SQUARE_WIDTH = 55;
-  const SQUARE_HEIGHT = 60;
-  const FONT_SIZE = 38;
-  const PIECE_SCALE = 0.9;
+  // --- レスポンシブ対応：画面幅に応じてサイズを調整 ---
+  let innerWidth = $state(0);
+
+  // 画面幅に応じて将棋盤のサイズを計算
+  let SQUARE_WIDTH = $derived(
+    innerWidth < 500 ? 38 : innerWidth < 768 ? 45 : 55,
+  );
+  let SQUARE_HEIGHT = $derived(
+    innerWidth < 500 ? 42 : innerWidth < 768 ? 50 : 60,
+  );
+  let FONT_SIZE = $derived(innerWidth < 500 ? 28 : innerWidth < 768 ? 32 : 38);
+  let PIECE_SCALE = $derived(0.9);
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)
   let squareElements: HTMLDivElement[] = $state([]);
@@ -58,9 +65,9 @@
   let relativeSquarePositions: { x: number; y: number }[] = $derived(
     (() => {
       return squareElements.map((el) =>
-        el ? getRelativePosition(el) : { x: 0, y: 0 }
+        el ? getRelativePosition(el) : { x: 0, y: 0 },
       );
-    })()
+    })(),
   );
 
   let relativeCapturedSentePositions: {
@@ -72,7 +79,7 @@
         piece,
         position: element ? getRelativePosition(element) : { x: 0, y: 0 },
       }));
-    })()
+    })(),
   );
 
   let relativeCapturedGotePositions: {
@@ -84,7 +91,7 @@
         piece,
         position: element ? getRelativePosition(element) : { x: 0, y: 0 },
       }));
-    })()
+    })(),
   );
 
   let relativeSquareRect = $derived(
@@ -100,11 +107,11 @@
           height: pos.height,
         };
       });
-    })()
+    })(),
   );
 
   let { isSente, sfenx } = $derived(
-    NodesStore.getNode(CurrentIndexStore.get())
+    NodesStore.getNode(CurrentIndexStore.get()),
   );
 
   let canMove = $derived(CanMoveStore.get());
@@ -178,6 +185,8 @@
     return ret;
   });
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="canvas" bind:this={canvasElement}>
   <div class="game-board">

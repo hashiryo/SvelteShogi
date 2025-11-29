@@ -55,7 +55,7 @@
         });
       }
       return squareElements.map(() => ({ x: 0, y: 0 }));
-    })()
+    })(),
   );
 
   let grid = $derived(GridStore.get());
@@ -188,6 +188,20 @@
     align-items: center;
     gap: 16px;
     padding: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .canvas {
+      padding: 12px;
+      gap: 12px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .canvas {
+      padding: 8px;
+      gap: 8px;
+    }
   }
 
   .game-board {
