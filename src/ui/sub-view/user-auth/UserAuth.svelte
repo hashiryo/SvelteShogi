@@ -9,7 +9,7 @@
   let isSigningUp = $state(false);
   let error = $state("");
   let isLoading = $state(false);
-  let isLoginVisible = $state(false);
+  let dialog: HTMLDialogElement;
 
   let user = $derived(CurrentUserStore.get());
 
@@ -22,11 +22,13 @@
         const newUser = await authAPI.signUp(email, password);
         if (newUser) {
           CurrentUserStore.set(newUser);
+          dialog?.close();
         }
       } else {
         const authenticatedUser = await authAPI.signIn(email, password);
         if (authenticatedUser) {
           CurrentUserStore.set(authenticatedUser);
+          dialog?.close();
         }
       }
     } catch (err) {
@@ -56,65 +58,71 @@
       {isLoading ? "処理中..." : "サインアウト"}
     </button>
   </div>
-{:else if !isLoginVisible}
-  <button class="auth-btn" onclick={() => (isLoginVisible = true)}>
+{:else}
+  <button class="auth-btn" onclick={() => dialog?.showModal()}>
     ログイン
   </button>
-{:else}
-  <div class="auth-form">
-    <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
 
-    {#if error}
-      <div class="error-message">{error}</div>
-    {/if}
+  <dialog bind:this={dialog} class="auth-dialog">
+    <div class="auth-form">
+      <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
 
-    <div class="form-group">
-      <input
-        type="email"
-        placeholder="メールアドレス"
-        bind:value={email}
+      {#if error}
+        <div class="error-message">{error}</div>
+      {/if}
+
+      <div class="form-group">
+        <input
+          type="email"
+          placeholder="メールアドレス"
+          bind:value={email}
+          disabled={isLoading}
+          class="auth-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <input
+          type="password"
+          placeholder="パスワード"
+          bind:value={password}
+          disabled={isLoading}
+          class="auth-input"
+        />
+      </div>
+
+      <button
+        class="auth-btn"
+        onclick={handleAuth}
+        disabled={isLoading || !email || !password}
+      >
+        {isLoading
+          ? "処理中..."
+          : isSigningUp
+            ? "アカウント作成"
+            : "サインイン"}
+      </button>
+
+      <button
+        class="toggle-btn"
+        onclick={() => (isSigningUp = !isSigningUp)}
         disabled={isLoading}
-        class="auth-input"
-      />
-    </div>
+      >
+        {isSigningUp
+          ? "既にアカウントをお持ちですか？サインイン"
+          : "アカウントを作成しますか？"}
+      </button>
 
-    <div class="form-group">
-      <input
-        type="password"
-        placeholder="パスワード"
-        bind:value={password}
+      <button
+        class="toggle-btn"
+        onclick={() => dialog?.close()}
         disabled={isLoading}
-        class="auth-input"
-      />
+        style="margin-top: 4px;"
+      >
+        キャンセル
+      </button>
     </div>
-
-    <button
-      class="auth-btn"
-      onclick={handleAuth}
-      disabled={isLoading || !email || !password}
-    >
-      {isLoading ? "処理中..." : isSigningUp ? "アカウント作成" : "サインイン"}
-    </button>
-
-    <button
-      class="toggle-btn"
-      onclick={() => (isSigningUp = !isSigningUp)}
-      disabled={isLoading}
-    >
-      {isSigningUp
-        ? "既にアカウントをお持ちですか？サインイン"
-        : "アカウントを作成しますか？"}
-    </button>
-
-    <button
-      class="toggle-btn"
-      onclick={() => (isLoginVisible = false)}
-      disabled={isLoading}
-      style="margin-top: 4px;"
-    >
-      キャンセル
-    </button>
-  </div>
+  </dialog>
 {/if}
 
 <style>
@@ -128,36 +136,65 @@
     margin-bottom: 16px;
   }
 
+  .auth-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    background: transparent;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .auth-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
   .auth-form {
-    padding: 16px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    margin-bottom: 16px;
+    padding: 24px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    width: 320px;
+    max-width: 90vw;
+  }
+
+  .auth-form h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
   }
 
   .form-group {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .auth-input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     font-size: 14px;
     box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+
+  .auth-input:focus {
+    border-color: #4caf50;
+    outline: none;
   }
 
   .auth-btn {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #4caf50;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    transition: background-color 0.2s;
   }
 
   .auth-btn:hover:not(:disabled) {
@@ -173,24 +210,25 @@
     width: 100%;
     padding: 8px;
     background-color: transparent;
-    color: #4caf50;
+    color: #666;
     border: none;
-    border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
     text-decoration: underline;
+    transition: color 0.2s;
   }
 
   .toggle-btn:hover:not(:disabled) {
-    background-color: #f0f0f0;
+    color: #333;
   }
 
   .error-message {
-    color: #f44336;
+    color: #d32f2f;
     background-color: #ffebee;
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
-    margin-bottom: 12px;
-    font-size: 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    text-align: center;
   }
 </style>
