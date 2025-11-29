@@ -59,8 +59,8 @@
     const newId = ids[newPos];
     if (newId !== undefined && newId !== currentIndex) {
       jumpToKifu(newId);
-      // フォーカスを外す（少しやり方が綺麗じゃないかも）
-      containerRef.focus();
+      // フォーカスを外す（preventScrollで画面スクロールを防ぐ）
+      containerRef.focus({ preventScroll: true });
     }
   }
 
@@ -153,8 +153,9 @@
     display: grid;
     gap: 2px;
     --item-height: 24px;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     align-content: start;
+    overscroll-behavior: contain;
   }
 
   @media (max-width: 768px) {

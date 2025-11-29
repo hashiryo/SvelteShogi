@@ -18,10 +18,25 @@
     const currentPos = branches.indexOf(currentIndex);
     if (currentPos !== -1 && containerRef) {
       const currentItem = containerRef.children[currentPos] as HTMLElement;
-      currentItem?.scrollIntoView({
-        behavior: "instant",
-        block: "nearest", // 必要最小限のスクロール
-      });
+      if (currentItem) {
+        // ビューポート基準での位置を取得
+        const itemRect = currentItem.getBoundingClientRect();
+        const containerRect = containerRef.getBoundingClientRect();
+
+        // コンテナ内での相対位置を計算
+        const itemRelativeTop = itemRect.top - containerRect.top;
+        const itemRelativeBottom = itemRect.bottom - containerRect.top;
+
+        // アイテムがコンテナの表示範囲外にある場合のみスクロール
+        if (itemRelativeTop < 0) {
+          // 上方向にスクロール（アイテムが上に隠れている）
+          containerRef.scrollTop += itemRelativeTop;
+        } else if (itemRelativeBottom > containerRect.height) {
+          // 下方向にスクロール（アイテムが下に隠れている）
+          containerRef.scrollTop += itemRelativeBottom - containerRect.height;
+        }
+        // アイテムが既に表示範囲内にある場合は何もしない
+      }
     }
   });
 
@@ -101,8 +116,9 @@
     display: grid;
     gap: 2px;
     --item-height: 24px;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     align-content: start;
+    overscroll-behavior: contain;
   }
   .kifu-branch-item {
     height: var(--item-height);
