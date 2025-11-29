@@ -54,18 +54,26 @@
   /* モバイル版レイアウト */
   .container.mobile {
     flex-direction: column;
-    padding: 10px;
-    gap: 12px;
+    padding: 0; /* パディングをなくして画面いっぱいにする */
+    gap: 0;
+    height: 100dvh; /* ビューポートの高さに固定 */
+    overflow: hidden; /* スクロール禁止 */
   }
 
   .container.mobile .main-section {
-    flex: 0 0 auto;
+    flex: 1; /* 残りのスペースを全て使う */
+    overflow: hidden; /* 内部でのみスクロール可能にするならここを調整 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #212121; /* 背景色を明示 */
   }
 
   .container.mobile .sub-section {
     width: 100%;
-    flex: 1;
-    min-height: 300px;
+    flex: 0 0 60px; /* ボトムナビゲーションの高さ分確保 */
+    min-height: auto;
+    z-index: 100; /* メインビューより上に表示（念のため） */
   }
 
   :global(.favorite-moves-section) {
