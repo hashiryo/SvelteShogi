@@ -26,12 +26,38 @@
 
   // 画面幅に応じて将棋盤のサイズを計算
   let SQUARE_WIDTH = $derived(
-    innerWidth < 500 ? 38 : innerWidth < 768 ? 45 : 55,
+    innerWidth < 500
+      ? 38
+      : innerWidth < 600
+        ? 48
+        : innerWidth < 800
+          ? 65
+          : innerWidth < 1000
+            ? 75
+            : 55,
   );
   let SQUARE_HEIGHT = $derived(
-    innerWidth < 500 ? 42 : innerWidth < 768 ? 50 : 60,
+    innerWidth < 500
+      ? 42
+      : innerWidth < 600
+        ? 53
+        : innerWidth < 800
+          ? 72
+          : innerWidth < 1000
+            ? 83
+            : 60,
   );
-  let FONT_SIZE = $derived(innerWidth < 500 ? 28 : innerWidth < 768 ? 32 : 38);
+  let FONT_SIZE = $derived(
+    innerWidth < 500
+      ? 28
+      : innerWidth < 600
+        ? 34
+        : innerWidth < 800
+          ? 46
+          : innerWidth < 1000
+            ? 52
+            : 38,
+  );
   let PIECE_SCALE = $derived(0.9);
 
   // 盤上の各マスのDOM情報を格納する配列 (Boardコンポーネントから受け取る)

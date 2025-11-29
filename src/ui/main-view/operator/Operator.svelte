@@ -227,11 +227,27 @@
     opacity: 0.6;
   }
 
+  @media (max-width: 1000px) {
+    .nav-btn {
+      padding: 12px 18px;
+      min-width: 50px;
+      height: 50px;
+    }
+    .nav-btn svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
   @media (max-width: 500px) {
     .nav-btn {
       padding: 10px 14px;
       min-width: 44px;
       height: 44px;
+    }
+    .nav-btn svg {
+      width: 24px;
+      height: 24px;
     }
   }
 
@@ -269,11 +285,27 @@
     outline-offset: 2px;
   }
 
+  @media (max-width: 1000px) {
+    .reverse-btn {
+      padding: 12px 18px;
+      min-width: 50px;
+      height: 50px;
+    }
+    .reverse-btn svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
   @media (max-width: 500px) {
     .reverse-btn {
       padding: 10px 14px;
       min-width: 44px;
       height: 44px;
+    }
+    .reverse-btn svg {
+      width: 24px;
+      height: 24px;
     }
   }
 
@@ -313,6 +345,15 @@
     outline-offset: 2px;
   }
 
+  @media (max-width: 1000px) {
+    .save-btn {
+      padding: 12px 18px;
+      min-width: 80px;
+      height: 50px;
+      font-size: 18px;
+    }
+  }
+
   @media (max-width: 500px) {
     .save-btn {
       padding: 10px 14px;
@@ -330,6 +371,15 @@
     transition: all 0.2s ease;
     min-width: 60px;
     height: 36px;
+  }
+
+  @media (max-width: 1000px) {
+    button {
+      padding: 12px 18px;
+      min-width: 80px;
+      height: 50px;
+      font-size: 18px;
+    }
   }
 
   @media (max-width: 500px) {
