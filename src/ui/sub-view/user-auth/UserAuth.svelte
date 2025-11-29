@@ -9,6 +9,7 @@
   let isSigningUp = $state(false);
   let error = $state("");
   let isLoading = $state(false);
+  let isLoginVisible = $state(false);
 
   let user = $derived(CurrentUserStore.get());
 
@@ -55,6 +56,10 @@
       {isLoading ? "処理中..." : "サインアウト"}
     </button>
   </div>
+{:else if !isLoginVisible}
+  <button class="auth-btn" onclick={() => (isLoginVisible = true)}>
+    ログイン
+  </button>
 {:else}
   <div class="auth-form">
     <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
@@ -99,6 +104,15 @@
       {isSigningUp
         ? "既にアカウントをお持ちですか？サインイン"
         : "アカウントを作成しますか？"}
+    </button>
+
+    <button
+      class="toggle-btn"
+      onclick={() => (isLoginVisible = false)}
+      disabled={isLoading}
+      style="margin-top: 4px;"
+    >
+      キャンセル
     </button>
   </div>
 {/if}
