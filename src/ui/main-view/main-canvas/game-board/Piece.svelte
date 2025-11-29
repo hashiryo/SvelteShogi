@@ -1,18 +1,20 @@
 <script lang="ts">
-  let { 
-    character = '歩',
+  let {
+    character = "歩",
     isHanded = false,
     scale = 1,
     reverse = false,
     width = 40,
     height = 44,
-    fontSize = 30
+    fontSize = 30,
   } = $props();
 </script>
 
-<div class="square {isHanded ? 'handed' : ''}"
-  style="--square-width: {width}px; --square-height: {height}px;">
-  <div 
+<div
+  class="square {isHanded ? 'handed' : ''}"
+  style="--square-width: {width}px; --square-height: {height}px;"
+>
+  <div
     class="piece {reverse ? 'reversed' : ''}"
     style="--font-size: {fontSize}px; 
            --piece-scale: {scale}; 
@@ -22,7 +24,6 @@
     <span class="piece-character">{character}</span>
   </div>
 </div>
-
 
 <style>
   .square {
@@ -61,7 +62,7 @@
 
   /* 五角形の形状をCSSで作成 */
   .piece::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -77,8 +78,8 @@
     clip-path: polygon(50% 0%, 90% 20%, 100% 100%, 0% 100%, 10% 20%);
   }
 
-  .piece.reversed::before{
-    content: '';
+  .piece.reversed::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -95,12 +96,13 @@
   .piece-character {
     position: absolute;
     top: var(--piece-top);
+    left: 50%;
     transform: translate(-50%, 0) rotate(var(--piece-rotate));
     font-size: var(--font-size);
     font-weight: bold;
     color: #2c1810;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-    font-family: 'MS Mincho', 'Yu Mincho', serif;
+    font-family: "MS Mincho", "Yu Mincho", serif;
     line-height: 1;
   }
 </style>
