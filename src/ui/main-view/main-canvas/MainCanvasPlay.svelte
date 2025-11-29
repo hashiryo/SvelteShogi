@@ -64,6 +64,7 @@
 
   let relativeSquarePositions: { x: number; y: number }[] = $derived(
     (() => {
+      void SQUARE_WIDTH;
       return squareElements.map((el) =>
         el ? getRelativePosition(el) : { x: 0, y: 0 },
       );
@@ -75,6 +76,7 @@
     position: { x: number; y: number };
   }[] = $derived(
     (() => {
+      void SQUARE_WIDTH;
       return capturedSenteElements.map(({ piece, element }) => ({
         piece,
         position: element ? getRelativePosition(element) : { x: 0, y: 0 },
@@ -87,6 +89,7 @@
     position: { x: number; y: number };
   }[] = $derived(
     (() => {
+      void SQUARE_WIDTH;
       return capturedGoteElements.map(({ piece, element }) => ({
         piece,
         position: element ? getRelativePosition(element) : { x: 0, y: 0 },
@@ -96,6 +99,7 @@
 
   let relativeSquareRect = $derived(
     (() => {
+      void SQUARE_WIDTH;
       const canvasRect = canvasElement?.getBoundingClientRect();
       return squareElements.map((el) => {
         if (!el || !canvasRect) return { x: 0, y: 0, width: 0, height: 0 };

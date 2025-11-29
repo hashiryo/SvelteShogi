@@ -42,6 +42,10 @@
 
   let relativeSquarePositions: { x: number; y: number }[] = $derived(
     (() => {
+      // サイズ変更時に再計算させるための依存関係
+      void squareWidth;
+      void squareHeight;
+
       // squarePositionsが更新されたときに、相対座標を計算
       const boardRect = gameBoardElement?.getBoundingClientRect();
       if (boardRect) {
