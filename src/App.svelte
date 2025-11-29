@@ -66,7 +66,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #212121; /* 背景色を明示 */
   }
 
   .container.mobile .sub-section {
