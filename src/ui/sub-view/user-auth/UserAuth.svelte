@@ -10,6 +10,7 @@
   let error = $state("");
   let isLoading = $state(false);
   let dialog: HTMLDialogElement;
+  let isMenuOpen = $state(false);
 
   let user = $derived(CurrentUserStore.get());
 
@@ -42,6 +43,7 @@
     try {
       await authAPI.signOut();
       CurrentUserStore.clear();
+      isMenuOpen = false;
     } catch (err) {
       error =
         err instanceof Error
@@ -49,93 +51,279 @@
           : "不明なサインアウトエラーが発生しました";
     }
   }
+
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+  }
 </script>
 
-{#if user}
-  <div class="auth-status">
-    <span>ようこそ、{user.email}さん</span>
-    <button class="auth-btn" onclick={handleSignOut} disabled={isLoading}>
-      {isLoading ? "処理中..." : "サインアウト"}
-    </button>
-  </div>
-{:else}
-  <button class="auth-btn" onclick={() => dialog?.showModal()}>
-    ログイン
-  </button>
+<div class="auth-header">
+  {#if user}
+    <div class="user-menu-container">
+      <button
+        class="avatar-btn"
+        onclick={toggleMenu}
+        aria-label="ユーザーメニュー"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </button>
 
-  <dialog bind:this={dialog} class="auth-dialog">
-    <div class="auth-form">
-      <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
-
-      {#if error}
-        <div class="error-message">{error}</div>
+      {#if isMenuOpen}
+        <div class="dropdown-menu">
+          <div class="user-info">
+            <span class="user-email">{user.email}</span>
+          </div>
+          <div class="menu-divider"></div>
+          <button
+            class="menu-item logout-btn"
+            onclick={handleSignOut}
+            disabled={isLoading}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            {isLoading ? "処理中..." : "サインアウト"}
+          </button>
+        </div>
       {/if}
-
-      <div class="form-group">
-        <input
-          type="email"
-          placeholder="メールアドレス"
-          bind:value={email}
-          disabled={isLoading}
-          class="auth-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <input
-          type="password"
-          placeholder="パスワード"
-          bind:value={password}
-          disabled={isLoading}
-          class="auth-input"
-        />
-      </div>
-
-      <button
-        class="auth-btn"
-        onclick={handleAuth}
-        disabled={isLoading || !email || !password}
-      >
-        {isLoading
-          ? "処理中..."
-          : isSigningUp
-            ? "アカウント作成"
-            : "サインイン"}
-      </button>
-
-      <button
-        class="toggle-btn"
-        onclick={() => (isSigningUp = !isSigningUp)}
-        disabled={isLoading}
-      >
-        {isSigningUp
-          ? "既にアカウントをお持ちですか？サインイン"
-          : "アカウントを作成しますか？"}
-      </button>
-
-      <button
-        class="toggle-btn"
-        onclick={() => dialog?.close()}
-        disabled={isLoading}
-        style="margin-top: 4px;"
-      >
-        キャンセル
-      </button>
     </div>
-  </dialog>
-{/if}
+  {:else}
+    <button class="login-trigger-btn" onclick={() => dialog?.showModal()}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+        <polyline points="10 17 15 12 10 7"></polyline>
+        <line x1="15" y1="12" x2="3" y2="12"></line>
+      </svg>
+      <span>ログイン</span>
+    </button>
+
+    <dialog bind:this={dialog} class="auth-dialog">
+      <div class="auth-form">
+        <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
+
+        {#if error}
+          <div class="error-message">{error}</div>
+        {/if}
+
+        <div class="form-group">
+          <input
+            type="email"
+            placeholder="メールアドレス"
+            bind:value={email}
+            disabled={isLoading}
+            class="auth-input"
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="password"
+            placeholder="パスワード"
+            bind:value={password}
+            disabled={isLoading}
+            class="auth-input"
+          />
+        </div>
+
+        <button
+          class="auth-btn"
+          onclick={handleAuth}
+          disabled={isLoading || !email || !password}
+        >
+          {isLoading
+            ? "処理中..."
+            : isSigningUp
+              ? "アカウント作成"
+              : "サインイン"}
+        </button>
+
+        <button
+          class="toggle-btn"
+          onclick={() => (isSigningUp = !isSigningUp)}
+          disabled={isLoading}
+        >
+          {isSigningUp
+            ? "既にアカウントをお持ちですか？サインイン"
+            : "アカウントを作成しますか？"}
+        </button>
+
+        <button
+          class="toggle-btn"
+          onclick={() => dialog?.close()}
+          disabled={isLoading}
+          style="margin-top: 4px;"
+        >
+          キャンセル
+        </button>
+      </div>
+    </dialog>
+  {/if}
+</div>
 
 <style>
-  .auth-status {
+  .auth-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    margin-bottom: 16px;
+    justify-content: flex-end;
+    padding: 8px 0;
+    margin-bottom: 8px;
   }
 
+  /* User Menu & Avatar */
+  .user-menu-container {
+    position: relative;
+  }
+
+  .avatar-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s;
+    padding: 0;
+  }
+
+  .avatar-btn:hover {
+    background-color: #d5d5d5;
+    color: #333;
+  }
+
+  /* Dropdown Menu */
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #eee;
+    min-width: 200px;
+    z-index: 100;
+    overflow: hidden;
+    animation: fadeIn 0.1s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .user-info {
+    padding: 12px 16px;
+    background-color: #f9f9f9;
+  }
+
+  .user-email {
+    display: block;
+    font-size: 13px;
+    color: #333;
+    font-weight: 500;
+    word-break: break-all;
+  }
+
+  .menu-divider {
+    height: 1px;
+    background-color: #eee;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    color: #555;
+    transition: background-color 0.2s;
+  }
+
+  .menu-item:hover {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  .logout-btn {
+    color: #d32f2f;
+  }
+
+  .logout-btn:hover {
+    background-color: #ffebee;
+    color: #b71c1c;
+  }
+
+  /* Login Trigger Button (Logged Out State) */
+  .login-trigger-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #555;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .login-trigger-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+    color: #333;
+  }
+
+  /* Dialog & Form Styles (Existing but refined) */
   .auth-dialog {
     border: none;
     border-radius: 8px;
@@ -162,6 +350,7 @@
     margin-bottom: 20px;
     text-align: center;
     color: #333;
+    font-size: 18px;
   }
 
   .form-group {
