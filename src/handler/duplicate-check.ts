@@ -6,14 +6,16 @@ import type { CheckGameDuplicateResult, KifMetadata } from "@/types/shogi";
  */
 export async function checkGameDuplicate(
   gameHash: string,
-  metadata: KifMetadata | null
+  metadata: KifMetadata | null,
+  userId?: string
 ): Promise<CheckGameDuplicateResult> {
   // Phase 1: 日時情報による確実な重複検知（最優先）
   if (metadata?.startTime || metadata?.endTime) {
     console.log("日時情報による重複チェックを実行");
     const dateTimeRecords = await GameRecordsRepository.fetchByDateTime(
       metadata.startTime,
-      metadata.endTime
+      metadata.endTime,
+      userId
     );
 
     if (dateTimeRecords.length > 0) {
@@ -44,7 +46,10 @@ export async function checkGameDuplicate(
   // Phase 2: ハッシュベースの重複検知（メタ情報がある場合）
   else if (metadata?.blackPlayer || metadata?.whitePlayer || metadata?.result) {
     console.log("ハッシュベースの重複チェックを実行");
-    const record = await GameRecordsRepository.fetchByGameHash(gameHash);
+    const record = await GameRecordsRepository.fetchByGameHash(
+      gameHash,
+      userId
+    );
 
     if (record) {
       let message = "この棋譜は既に記録されています。\n";
@@ -69,7 +74,8 @@ export async function checkGameDuplicate(
     console.log("1日以内の同じハッシュをチェック（メタ情報がない場合）");
     const recentRecords = await GameRecordsRepository.fetchByGameHashWithinDay(
       gameHash,
-      1
+      1,
+      userId
     );
 
     if (recentRecords.length > 0) {

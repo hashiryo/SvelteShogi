@@ -6,6 +6,7 @@ import type { MoveStatisticsInsertParams } from "@/types/shogi";
 import { flipMove, flipSfenx } from "@/domain/sfenx";
 import { GameRecordsRepository } from "@/lib/supabase/game-records";
 import { MoveStatisticsRepository } from "@/lib/supabase/move-statistics";
+import { CurrentUserStore } from "@/store/auth.svelte";
 
 export async function executeSave(nodeIndex: number) {
   const currentNode = NodesStore.getNode(nodeIndex);
@@ -31,10 +32,15 @@ export async function executeSave(nodeIndex: number) {
     const nodes = NodesStore.get();
     const metadata = MetadataStore.get();
     const gameHash = await generateGameHash(nodes, 0, metadata);
+    const user = CurrentUserStore.get();
 
     console.log(gameHash);
 
-    const duplicateResult = await checkGameDuplicate(gameHash, metadata);
+    const duplicateResult = await checkGameDuplicate(
+      gameHash,
+      metadata,
+      user?.id
+    );
     console.log(duplicateResult);
 
     // 重複がある場合、ユーザーに確認
@@ -90,14 +96,15 @@ export async function executeSave(nodeIndex: number) {
 
     if (statisticsArray.length > 0) {
       // バルクインサート実行（統計データ）
-      await MoveStatisticsRepository.bulkInsert(statisticsArray);
+      await MoveStatisticsRepository.bulkInsert(statisticsArray, user?.id);
       console.log(`${statisticsArray.length}件の統計レコードを保存しました`);
 
       await GameRecordsRepository.insert(
         gameHash,
         moveCount,
         metadata || {},
-        new Date().toISOString()
+        new Date().toISOString(),
+        user?.id
       );
       console.log(`ゲームレコードを保存しました（手数: ${moveCount}）`);
     }
