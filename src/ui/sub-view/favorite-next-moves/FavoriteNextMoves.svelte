@@ -37,7 +37,7 @@
           grid,
           move,
           isSente,
-          lastPos
+          lastPos,
         )}
         <div
           class="favorite-next-moves-item"
@@ -98,6 +98,13 @@
   .favorite-next-moves-item-display {
     width: 92%;
     text-align: left;
+  }
+
+  @media (max-width: 500px) {
+    .favorite-next-moves-list {
+      height: 80px;
+      padding: 0px 4px;
+    }
   }
 
   .favorite-next-moves-item-favorite {

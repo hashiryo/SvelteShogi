@@ -22,7 +22,7 @@
 
     const totalApparent = moveStatistics.reduce(
       (sum, stat) => sum + stat.apparentCount,
-      0
+      0,
     );
 
     return {
@@ -54,7 +54,7 @@
           grid,
           dat.move,
           isSente,
-          lastPos
+          lastPos,
         )}
         <div
           class="next-move-statistics-item"
@@ -75,7 +75,7 @@
           <div class="next-move-statistics-item-stats">
             <div class="stat-main">
               出現率: {dat.apparentCount}回 ({(dat.apparentRate * 100).toFixed(
-                1
+                1,
               )}%)
             </div>
             <div
@@ -149,6 +149,17 @@
     font-size: 11px;
     color: #666;
     margin-bottom: 1px;
+  }
+
+  @media (max-width: 500px) {
+    .next-move-statistics-list {
+      height: 80px;
+      padding: 0px 4px;
+    }
+
+    .stat-main {
+      font-size: 10px;
+    }
   }
 
   .stat-sub {

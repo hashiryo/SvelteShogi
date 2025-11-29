@@ -108,6 +108,18 @@
     cursor: pointer;
     border-radius: 0;
     transition: all 0.2s;
+    font-size: 14px;
+  }
+
+  @media (max-width: 500px) {
+    .tabs {
+      margin-bottom: 12px;
+    }
+
+    .tabs button {
+      padding: 10px 8px;
+      font-size: 13px;
+    }
   }
 
   .tabs button:hover {

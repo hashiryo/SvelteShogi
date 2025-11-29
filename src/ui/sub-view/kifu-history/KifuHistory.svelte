@@ -156,6 +156,19 @@
     scroll-behavior: smooth;
     align-content: start;
   }
+
+  @media (max-width: 768px) {
+    .kifu-history-list {
+      height: 350px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .kifu-history-list {
+      height: 300px;
+      padding: 0px 4px;
+    }
+  }
   .kifu-history-list:focus {
     outline: none;
   }

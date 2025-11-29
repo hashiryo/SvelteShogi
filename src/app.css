@@ -92,6 +92,18 @@ button:focus-visible {
   font-weight: 500;
 }
 
+@media (max-width: 500px) {
+  .card-header {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .count-badge {
+    font-size: 9px;
+    padding: 1px 3px;
+  }
+}
+
 kbd {
   background: #ccc;
   border-radius: 4px;
