@@ -161,7 +161,7 @@ export function movesToNodes(moves: string[]): {
     nodes[i].next = i + 1;
     const move = moves[i];
     display = getDisplayMoveFromMoveStr(grid, move, isSente, lastPos);
-    if (move === "resign") {
+    if (move === "resign" || move === "timeout") {
       lastPos = null;
     } else {
       const { grid: nextGrid, captures: nextCaptures } = moveToNextGridCaptures(

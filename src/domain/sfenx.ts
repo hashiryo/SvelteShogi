@@ -261,7 +261,7 @@ export function flipSfenx(sfenx: string): string {
 }
 
 export function flipMove(move: string): string {
-  if (move === "resign") {
+  if (move === "resign" || move === "timeout") {
     return move;
   }
 

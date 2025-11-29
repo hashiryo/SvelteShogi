@@ -154,6 +154,7 @@ export function getDisplayMoveFromMoveStr(
   lastPos: Position | null
 ): string {
   if (move === "resign") return "投了";
+  if (move === "timeout") return "切れ負け";
   let displayText = "";
   const match1 = move.match(/^(\d)([a-i])(\d)([a-i])(\+)?$/);
   if (match1) {

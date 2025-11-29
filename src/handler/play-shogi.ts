@@ -22,7 +22,7 @@ import { clickCaptured, clickSquare } from "@/domain/play-shogi";
 
 function isGameOver() {
   const { move } = NodesStore.getNode(CurrentIndexStore.get());
-  if (move === "resign") {
+  if (move === "resign" || move === "timeout") {
     return true;
   }
   return false;

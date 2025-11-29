@@ -2,7 +2,7 @@
   import { ReverseStore } from "@/store/game-board.svelte";
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
-  import { executeResign } from "@/handler/execute-move";
+  import { executeResign, executeTimeout } from "@/handler/execute-move";
   import { executeSave } from "@/handler/save";
 
   let reverse = $derived(ReverseStore.get());
@@ -17,7 +17,9 @@
   let currentPos = $derived(ids.indexOf(currentIndex));
 
   // 投了状態の判定
-  let isResignState = $derived(currentNode?.display === "投了");
+  let isResignState = $derived(
+    currentNode?.display === "投了" || currentNode?.display === "切れ負け",
+  );
   let isSavedState = $derived(currentNode?.isSaved ?? false);
   let shouldShowSaveButton = $derived(isResignState);
   let isSaveButtonDisabled = $derived(isSavedState);
@@ -153,6 +155,7 @@
     </button>
   {:else}
     <button aria-label="resign" onclick={executeResign}> 投了 </button>
+    <button aria-label="timeout" onclick={executeTimeout}> 切れ負け </button>
   {/if}
   <button
     class="reverse-btn {reverse ? 'reverse' : ''}"

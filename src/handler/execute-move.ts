@@ -42,9 +42,36 @@ export function executeResign() {
   IsSenteTurnStore.set(!isSente);
 }
 
+export function executeTimeout() {
+  const isSente = IsSenteTurnStore.get();
+  LastPosStore.clear();
+  PromotionPosStore.clear();
+  HandPieceStore.clear();
+
+  const { sfenx } = NodesStore.getNode(CurrentIndexStore.get());
+  const { nodes, currentIndex } = pushOrJumpToKifu(
+    CurrentIndexStore.get(),
+    NodesStore.get(),
+    "切れ負け",
+    sfenx,
+    !isSente,
+    "timeout"
+  );
+
+  CurrentIndexStore.set(currentIndex);
+  NodesStore.set(nodes);
+
+  BranchesStore.set(getBranches(nodes, currentIndex));
+  IsSenteTurnStore.set(!isSente);
+}
+
 export async function executeMove(display: string, move: string) {
   if (move === "resign") {
     executeResign();
+    return;
+  }
+  if (move === "timeout") {
+    executeTimeout();
     return;
   }
 
