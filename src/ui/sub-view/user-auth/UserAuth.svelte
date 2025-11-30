@@ -89,24 +89,29 @@
   {#if user}
     <div class="user-menu-container">
       <button
-        class="avatar-btn"
+        class="user-profile-btn"
         onclick={toggleMenu}
         aria-label="ユーザーメニュー"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
+        <div class="avatar-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <span class="display-name">
+          {user.user_metadata?.display_name || "名前未設定"}
+        </span>
       </button>
 
       {#if isMenuOpen}
@@ -326,24 +331,50 @@
     position: relative;
   }
 
-  .avatar-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+  .user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 18px;
     background-color: var(--header-bg-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .user-profile-btn:hover {
+    background-color: var(--selected-bg-color);
+    color: var(--selected-text-color);
+  }
+
+  .avatar-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--bg-color);
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    color: var(--text-color);
-    transition: all 0.2s;
-    padding: 0;
+    flex-shrink: 0;
   }
 
-  .avatar-btn:hover {
-    background-color: var(--selected-bg-color);
-    color: var(--selected-text-color);
+  .display-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+
+  /* モバイル表示時のレスポンシブ対応 */
+  @media (max-width: 600px) {
+    .display-name {
+      max-width: 80px;
+    }
   }
 
   .dropdown-menu {
