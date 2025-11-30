@@ -83,7 +83,7 @@ export function parseKif(kifContent: string): {
   console.log("=== KIFパース開始 ===");
   const lines = kifContent.split("\n").map((line) => line.trim());
   console.log(`総行数: ${lines.length}`);
-  
+
   const metadata: KifMetadata = {};
   const moves: string[] = [];
 
@@ -130,7 +130,7 @@ export function parseKif(kifContent: string): {
           console.log(`[行 ${lineIndex + 1}] コメント行をスキップ: "${line}"`);
           continue;
         }
-        
+
         if (line.includes("まで") && line.includes("手で")) {
           // 結果行
           metadata.result = line;
@@ -143,7 +143,7 @@ export function parseKif(kifContent: string): {
         // 指し手行の解析
         // 特別な手（投了など）のチェック
         const specialMoveMatch = line.match(
-          /^(\d+)\s+(投了|中断|持将棋|千日手|切れ負け|反則負け)/
+          /^(\d+)\s+(投了|中断|持将棋|千日手|切れ負け|反則負け|詰み)/
         );
         if (specialMoveMatch) {
           const [, kifDataMoveNumberStr, kifDataMoveDisplay] = specialMoveMatch;
@@ -151,6 +151,7 @@ export function parseKif(kifContent: string): {
           console.log(`特別な手を検出: ${display}`);
           switch (display) {
             case "投了":
+            case "詰み": // 詰みは投了と同一視
               moves.push("resign");
               break;
             case "中断":
@@ -171,7 +172,9 @@ export function parseKif(kifContent: string): {
           }
         } else {
           let display = "";
-          const kifDataMoveMatch = line.match(/^(\d+)\s+(.+?)\s+\(\s*(.+?)\s*\)/);
+          const kifDataMoveMatch = line.match(
+            /^(\d+)\s+(.+?)\s+\(\s*(.+?)\s*\)/
+          );
           if (kifDataMoveMatch) {
             const [, , kifDataMoveDisplay] = kifDataMoveMatch;
             display = kifDataMoveDisplay.trim();
