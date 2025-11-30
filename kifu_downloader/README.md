@@ -85,11 +85,17 @@ USER_ID = "hashiryoma"  # ここを変更
 
 リポジトリの `Settings` > `Secrets and variables` > `Actions` で以下を設定してください：
 
-| Secret名                    | 説明                                 |
-| --------------------------- | ------------------------------------ |
-| `SUPABASE_URL`              | SupabaseプロジェクトのURL            |
-| `SUPABASE_SERVICE_ROLE_KEY` | Service Role Key（anon keyではなく） |
-| `UPLOAD_USER_ID`            | アップロード先のユーザーID           |
+| Secret名                    | 説明                                        |
+| --------------------------- | ------------------------------------------- |
+| `VITE_SUPABASE_URL`         | SupabaseプロジェクトのURL（デプロイと共用） |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service Role Key（anon keyではなく）        |
+| `UPLOAD_USER_ID`            | アップロード先のユーザーID                  |
+
+**取得方法:**
+
+- `VITE_SUPABASE_URL`: 既に設定済み（デプロイと共用）
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabaseダッシュボード → Project Settings → API → service_role キー
+- `UPLOAD_USER_ID`: Supabaseダッシュボード → Authentication → Users → 対象ユーザーのUID
 
 ### 手動実行
 
@@ -140,7 +146,7 @@ kifu_downloader/
 
 1. KIFファイルをパースしてメタデータと指し手を抽出
 2. 盤面を再生しながら各局面のSFENXを生成
-3. 重複チェック（過去1日以内に同じハッシュの棋譜がないか）
+3. 重複チェック（同じハッシュの棋譜が既に存在しないか）
 4. 統計データ（`shogi_moves_statistics`）をバルクインサート
 5. ゲームレコード（`game_records`）を挿入
 
