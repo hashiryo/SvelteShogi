@@ -106,7 +106,7 @@
 
 <style>
   .kifu-branch {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
   }
   .kifu-branch-list {
@@ -127,12 +127,14 @@
     align-items: center;
     box-sizing: border-box;
     cursor: pointer;
+    color: var(--text-color);
   }
   .kifu-branch-item:focus {
     outline: none;
   }
   .kifu-branch-item.current {
-    background-color: #e8fdff; /* 淡い青 */
+    background-color: var(--selected-bg-color);
+    color: var(--selected-text-color);
     border-radius: 4px;
   }
   .kifu-branch-item-display {

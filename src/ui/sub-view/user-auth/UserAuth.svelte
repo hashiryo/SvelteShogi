@@ -231,20 +231,20 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: #e0e0e0;
-    border: 1px solid #ccc;
+    background-color: var(--header-bg-color);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #555;
+    color: var(--text-color);
     transition: all 0.2s;
     padding: 0;
   }
 
   .avatar-btn:hover {
-    background-color: #d5d5d5;
-    color: #333;
+    background-color: var(--selected-bg-color);
+    color: var(--selected-text-color);
   }
 
   /* Dropdown Menu */
@@ -253,10 +253,10 @@
     top: 100%;
     right: 0;
     margin-top: 8px;
-    background-color: white;
+    background-color: var(--bg-color);
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid #eee;
+    border: 1px solid var(--border-color);
     min-width: 200px;
     z-index: 100;
     overflow: hidden;
@@ -276,20 +276,20 @@
 
   .user-info {
     padding: 12px 16px;
-    background-color: #f9f9f9;
+    background-color: var(--header-bg-color);
   }
 
   .user-email {
     display: block;
     font-size: 13px;
-    color: #333;
+    color: var(--text-color);
     font-weight: 500;
     word-break: break-all;
   }
 
   .menu-divider {
     height: 1px;
-    background-color: #eee;
+    background-color: var(--border-color);
   }
 
   .menu-item {
@@ -303,22 +303,22 @@
     text-align: left;
     font-size: 13px;
     cursor: pointer;
-    color: #555;
+    color: var(--text-color);
     transition: background-color 0.2s;
   }
 
   .menu-item:hover {
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: var(--selected-bg-color);
+    color: var(--selected-text-color);
   }
 
   .logout-btn {
-    color: #d32f2f;
+    color: var(--error-color);
   }
 
   .logout-btn:hover {
-    background-color: #ffebee;
-    color: #b71c1c;
+    background-color: var(--selected-bg-color);
+    color: var(--error-color);
   }
 
   /* Login Trigger Button (Logged Out State) */
@@ -328,18 +328,18 @@
     gap: 6px;
     padding: 6px 12px;
     background-color: transparent;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    color: #555;
+    color: var(--text-color);
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .login-trigger-btn:hover {
-    background-color: #f5f5f5;
-    border-color: #ccc;
-    color: #333;
+    background-color: var(--header-bg-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
   }
 
   /* Dialog & Form Styles (Existing but refined) */
@@ -358,7 +358,7 @@
 
   .auth-form {
     padding: 24px;
-    background-color: #ffffff;
+    background-color: var(--bg-color);
     border-radius: 8px;
     width: 320px;
     max-width: 90vw;
@@ -368,7 +368,7 @@
     margin-top: 0;
     margin-bottom: 20px;
     text-align: center;
-    color: #333;
+    color: var(--header-text-color);
     font-size: 18px;
   }
 
@@ -379,22 +379,24 @@
   .auth-input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
     box-sizing: border-box;
     transition: border-color 0.2s;
+    background-color: var(--bg-color);
+    color: var(--text-color);
   }
 
   .auth-input:focus {
-    border-color: #4caf50;
+    border-color: var(--success-color);
     outline: none;
   }
 
   .auth-btn {
     width: 100%;
     padding: 12px;
-    background-color: #4caf50;
+    background-color: var(--success-color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -406,11 +408,11 @@
   }
 
   .auth-btn:hover:not(:disabled) {
-    background-color: #45a049;
+    opacity: 0.9;
   }
 
   .auth-btn:disabled {
-    background-color: #cccccc;
+    background-color: var(--border-color);
     cursor: not-allowed;
   }
 
@@ -418,7 +420,7 @@
     width: 100%;
     padding: 8px;
     background-color: transparent;
-    color: #666;
+    color: var(--text-color);
     border: none;
     font-size: 12px;
     cursor: pointer;
@@ -427,12 +429,12 @@
   }
 
   .toggle-btn:hover:not(:disabled) {
-    color: #333;
+    color: var(--link-hover-color);
   }
 
   .error-message {
-    color: #d32f2f;
-    background-color: #ffebee;
+    color: var(--error-color);
+    background-color: var(--selected-bg-color);
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 16px;

@@ -197,9 +197,9 @@
   }
 
   .nav-btn {
-    background-color: #f5f5f5;
-    color: #333333;
-    border: 1px solid #cccccc;
+    background-color: var(--header-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--button-border-color);
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 16px;
@@ -213,19 +213,19 @@
   }
 
   .nav-btn:hover:not(:disabled) {
-    background-color: #e8e8e8;
-    border-color: #999999;
+    background-color: var(--button-hover-bg-color);
+    border-color: var(--button-border-color);
   }
 
   .nav-btn:active:not(:disabled) {
-    background-color: #d8d8d8;
+    background-color: var(--button-disabled-bg-color);
     transform: translateY(1px);
   }
 
   .nav-btn:disabled {
-    background-color: #f9f9f9;
-    color: #cccccc;
-    border-color: #e0e0e0;
+    background-color: var(--button-disabled-bg-color);
+    color: var(--button-disabled-text-color);
+    border-color: var(--border-color);
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -255,14 +255,14 @@
   }
 
   .nav-btn:focus {
-    outline: 2px solid #4caf50;
+    outline: 2px solid var(--success-color);
     outline-offset: 2px;
   }
 
   .reverse-btn {
-    background-color: #cccccc;
-    color: #555555;
-    border: 1px solid #999999;
+    background-color: var(--button-border-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--button-border-color);
     border-radius: 4px;
     padding: 8px 12px;
     cursor: pointer;
@@ -275,7 +275,7 @@
   }
 
   .reverse-btn.reverse {
-    background-color: rgb(2, 162, 109);
+    background-color: var(--success-color);
     color: white;
   }
 
@@ -284,7 +284,7 @@
   }
 
   .reverse-btn:focus {
-    outline: 2px solid #4caf50;
+    outline: 2px solid var(--success-color);
     outline-offset: 2px;
   }
 
@@ -313,9 +313,9 @@
   }
 
   .save-btn {
-    background-color: #4caf50;
+    background-color: var(--success-color);
     color: white;
-    border: 1px solid #45a049;
+    border: 1px solid var(--success-color);
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 16px;
@@ -326,25 +326,23 @@
   }
 
   .save-btn:hover:not(.disabled) {
-    background-color: #45a049;
-    border-color: #3e8e41;
+    opacity: 0.9;
   }
 
   .save-btn:active:not(.disabled) {
-    background-color: #3e8e41;
     transform: translateY(1px);
   }
 
   .save-btn.disabled {
-    background-color: #cccccc;
-    color: #666666;
-    border-color: #999999;
+    background-color: var(--button-disabled-bg-color);
+    color: var(--button-disabled-text-color);
+    border-color: var(--button-border-color);
     cursor: not-allowed;
     opacity: 0.6;
   }
 
   .save-btn:focus {
-    outline: 2px solid #4caf50;
+    outline: 2px solid var(--success-color);
     outline-offset: 2px;
   }
 

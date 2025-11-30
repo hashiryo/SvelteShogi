@@ -143,7 +143,7 @@
 
 <style>
   .kifu-history {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
   }
   .kifu-history-list {
@@ -181,12 +181,14 @@
     align-items: center;
     box-sizing: border-box;
     cursor: pointer;
+    color: var(--text-color);
   }
   .kifu-history-item:focus {
     outline: none;
   }
   .kifu-history-item.current {
-    background-color: #e8f4ff; /* 淡い青 */
+    background-color: var(--selected-bg-color);
+    color: var(--selected-text-color);
     border-radius: 4px;
   }
   .kifu-history-item-display {
@@ -196,7 +198,8 @@
   .kifu-history-item-favorite {
     display: flex;
     width: 16%;
-    color: #eee;
+    color: var(--text-color);
+    opacity: 0.3;
     padding: 0;
   }
   .kifu-history-item-favorite:focus {
@@ -207,15 +210,18 @@
   }
 
   .kifu-history-item.current .kifu-history-item-favorite {
-    color: #ddd;
+    color: var(--selected-text-color);
+    opacity: 0.5;
   }
 
   .kifu-history-item-favorite.favorite {
     color: rgb(243, 220, 74);
+    opacity: 1;
   }
 
   .kifu-history-item.current .kifu-history-item-favorite.favorite {
     color: rgb(244, 212, 5);
+    opacity: 1;
   }
 
   .kifu-history-item:nth-child(odd) .kifu-history-item-favorite {
@@ -233,7 +239,8 @@
   }
   .has-branch-flg-content {
     text-align: right;
-    color: #aaa;
+    color: var(--text-color);
+    opacity: 0.5;
     font-weight: bold;
   }
 

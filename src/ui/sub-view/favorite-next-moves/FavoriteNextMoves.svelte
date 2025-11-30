@@ -71,7 +71,7 @@
 
 <style>
   .favorite-next-moves {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
   }
 
@@ -93,6 +93,7 @@
     align-items: center;
     box-sizing: border-box;
     cursor: pointer;
+    color: var(--text-color);
   }
 
   .favorite-next-moves-item-display {
@@ -115,7 +116,8 @@
   .favorite-next-moves-empty {
     padding: 8px;
     text-align: center;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     font-size: 12px;
     height: var(--item-height);
     display: flex;

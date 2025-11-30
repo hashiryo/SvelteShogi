@@ -127,8 +127,8 @@
   .bottom-nav {
     display: flex;
     justify-content: space-around;
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
+    background-color: var(--header-bg-color);
+    border-top: 1px solid var(--border-color);
     padding: 8px 0;
     padding-bottom: env(safe-area-inset-bottom, 8px); /* iPhone X以降対応 */
     width: 100%;
@@ -139,7 +139,8 @@
   .bottom-nav button {
     background: transparent;
     border: none;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -156,8 +157,9 @@
   }
 
   .bottom-nav button.active {
-    color: #646cff;
-    background-color: rgba(100, 108, 255, 0.1);
+    color: var(--link-color);
+    background-color: var(--selected-bg-color);
+    opacity: 1;
   }
 
   .modal-overlay {
@@ -177,7 +179,7 @@
   }
 
   .modal-content {
-    background-color: #fff;
+    background-color: var(--bg-color);
     width: 100%;
     max-width: 500px;
     max-height: 80vh;
@@ -186,7 +188,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
   }
 
   .modal-header {
@@ -194,20 +196,20 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    border-bottom: 1px solid #ddd;
-    background-color: #f5f5f5;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--header-bg-color);
   }
 
   .modal-header h3 {
     margin: 0;
     font-size: 16px;
-    color: #333;
+    color: var(--header-text-color);
   }
 
   .close-button {
     background: transparent;
     border: none;
-    color: #888;
+    color: var(--text-color);
     font-size: 24px;
     line-height: 1;
     cursor: pointer;

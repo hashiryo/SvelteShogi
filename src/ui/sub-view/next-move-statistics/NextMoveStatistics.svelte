@@ -101,12 +101,13 @@
 
 <style>
   .next-move-statistics {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
   }
 
   .summary-info {
-    color: #888;
+    color: var(--text-color);
+    opacity: 0.6;
     font-size: 10px;
     margin-left: auto;
   }
@@ -129,6 +130,7 @@
     align-items: center;
     box-sizing: border-box;
     cursor: pointer;
+    color: var(--text-color);
   }
 
   .next-move-statistics-item-display {
@@ -147,7 +149,8 @@
 
   .stat-main {
     font-size: 11px;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.8;
     margin-bottom: 1px;
   }
 
@@ -164,21 +167,25 @@
 
   .stat-sub {
     font-size: 10px;
-    color: #888;
+    color: var(--text-color);
+    opacity: 0.6;
   }
 
   .stat-sub.high-win-rate {
-    color: #2e7d32; /* 緑色 - 高勝率 */
+    color: var(--success-color);
+    opacity: 1;
   }
 
   .stat-sub.low-win-rate {
-    color: #d32f2f; /* 赤色 - 低勝率 */
+    color: var(--error-color);
+    opacity: 1;
   }
 
   .next-move-statistics-empty {
     padding: 8px;
     text-align: center;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     font-size: 12px;
     height: var(--item-height);
     display: flex;

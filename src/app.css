@@ -4,8 +4,31 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  
+  /* Default (Dark Mode) Variables */
+  --bg-color: #242424;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --header-bg-color: #333333;
+  --header-text-color: #eeeeee;
+  --border-color: #444444;
+  --selected-bg-color: #2a4a6a;
+  --selected-text-color: #ffffff;
+  --kbd-bg-color: #555555;
+  --kbd-text-color: #eeeeee;
+  --button-bg-color: #1a1a1a;
+  --button-hover-border-color: #646cff;
+  --link-color: #646cff;
+  --link-hover-color: #535bf2;
+  --success-color: #66bb6a;
+  --error-color: #ef5350;
+  --button-text-color: #eeeeee;
+  --button-border-color: #444444;
+  --button-hover-bg-color: #333333;
+  --button-disabled-bg-color: #1a1a1a;
+  --button-disabled-text-color: #666666;
+
+  color: var(--text-color);
+  background-color: var(--bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,11 +38,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--link-color);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--link-hover-color);
 }
 
 body {
@@ -48,12 +71,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--button-bg-color);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--button-hover-border-color);
 }
 button:focus,
 button:focus-visible {
@@ -62,21 +85,32 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    --bg-color: #ffffff;
+    --text-color: #213547;
+    --header-bg-color: #f5f5f5;
+    --header-text-color: #333333;
+    --border-color: #cccccc;
+    --selected-bg-color: #e8f4ff;
+    --selected-text-color: #213547;
+    --kbd-bg-color: #cccccc;
+    --kbd-text-color: white;
+    --button-bg-color: #f9f9f9;
+    --link-hover-color: #747bff;
+    --success-color: #2e7d32;
+    --error-color: #d32f2f;
+    --button-text-color: #333333;
+    --button-border-color: #cccccc;
+    --button-hover-bg-color: #e8e8e8;
+    --button-disabled-bg-color: #f9f9f9;
+    --button-disabled-text-color: #cccccc;
   }
 }
 
 .card-header {
   padding: 4px 8px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ccc;
+  background-color: var(--header-bg-color);
+  color: var(--header-text-color);
+  border-bottom: 1px solid var(--border-color);
   font-size: 12px;
   display: flex;
   align-items: center;
@@ -105,11 +139,11 @@ button:focus-visible {
 }
 
 kbd {
-  background: #ccc;
+  background: var(--kbd-bg-color);
   border-radius: 4px;
   padding: 2px 6px;
   margin: 1px;
   font-family: monospace;
   font-weight: bold;
-  color: white;
+  color: var(--kbd-text-color);
 }

@@ -261,25 +261,25 @@
   }
 
   .drop-zone {
-    border: 2px dashed #ccc;
+    border: 2px dashed var(--border-color);
     border-radius: 8px;
     padding: 24px 16px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    background-color: #fafafa;
-    color: #666;
+    background-color: var(--header-bg-color);
+    color: var(--text-color);
   }
 
   .drop-zone:hover {
-    border-color: #4caf50;
-    background-color: #f0fdf4;
-    color: #2e7d32;
+    border-color: var(--success-color);
+    background-color: var(--selected-bg-color);
+    color: var(--success-color);
   }
 
   .drop-zone.dragging {
-    border-color: #4caf50;
-    background-color: #e8f5e9;
+    border-color: var(--success-color);
+    background-color: var(--selected-bg-color);
     transform: scale(1.02);
   }
 
@@ -295,7 +295,7 @@
   }
 
   .error-message {
-    color: #d32f2f;
+    color: var(--error-color);
     font-size: 13px;
     margin-top: 8px;
     text-align: center;
@@ -304,16 +304,16 @@
   .metadata-section {
     margin-top: 16px;
     padding: 12px;
-    border: 1px solid #eee;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: #fff;
+    background-color: var(--bg-color);
   }
 
   .metadata-section h4 {
     margin: 0 0 8px 0;
     font-size: 14px;
-    color: #333;
-    border-bottom: 1px solid #eee;
+    color: var(--header-text-color);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 4px;
   }
 
@@ -329,13 +329,14 @@
   }
 
   .metadata-section td:first-child {
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     width: 70px;
     white-space: nowrap;
   }
 
   .metadata-section td:last-child {
-    color: #333;
+    color: var(--text-color);
     font-weight: 500;
   }
 </style>
