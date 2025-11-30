@@ -10,7 +10,7 @@
 
   let currentIndex = $derived(CurrentIndexStore.get());
   let currentNode = $derived(
-    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null,
+    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null
   );
 
   // 現在位置の計算
@@ -18,7 +18,7 @@
 
   // 投了状態の判定
   let isResignState = $derived(
-    currentNode?.display === "投了" || currentNode?.display === "切れ負け",
+    currentNode?.display === "投了" || currentNode?.display === "切れ負け"
   );
   let isSavedState = $derived(currentNode?.isSaved ?? false);
   let shouldShowSaveButton = $derived(isResignState);
@@ -57,141 +57,157 @@
 </script>
 
 <div class="operator-container">
-  <!-- 履歴ナビゲーションボタン -->
-  <button
-    class="nav-btn first-btn"
-    aria-label="初期局面へ"
-    disabled={!canGoToFirst}
-    onclick={goToFirst}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="currentColor"
-        d="M6 18V6h2v12zm11 0l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"
-        stroke-width="1"
-        stroke="currentColor"
-      />
-    </svg>
-  </button>
-
-  <button
-    class="nav-btn prev-btn"
-    aria-label="一つ戻る"
-    disabled={!canGoPrevious}
-    onclick={goPrevious}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="currentColor"
-        d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"
-        stroke-width="1"
-        stroke="currentColor"
-      />
-    </svg>
-  </button>
-
-  <button
-    class="nav-btn next-btn"
-    aria-label="一つ進む"
-    disabled={!canGoNext}
-    onclick={goNext}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="currentColor"
-        d="M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z"
-        stroke-width="1"
-        stroke="currentColor"
-      />
-    </svg>
-  </button>
-
-  <button
-    class="nav-btn last-btn"
-    aria-label="最終局面へ"
-    disabled={!canGoToLast}
-    onclick={goToLast}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="currentColor"
-        d="m7 18l-1.4-1.4l4.6-4.6l-4.6-4.6L7 6l6 6zm9 0V6h2v12z"
-        stroke-width="1"
-        stroke="currentColor"
-      />
-    </svg>
-  </button>
-
-  {#if shouldShowSaveButton}
+  <!-- 上段：ナビゲーションボタン + 盤面反転 -->
+  <div class="row">
     <button
-      aria-label="save"
-      onclick={() => {
-        executeSave(currentIndex);
-      }}
-      disabled={isSaveButtonDisabled}
-      class="save-btn {isSaveButtonDisabled ? 'disabled' : ''}"
+      class="nav-btn first-btn"
+      aria-label="初期局面へ"
+      disabled={!canGoToFirst}
+      onclick={goToFirst}
     >
-      セーブ
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M6 18V6h2v12zm11 0l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"
+          stroke-width="1"
+          stroke="currentColor"
+        />
+      </svg>
     </button>
-  {:else}
-    <button aria-label="resign" onclick={executeResign}> 投了 </button>
-    <button aria-label="timeout" onclick={executeTimeout}> 切れ負け </button>
-  {/if}
-  <button
-    class="reverse-btn {reverse ? 'reverse' : ''}"
-    aria-label="reverse"
-    onclick={() => {
-      ReverseStore.set(!reverse);
-    }}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
+
+    <button
+      class="nav-btn prev-btn"
+      aria-label="一つ戻る"
+      disabled={!canGoPrevious}
+      onclick={goPrevious}
     >
-      <path
-        fill="currentColor"
-        d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99zM9 3L5 6.99h3V14h2V6.99h3z"
-        stroke-width="1.1"
-        stroke="currentColor"
-      />
-    </svg>
-  </button>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z"
+          stroke-width="1"
+          stroke="currentColor"
+        />
+      </svg>
+    </button>
+
+    <button
+      class="nav-btn next-btn"
+      aria-label="一つ進む"
+      disabled={!canGoNext}
+      onclick={goNext}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z"
+          stroke-width="1"
+          stroke="currentColor"
+        />
+      </svg>
+    </button>
+
+    <button
+      class="nav-btn last-btn"
+      aria-label="最終局面へ"
+      disabled={!canGoToLast}
+      onclick={goToLast}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="m7 18l-1.4-1.4l4.6-4.6l-4.6-4.6L7 6l6 6zm9 0V6h2v12z"
+          stroke-width="1"
+          stroke="currentColor"
+        />
+      </svg>
+    </button>
+
+    <button
+      class="reverse-btn {reverse ? 'reverse' : ''}"
+      aria-label="reverse"
+      onclick={() => {
+        ReverseStore.set(!reverse);
+      }}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99zM9 3L5 6.99h3V14h2V6.99h3z"
+          stroke-width="1.1"
+          stroke="currentColor"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- 下段：投了/切れ負け または セーブ -->
+  <div class="row">
+    {#if shouldShowSaveButton}
+      <button
+        aria-label="save"
+        onclick={() => {
+          executeSave(currentIndex);
+        }}
+        disabled={isSaveButtonDisabled}
+        class="save-btn {isSaveButtonDisabled ? 'disabled' : ''}"
+      >
+        セーブ
+      </button>
+    {:else}
+      <button aria-label="resign" onclick={executeResign}> 投了 </button>
+      <button aria-label="timeout" onclick={executeTimeout}> 切れ負け </button>
+    {/if}
+  </div>
 </div>
 
 <style>
   .operator-container {
     display: flex;
-    gap: 4px;
+    flex-direction: column;
+    gap: 8px;
     align-items: center;
     justify-content: center;
     width: 100%;
-    flex-wrap: wrap;
+  }
+
+  .row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
   }
 
   @media (max-width: 500px) {
     .operator-container {
+      gap: 10px;
+    }
+    .row {
       gap: 6px;
     }
   }
