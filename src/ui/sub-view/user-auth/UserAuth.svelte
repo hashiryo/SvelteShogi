@@ -16,6 +16,7 @@
   let isLoading = $state(false);
   let dialog: HTMLDialogElement;
   let isMenuOpen = $state(false);
+  let showVerificationMessage = $state(false);
 
   let user = $derived(CurrentUserStore.get());
 
@@ -38,9 +39,8 @@
       if (isSigningUp) {
         const newUser = await authAPI.signUp(email, password);
         if (newUser) {
-          CurrentUserStore.set(newUser);
-          await refreshData();
-          dialog?.close();
+          // メール確認が必要な場合は案内を表示
+          showVerificationMessage = true;
         }
       } else {
         const authenticatedUser = await authAPI.signIn(email, password);
@@ -153,62 +153,103 @@
 
     <dialog bind:this={dialog} class="auth-dialog">
       <div class="auth-form">
-        <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
+        {#if showVerificationMessage}
+          <div class="verification-message">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="mail-icon"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+            <h3>確認メールを送信しました</h3>
+            <p>
+              <strong>{email}</strong> 宛に確認メールを送信しました。
+            </p>
+            <p>
+              メール内のリンクをクリックして、アカウントの作成を完了してください。
+            </p>
+            <p class="note">
+              メールが届かない場合は、迷惑メールフォルダをご確認ください。
+            </p>
+            <button
+              class="auth-btn"
+              onclick={() => {
+                showVerificationMessage = false;
+                email = "";
+                password = "";
+                dialog?.close();
+              }}
+            >
+              閉じる
+            </button>
+          </div>
+        {:else}
+          <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
 
-        {#if error}
-          <div class="error-message">{error}</div>
+          {#if error}
+            <div class="error-message">{error}</div>
+          {/if}
+
+          <div class="form-group">
+            <input
+              type="email"
+              placeholder="メールアドレス"
+              bind:value={email}
+              disabled={isLoading}
+              class="auth-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              placeholder="パスワード"
+              bind:value={password}
+              disabled={isLoading}
+              class="auth-input"
+            />
+          </div>
+
+          <button
+            class="auth-btn"
+            onclick={handleAuth}
+            disabled={isLoading || !email || !password}
+          >
+            {isLoading
+              ? "処理中..."
+              : isSigningUp
+                ? "アカウント作成"
+                : "サインイン"}
+          </button>
+
+          <button
+            class="toggle-btn"
+            onclick={() => (isSigningUp = !isSigningUp)}
+            disabled={isLoading}
+          >
+            {isSigningUp
+              ? "既にアカウントをお持ちですか？サインイン"
+              : "アカウントを作成しますか？"}
+          </button>
+
+          <button
+            class="toggle-btn"
+            onclick={() => dialog?.close()}
+            disabled={isLoading}
+            style="margin-top: 4px;"
+          >
+            キャンセル
+          </button>
         {/if}
-
-        <div class="form-group">
-          <input
-            type="email"
-            placeholder="メールアドレス"
-            bind:value={email}
-            disabled={isLoading}
-            class="auth-input"
-          />
-        </div>
-
-        <div class="form-group">
-          <input
-            type="password"
-            placeholder="パスワード"
-            bind:value={password}
-            disabled={isLoading}
-            class="auth-input"
-          />
-        </div>
-
-        <button
-          class="auth-btn"
-          onclick={handleAuth}
-          disabled={isLoading || !email || !password}
-        >
-          {isLoading
-            ? "処理中..."
-            : isSigningUp
-              ? "アカウント作成"
-              : "サインイン"}
-        </button>
-
-        <button
-          class="toggle-btn"
-          onclick={() => (isSigningUp = !isSigningUp)}
-          disabled={isLoading}
-        >
-          {isSigningUp
-            ? "既にアカウントをお持ちですか？サインイン"
-            : "アカウントを作成しますか？"}
-        </button>
-
-        <button
-          class="toggle-btn"
-          onclick={() => dialog?.close()}
-          disabled={isLoading}
-          style="margin-top: 4px;"
-        >
-          キャンセル
-        </button>
       </div>
     </dialog>
   {/if}
@@ -440,5 +481,35 @@
     margin-bottom: 16px;
     font-size: 13px;
     text-align: center;
+  }
+
+  /* Verification Message */
+  .verification-message {
+    text-align: center;
+  }
+
+  .verification-message .mail-icon {
+    color: var(--success-color);
+    margin-bottom: 16px;
+  }
+
+  .verification-message h3 {
+    margin: 0 0 16px 0;
+    color: var(--header-text-color);
+    font-size: 18px;
+  }
+
+  .verification-message p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: var(--text-color);
+    line-height: 1.5;
+  }
+
+  .verification-message .note {
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-bottom: 20px;
   }
 </style>
