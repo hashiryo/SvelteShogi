@@ -33,45 +33,101 @@
 
     try {
       console.log(`ファイル読み込み開始: ${file.name} (${file.size} bytes)`);
-      const content = await readFileAsText(file);
-      const parsedData = parseKif(content);
-      const moves = parsedData.moves;
-      MetadataStore.set(parsedData.metadata);
 
-      let { grid, capturedSente, capturedGote, isSente, nodes } =
-        movesToNodes(moves);
+      // まずUTF-8で読み込みを試行
+      let content: string;
+      let encoding = "UTF-8";
 
-      const sfenxes = nodes.map((node) => node.sfenx);
-      await fetchAndSetFavoriteMovesMulti(sfenxes);
-      await fetchAndSetMoveStatisticsMulti(sfenxes);
+      try {
+        console.log("エンコーディング: UTF-8 で読み込み試行...");
+        content = await readFileAsText(file, "UTF-8");
+        console.log("UTF-8での読み込み完了、パース開始");
 
-      const n = nodes.length;
-      for (let i = 0; i + 1 < n; i++) {
-        const favoriteMoves = getCurrentFavorites(
-          nodes[i].isSente,
-          nodes[i].sfenx,
-        );
-        const move = nodes[i + 1].move;
-        const isFavorite = favoriteMoves ? favoriteMoves.includes(move) : false;
-        if (isFavorite) {
-          nodes[i + 1].isFavorite = true;
+        const parsedData = parseKif(content);
+
+        // メタデータが空の場合、エンコーディングが間違っている可能性がある
+        if (
+          Object.keys(parsedData.metadata).length === 0 &&
+          parsedData.moves.length === 0
+        ) {
+          console.warn(
+            "UTF-8でのパースが空の結果になりました。Shift_JISで再試行します...",
+          );
+          encoding = "Shift_JIS";
+          content = await readFileAsText(file, "Shift_JIS");
+          console.log("Shift_JISでの読み込み完了、パース開始");
+        } else {
+          console.log(`✅ UTF-8でのパース成功`, parsedData);
+          await processKifData(parsedData);
+          return;
         }
+      } catch (utf8Error) {
+        console.warn("UTF-8でのパースに失敗:", utf8Error);
+        console.log("Shift_JISで再試行します...");
+        encoding = "Shift_JIS";
+        content = await readFileAsText(file, "Shift_JIS");
+        console.log("Shift_JISでの読み込み完了、パース開始");
       }
-      GridStore.set(grid);
-      CapturesStore.set(true, capturedSente);
-      CapturesStore.set(false, capturedGote);
-      IsSenteTurnStore.set(isSente);
-      NodesStore.set(nodes);
-      CurrentIndexStore.set(nodes.length - 1);
+
+      // Shift_JISでのパース
+      const parsedData = parseKif(content);
+      console.log(`✅ ${encoding}でのパース完了:`, parsedData);
+      await processKifData(parsedData);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "不明なエラーが発生しました";
       error = errorMessage;
-      console.error("ファイル処理エラー:", err);
+      console.error("❌ ファイル処理エラー:", err);
+      console.error("エラーの詳細:", errorMessage);
+
+      // エラーを確実に表示するため、アラートも追加
+      alert(`棋譜の読み込みに失敗しました:\n\n${errorMessage}`);
     } finally {
       isLoading = false;
       files = null;
     }
+  }
+
+  async function processKifData(parsedData: {
+    metadata: any;
+    moves: string[];
+  }) {
+    const moves = parsedData.moves;
+    MetadataStore.set(parsedData.metadata);
+
+    console.log("ノード生成開始");
+    let { grid, capturedSente, capturedGote, isSente, nodes } =
+      movesToNodes(moves);
+    console.log(`ノード生成完了: ${nodes.length}個のノード`);
+
+    const sfenxes = nodes.map((node) => node.sfenx);
+    console.log("お気に入り手取得中...");
+    await fetchAndSetFavoriteMovesMulti(sfenxes);
+    console.log("統計情報取得中...");
+    await fetchAndSetMoveStatisticsMulti(sfenxes);
+
+    const n = nodes.length;
+    for (let i = 0; i + 1 < n; i++) {
+      const favoriteMoves = getCurrentFavorites(
+        nodes[i].isSente,
+        nodes[i].sfenx,
+      );
+      const move = nodes[i + 1].move;
+      const isFavorite = favoriteMoves ? favoriteMoves.includes(move) : false;
+      if (isFavorite) {
+        nodes[i + 1].isFavorite = true;
+      }
+    }
+
+    console.log("ストア更新中...");
+    GridStore.set(grid);
+    CapturesStore.set(true, capturedSente);
+    CapturesStore.set(false, capturedGote);
+    IsSenteTurnStore.set(isSente);
+    NodesStore.set(nodes);
+    CurrentIndexStore.set(nodes.length - 1);
+
+    console.log("✅ 棋譜の取り込みが完了しました！");
   }
 
   function handleDrop(e: DragEvent) {
