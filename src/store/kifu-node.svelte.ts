@@ -38,7 +38,7 @@ export class NodesStore {
   static getPath(root: number) {
     let ret = [];
     let cur = root;
-    while (cur !== -1) {
+    while (cur !== -1 && nodes[cur]) {
       ret.push(cur);
       cur = nodes[cur].next;
     }

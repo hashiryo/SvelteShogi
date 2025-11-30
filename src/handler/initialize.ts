@@ -15,6 +15,8 @@ import { fetchAndSetFavoriteMoves } from "./favorite-moves";
 import { fetchAndSetMoveStatistics } from "./move-statistics";
 import type { KifuNode } from "@/types/shogi";
 import { MetadataStore } from "@/store/metadata.svelte";
+import { supabase } from "@/lib/supabase/client";
+import { CurrentUserStore } from "@/store/auth.svelte";
 
 export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
   NodesStore.set([
@@ -45,7 +47,25 @@ export async function initializeBySfenxTurn(sfenx: string, isSente: boolean) {
 }
 
 export async function initialize() {
-  initializeBySfenxTurn(
+  // 認証状態の初期化
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (session?.user) {
+    CurrentUserStore.set(session.user);
+  }
+
+  // 認証状態の変更を監視
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      CurrentUserStore.set(session.user);
+    } else {
+      CurrentUserStore.clear();
+    }
+  });
+
+  // 盤面の初期化
+  await initializeBySfenxTurn(
     "lnsgkgsnl1b5r1ppppppppp999PPPPPPPPP1R5B1LNSGKGSNL aaaaaaaa",
     true
   );
