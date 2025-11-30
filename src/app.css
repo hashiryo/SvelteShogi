@@ -36,6 +36,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
 a {
   font-weight: 500;
   color: var(--link-color);
