@@ -23,6 +23,7 @@ export class AuthAPI {
       email,
       password,
       options: {
+        emailRedirectTo: import.meta.env.VITE_APP_URL,
         data: { display_name: displayName },
       },
     });
