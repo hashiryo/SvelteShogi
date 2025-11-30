@@ -14,13 +14,31 @@ export class AuthAPI {
     return data.user;
   }
 
-  async signUp(email: string, password: string): Promise<User | null> {
+  async signUp(
+    email: string,
+    password: string,
+    displayName: string
+  ): Promise<User | null> {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: { display_name: displayName },
+      },
     });
     if (error) {
       console.error("Sign up error:", error.message);
+      throw error;
+    }
+    return data.user;
+  }
+
+  async updateDisplayName(displayName: string): Promise<User | null> {
+    const { data, error } = await supabase.auth.updateUser({
+      data: { display_name: displayName },
+    });
+    if (error) {
+      console.error("Update display name error:", error.message);
       throw error;
     }
     return data.user;

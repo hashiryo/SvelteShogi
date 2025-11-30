@@ -11,6 +11,7 @@
 
   let email = $state("");
   let password = $state("");
+  let displayName = $state("");
   let isSigningUp = $state(false);
   let error = $state("");
   let isLoading = $state(false);
@@ -37,9 +38,8 @@
 
     try {
       if (isSigningUp) {
-        const newUser = await authAPI.signUp(email, password);
+        const newUser = await authAPI.signUp(email, password, displayName);
         if (newUser) {
-          // メール確認が必要な場合は案内を表示
           showVerificationMessage = true;
         }
       } else {
@@ -74,6 +74,14 @@
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
   }
+
+  function closeDialog() {
+    email = "";
+    password = "";
+    displayName = "";
+    showVerificationMessage = false;
+    dialog?.close();
+  }
 </script>
 
 <div class="auth-header">
@@ -103,6 +111,9 @@
       {#if isMenuOpen}
         <div class="dropdown-menu">
           <div class="user-info">
+            <span class="user-display-name">
+              {user.user_metadata?.display_name || "名前未設定"}
+            </span>
             <span class="user-email">{user.email}</span>
           </div>
           <div class="menu-divider"></div>
@@ -180,23 +191,25 @@
             <p class="note">
               メールが届かない場合は、迷惑メールフォルダをご確認ください。
             </p>
-            <button
-              class="auth-btn"
-              onclick={() => {
-                showVerificationMessage = false;
-                email = "";
-                password = "";
-                dialog?.close();
-              }}
-            >
-              閉じる
-            </button>
+            <button class="auth-btn" onclick={closeDialog}>閉じる</button>
           </div>
         {:else}
           <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
 
           {#if error}
             <div class="error-message">{error}</div>
+          {/if}
+
+          {#if isSigningUp}
+            <div class="form-group">
+              <input
+                type="text"
+                placeholder="表示名"
+                bind:value={displayName}
+                disabled={isLoading}
+                class="auth-input"
+              />
+            </div>
           {/if}
 
           <div class="form-group">
@@ -222,7 +235,10 @@
           <button
             class="auth-btn"
             onclick={handleAuth}
-            disabled={isLoading || !email || !password}
+            disabled={isLoading ||
+              !email ||
+              !password ||
+              (isSigningUp && !displayName)}
           >
             {isLoading
               ? "処理中..."
@@ -243,7 +259,7 @@
 
           <button
             class="toggle-btn"
-            onclick={() => dialog?.close()}
+            onclick={closeDialog}
             disabled={isLoading}
             style="margin-top: 4px;"
           >
@@ -263,7 +279,6 @@
     margin-bottom: 8px;
   }
 
-  /* User Menu & Avatar */
   .user-menu-container {
     position: relative;
   }
@@ -288,7 +303,6 @@
     color: var(--selected-text-color);
   }
 
-  /* Dropdown Menu */
   .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -320,11 +334,19 @@
     background-color: var(--header-bg-color);
   }
 
+  .user-display-name {
+    display: block;
+    font-size: 14px;
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
   .user-email {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-color);
-    font-weight: 500;
+    opacity: 0.7;
     word-break: break-all;
   }
 
@@ -362,7 +384,6 @@
     color: var(--error-color);
   }
 
-  /* Login Trigger Button (Logged Out State) */
   .login-trigger-btn {
     display: flex;
     align-items: center;
@@ -383,7 +404,6 @@
     color: var(--text-color);
   }
 
-  /* Dialog & Form Styles (Existing but refined) */
   .auth-dialog {
     border: none;
     border-radius: 8px;
@@ -483,7 +503,6 @@
     text-align: center;
   }
 
-  /* Verification Message */
   .verification-message {
     text-align: center;
   }
