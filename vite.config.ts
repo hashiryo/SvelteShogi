@@ -13,9 +13,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "apple-touch-icon.png"],
       manifest: {
-        name: "Svelte Shogi",
+        name: "将棋分析",
         short_name: "将棋分析",
-        description: "Svelte Shogi Application",
+        description: "将棋分析アプリケーション",
         theme_color: "#ffffff",
         icons: [
           {
