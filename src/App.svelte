@@ -72,7 +72,7 @@
     width: 100%;
     flex: 0 0 60px; /* ボトムナビゲーションの高さ分確保 */
     min-height: auto;
-    z-index: 100; /* メインビューより上に表示（念のため） */
+    z-index: 1000; /* メインビューより上に表示（念のため） */
   }
 
   :global(.favorite-moves-section) {
