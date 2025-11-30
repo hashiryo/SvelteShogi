@@ -29,3 +29,17 @@ dist-ssr
 # Supabase - only ignore temporary files, not config and migrations
 supabase/.temp/
 supabase/.branches/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+*.egg-info/
+dist/
+build/
