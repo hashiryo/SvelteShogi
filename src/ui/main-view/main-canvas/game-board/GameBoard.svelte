@@ -59,7 +59,7 @@
         });
       }
       return squareElements.map(() => ({ x: 0, y: 0 }));
-    })(),
+    })()
   );
 
   let grid = $derived(GridStore.get());
@@ -127,9 +127,9 @@
                   left: {relativeSquarePositions[index]?.x}px;
                   width: {squareWidth}px;
                   height: {squareHeight}px;
-                  z-index: {reverse
+                  z-index: {(reverse
                   ? (10 - row) * 10 + col + 1
-                  : (row + 1) * 10 + 10 - col};
+                  : (row + 1) * 10 + 10 - col) * 10};
                 "
               >
                 <Piece

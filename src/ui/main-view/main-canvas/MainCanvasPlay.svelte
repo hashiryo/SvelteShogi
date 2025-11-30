@@ -36,7 +36,7 @@
             ? 65
             : innerWidth < 1000
               ? 75
-              : 55,
+              : 55
   );
   let SQUARE_HEIGHT = $derived(
     innerWidth < 360
@@ -49,7 +49,7 @@
             ? 72
             : innerWidth < 1000
               ? 83
-              : 60,
+              : 60
   );
   let FONT_SIZE = $derived(
     innerWidth < 360
@@ -62,7 +62,7 @@
             ? 46
             : innerWidth < 1000
               ? 52
-              : 38,
+              : 38
   );
   let PIECE_SCALE = $derived(0.9);
 
@@ -98,9 +98,9 @@
     (() => {
       void SQUARE_WIDTH;
       return squareElements.map((el) =>
-        el ? getRelativePosition(el) : { x: 0, y: 0 },
+        el ? getRelativePosition(el) : { x: 0, y: 0 }
       );
-    })(),
+    })()
   );
 
   let relativeCapturedSentePositions: {
@@ -113,7 +113,7 @@
         piece,
         position: element ? getRelativePosition(element) : { x: 0, y: 0 },
       }));
-    })(),
+    })()
   );
 
   let relativeCapturedGotePositions: {
@@ -126,7 +126,7 @@
         piece,
         position: element ? getRelativePosition(element) : { x: 0, y: 0 },
       }));
-    })(),
+    })()
   );
 
   let relativeSquareRect = $derived(
@@ -143,11 +143,11 @@
           height: pos.height,
         };
       });
-    })(),
+    })()
   );
 
   let { isSente, sfenx } = $derived(
-    NodesStore.getNode(CurrentIndexStore.get()),
+    NodesStore.getNode(CurrentIndexStore.get())
   );
 
   let canMove = $derived(CanMoveStore.get());
@@ -318,7 +318,7 @@
     top: 0;
     left: 0;
     pointer-events: none; /* クリックイベントを無視 */
-    z-index: 150; /* 他の要素の上に表示 */
+    z-index: 10; /* 駒の下に表示 */
   }
 
   .cannot-move-square {
@@ -336,7 +336,7 @@
   .promotion-square {
     position: absolute;
     background-color: rgba(0, 30, 0, 0.2); /* 半透明 */
-    z-index: 170;
+    z-index: 1700;
   }
 
   .information {
