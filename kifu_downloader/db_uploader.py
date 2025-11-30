@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -51,21 +51,6 @@ def generate_game_hash(moves: list[str], metadata: KifMetadata) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-async def check_duplicate(client: "Client", game_hash: str, user_id: Optional[str], days: int = 1) -> bool:
-    """重複チェック（指定日数以内に同じハッシュの棋譜があるか）"""
-    day_ago = (datetime.now() - timedelta(days=days)).isoformat()
-    
-    query = client.table("game_records").select("*").eq("game_hash", game_hash).gte("recorded_at", day_ago)
-    
-    if user_id:
-        query = query.eq("user_id", user_id)
-    else:
-        query = query.is_("user_id", "null")
-    
-    result = query.execute()
-    return len(result.data) > 0
-
-
 def upload_game(
     client: "Client",
     moves: list[str],
@@ -81,10 +66,9 @@ def upload_game(
     """
     game_hash = generate_game_hash(moves, metadata)
     
-    # 重複チェック
+    # 重複チェック（ハッシュのみで判定、日数制限なし）
     if not skip_duplicate_check:
-        day_ago = (datetime.now() - timedelta(days=1)).isoformat()
-        query = client.table("game_records").select("*").eq("game_hash", game_hash).gte("recorded_at", day_ago)
+        query = client.table("game_records").select("id").eq("game_hash", game_hash)
         if user_id:
             query = query.eq("user_id", user_id)
         else:
@@ -92,7 +76,7 @@ def upload_game(
         result = query.execute()
         
         if len(result.data) > 0:
-            print(f"  スキップ: 重複する棋譜が既に存在します")
+            print("  スキップ: 重複する棋譜が既に存在します")
             return False
     
     # 盤面を再生して統計データを構築
