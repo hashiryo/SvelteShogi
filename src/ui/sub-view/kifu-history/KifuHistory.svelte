@@ -66,7 +66,10 @@
 
   function handleGlobalKeyDown(e: KeyboardEvent) {
     // 特定の条件下でのみ実行（例：入力フィールドにフォーカスがない時）
-    if (e.target instanceof HTMLTextAreaElement) {
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
       return; // 入力フィールドにフォーカスがある場合は無視
     }
     handleKeyDown(e);
