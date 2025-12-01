@@ -1,28 +1,31 @@
-
-
-import fs from 'node:fs';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
-import { createClient } from '@supabase/supabase-js';
-import { parseKif } from '@/domain/format-parcer';
-import { moveToNextGridCaptures } from '@/domain/move';
-import { sfenxToShogiBoard, shogiBoardToSfenx, flipSfenx, flipMove } from '@/domain/sfenx';
-import type { KifMetadata } from '@/types/shogi';
-import type { Database } from '@/lib/supabase/types';
+import fs from "node:fs";
+import path from "node:path";
+import { createHash } from "node:crypto";
+import { createClient } from "@supabase/supabase-js";
+import { parseKif } from "@/domain/format-parcer";
+import { moveToNextGridCaptures } from "@/domain/move";
+import {
+  sfenxToShogiBoard,
+  shogiBoardToSfenx,
+  flipSfenx,
+  flipMove,
+} from "@/domain/sfenx";
+import type { KifMetadata } from "@/types/shogi";
+import type { Database } from "@/lib/supabase/types";
 
 // Load .env file
 function loadEnv() {
-  const files = ['.env', '.env.local'];
+  const files = [".env", ".env.local"];
   for (const file of files) {
     try {
       const envPath = path.resolve(process.cwd(), file);
       if (fs.existsSync(envPath)) {
-        const content = fs.readFileSync(envPath, 'utf-8');
-        for (const line of content.split('\n')) {
+        const content = fs.readFileSync(envPath, "utf-8");
+        for (const line of content.split("\n")) {
           const match = line.match(/^([^=]+)=(.*)$/);
           if (match) {
             const key = match[1].trim();
-            const value = match[2].trim().replace(/^["']|["']$/g, '');
+            const value = match[2].trim().replace(/^["']|["']$/g, "");
             process.env[key] = value;
           }
         }
@@ -50,7 +53,9 @@ function getSupabaseClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
-    throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables must be set.");
+    throw new Error(
+      "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables must be set."
+    );
   }
 
   return createClient<Database>(url, key);
@@ -58,8 +63,11 @@ function getSupabaseClient() {
 
 // Hash Generation
 function generateGameHash(moves: string[], metadata: KifMetadata): string {
-  const players = [metadata.blackPlayer || "", metadata.whitePlayer || ""].sort();
-  
+  const players = [
+    metadata.blackPlayer || "",
+    metadata.whitePlayer || "",
+  ].sort();
+
   // Construct object with sorted keys to match Python's json.dumps(sort_keys=True)
   // Keys: endTime, moves, players, result, startTime
   const gameSignature = {
@@ -72,31 +80,31 @@ function generateGameHash(moves: string[], metadata: KifMetadata): string {
 
   // Custom stringify to match Python's default separators (', ', ': ')
   // Python: json.dumps(obj, ensure_ascii=False, sort_keys=True)
-  
+
   function pythonJsonDump(obj: any): string {
-    if (obj === null) return 'null';
-    if (typeof obj === 'boolean') return obj ? 'true' : 'false';
-    if (typeof obj === 'number') return obj.toString();
-    if (typeof obj === 'string') return JSON.stringify(obj);
-    
+    if (obj === null) return "null";
+    if (typeof obj === "boolean") return obj ? "true" : "false";
+    if (typeof obj === "number") return obj.toString();
+    if (typeof obj === "string") return JSON.stringify(obj);
+
     if (Array.isArray(obj)) {
       const items = obj.map(pythonJsonDump);
-      return `[${items.join(', ')}]`;
+      return `[${items.join(", ")}]`;
     }
-    
-    if (typeof obj === 'object') {
+
+    if (typeof obj === "object") {
       const keys = Object.keys(obj).sort();
-      const items = keys.map(key => {
+      const items = keys.map((key) => {
         return `${JSON.stringify(key)}: ${pythonJsonDump(obj[key])}`;
       });
-      return `{${items.join(', ')}}`;
+      return `{${items.join(", ")}}`;
     }
-    
-    return '';
+
+    return "";
   }
 
   const jsonString = pythonJsonDump(gameSignature);
-  return createHash('sha256').update(jsonString).digest('hex');
+  return createHash("sha256").update(jsonString).digest("hex");
 }
 
 // Insert Logic
@@ -111,14 +119,17 @@ async function insertGame(
 
   // Duplicate Check
   if (!skipDuplicateCheck) {
-    let query = client.from("game_records").select("id").eq("game_hash", gameHash);
+    let query = client
+      .from("game_records")
+      .select("id")
+      .eq("game_hash", gameHash);
     if (userId) {
       query = query.eq("user_id", userId);
     } else {
       query = query.is("user_id", null);
     }
     const { data, error } = await query;
-    
+
     if (error) {
       console.error(`  Error checking duplicates: ${error.message}`);
       return false;
@@ -137,11 +148,17 @@ async function insertGame(
   let isSenteTurn = true;
 
   const statisticsRecords: MoveStatisticsRecord[] = [];
-  
+
   // Determine winner
   let winnerIsSente: boolean | null = null;
-  if (moves.length > 0 && moves[moves.length - 1] === "resign") {
+  let timeout = false;
+  if (
+    moves.length > 0 &&
+    (moves[moves.length - 1] === "resign" ||
+      moves[moves.length - 1] === "timeout")
+  ) {
     winnerIsSente = moves.length % 2 === 0;
+    timeout = moves[moves.length - 1] === "timeout";
   }
 
   for (let i = 0; i < moves.length; i++) {
@@ -149,9 +166,18 @@ async function insertGame(
     const prevSfenx = sfenx;
 
     // Apply move
-    if (["resign", "timeout", "interrupt", "repetition", "sennichite", "foul"].includes(move)) {
-       isSenteTurn = !isSenteTurn;
-       continue;
+    if (
+      [
+        "resign",
+        "timeout",
+        "interrupt",
+        "repetition",
+        "sennichite",
+        "foul",
+      ].includes(move)
+    ) {
+      isSenteTurn = !isSenteTurn;
+      continue;
     }
 
     // Update board
@@ -165,7 +191,7 @@ async function insertGame(
       grid = result.grid;
       if (isSenteTurn) capturedSente = result.captures;
       else capturedGote = result.captures;
-      
+
       sfenx = shogiBoardToSfenx(grid, capturedSente, capturedGote);
     } catch (e) {
       console.error(`  Error applying move ${move}:`, e);
@@ -176,7 +202,7 @@ async function insertGame(
     let statSfenx = prevSfenx;
     let statMove = move;
 
-    if (isSenteTurn) {
+    if (!isSenteTurn) {
       statSfenx = flipSfenx(statSfenx);
       statMove = flipMove(move);
     }
@@ -193,7 +219,7 @@ async function insertGame(
       move: statMove,
       win,
       lose,
-      timeout: false, // TODO: Handle timeout if needed
+      timeout,
     });
 
     isSenteTurn = !isSenteTurn;
@@ -205,7 +231,7 @@ async function insertGame(
   }
 
   // Bulk Insert Statistics
-  const statsData = statisticsRecords.map(r => ({
+  const statsData = statisticsRecords.map((r) => ({
     sfenx: r.sfenx,
     move: r.move,
     win: r.win,
@@ -214,7 +240,9 @@ async function insertGame(
     user_id: userId || null,
   }));
 
-  const { error: statsError } = await client.from("shogi_moves_statistics").insert(statsData);
+  const { error: statsError } = await client
+    .from("shogi_moves_statistics")
+    .insert(statsData);
   if (statsError) {
     console.error(`  Error inserting statistics: ${statsError.message}`);
     return false;
@@ -235,7 +263,9 @@ async function insertGame(
     user_id: userId || null,
   };
 
-  const { error: gameError } = await client.from("game_records").insert(gameRecord);
+  const { error: gameError } = await client
+    .from("game_records")
+    .insert(gameRecord);
   if (gameError) {
     console.error(`  Error inserting game record: ${gameError.message}`);
     return false;
@@ -248,7 +278,7 @@ async function insertGame(
 // Main
 async function main() {
   const args = process.argv.slice(2);
-  let targetPath = 'kifu';
+  let targetPath = "kifu";
   let userId = process.env.UPLOAD_USER_ID;
   let skipDuplicateCheck = false;
   let dryRun = false;
@@ -256,13 +286,13 @@ async function main() {
   // Simple arg parsing
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--user-id') {
+    if (arg === "--user-id") {
       userId = args[++i];
-    } else if (arg === '--skip-duplicate-check') {
+    } else if (arg === "--skip-duplicate-check") {
       skipDuplicateCheck = true;
-    } else if (arg === '--dry-run') {
+    } else if (arg === "--dry-run") {
       dryRun = true;
-    } else if (!arg.startsWith('--')) {
+    } else if (!arg.startsWith("--")) {
       targetPath = arg;
     }
   }
@@ -280,9 +310,9 @@ async function main() {
   if (fs.statSync(targetPath).isFile()) {
     kifFiles.push(targetPath);
   } else {
-    const files = fs.readdirSync(targetPath).filter(f => f.endsWith('.kif'));
+    const files = fs.readdirSync(targetPath).filter((f) => f.endsWith(".kif"));
     files.sort();
-    files.forEach(f => kifFiles.push(path.join(targetPath, f)));
+    files.forEach((f) => kifFiles.push(path.join(targetPath, f)));
   }
 
   if (kifFiles.length === 0) {
@@ -291,9 +321,9 @@ async function main() {
   }
 
   console.log(`Target files: ${kifFiles.length}`);
-  console.log(`User ID: ${userId || '(Anonymous)'}`);
-  console.log(`Duplicate Check: ${skipDuplicateCheck ? 'Skip' : 'Enable'}`);
-  console.log(`Dry Run: ${dryRun ? 'Yes' : 'No'}`);
+  console.log(`User ID: ${userId || "(Anonymous)"}`);
+  console.log(`Duplicate Check: ${skipDuplicateCheck ? "Skip" : "Enable"}`);
+  console.log(`Dry Run: ${dryRun ? "Yes" : "No"}`);
   console.log();
 
   let client;
@@ -313,7 +343,7 @@ async function main() {
   for (const file of kifFiles) {
     console.log(`Processing: ${path.basename(file)}`);
     try {
-      const content = fs.readFileSync(file, 'utf-8');
+      const content = fs.readFileSync(file, "utf-8");
       const { metadata, moves } = parseKif(content);
 
       if (dryRun) {
@@ -324,7 +354,13 @@ async function main() {
         successCount++;
       } else {
         if (client) {
-          const success = await insertGame(client, moves, metadata, userId, skipDuplicateCheck);
+          const success = await insertGame(
+            client,
+            moves,
+            metadata,
+            userId,
+            skipDuplicateCheck
+          );
           if (success) successCount++;
           else skipCount++;
         }
@@ -336,15 +372,16 @@ async function main() {
   }
 
   console.log();
-  console.log(`Complete: Success=${successCount}, Skip=${skipCount}, Error=${errorCount}`);
+  console.log(
+    `Complete: Success=${successCount}, Skip=${skipCount}, Error=${errorCount}`
+  );
 
   if (errorCount > 0) {
     process.exit(1);
   }
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
-

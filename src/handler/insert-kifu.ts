@@ -22,8 +22,8 @@ export async function executeInsertKifu(nodeIndex: number) {
     return;
   }
 
-  if (currentNode.move !== "resign") {
-    console.warn("セーブ機能は投了状態のみで使用できます");
+  if (currentNode.move !== "resign" && currentNode.move !== "timeout") {
+    console.warn("セーブ機能は終局状態のみで使用できます");
     return;
   }
 
@@ -64,6 +64,8 @@ export async function executeInsertKifu(nodeIndex: number) {
     let current = nodeIndex;
     let node = NodesStore.getNode(current);
     let moveCount = 0;
+
+    const timeout = node.move === "timeout";
     while (node.prev !== -1) {
       const prevNode = NodesStore.getNode(node.prev);
 
@@ -84,7 +86,7 @@ export async function executeInsertKifu(nodeIndex: number) {
         move,
         win,
         lose,
-        timeout: false, // 投了による終了のため false 固定
+        timeout,
       });
 
       // 親ノードに移動
