@@ -5,6 +5,7 @@
   import AuthPage from "@/pages/AuthPage.svelte";
   import MainPage from "@/pages/MainPage.svelte";
   import LoadingSpinner from "@/pages/LoadingSpinner.svelte";
+  import PasswordResetPage from "@/pages/PasswordResetPage.svelte";
 
   let status = $derived(AppStatusStore.get());
 
@@ -19,6 +20,8 @@
     <LoadingSpinner />
   {:else if status === "UNAUTHENTICATED"}
     <AuthPage />
+  {:else if status === "PASSWORD_RESET"}
+    <PasswordResetPage />
   {:else if status === "AUTHENTICATED"}
     <MainPage />
   {/if}

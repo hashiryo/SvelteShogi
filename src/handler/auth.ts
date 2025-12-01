@@ -11,7 +11,14 @@ export async function initializeAuth() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (session?.user) {
+  const isRecovery = window.location.hash.includes("type=recovery");
+
+  if (isRecovery) {
+    if (session?.user) {
+      CurrentUserStore.set(session.user);
+    }
+    AppStatusStore.set("PASSWORD_RESET");
+  } else if (session?.user) {
     CurrentUserStore.set(session.user);
     await initializeGame();
     AppStatusStore.set("AUTHENTICATED");
@@ -21,10 +28,22 @@ export async function initializeAuth() {
 
   // 認証状態の変更監視
   supabase.auth.onAuthStateChange(async (event, session) => {
+    // パスワードリセットフローの検出
+    if (
+      event === "PASSWORD_RECOVERY" ||
+      window.location.hash.includes("type=recovery")
+    ) {
+      if (session?.user) {
+        CurrentUserStore.set(session.user);
+      }
+      AppStatusStore.set("PASSWORD_RESET");
+      return;
+    }
+
     if (session?.user) {
       const previousStatus = AppStatusStore.get();
       CurrentUserStore.set(session.user);
-      
+
       // 未認証状態から認証済みになった場合のみゲーム初期化を実行
       if (previousStatus !== "AUTHENTICATED") {
         await initializeGame();

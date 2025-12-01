@@ -7,6 +7,8 @@
   let password = $state("");
   let displayName = $state("");
   let isSigningUp = $state(false);
+  let isResettingPassword = $state(false);
+  let resetEmailSent = $state(false);
   let error = $state("");
   let isLoading = $state(false);
   let showVerificationMessage = $state(false);
@@ -17,7 +19,10 @@
     isLoading = true;
 
     try {
-      if (isSigningUp) {
+      if (isResettingPassword) {
+        await authAPI.resetPasswordForEmail(email);
+        resetEmailSent = true;
+      } else if (isSigningUp) {
         const newUser = await authAPI.signUp(email, password, displayName);
         if (newUser) {
           showVerificationMessage = true;
@@ -74,8 +79,49 @@
             onclick={() => (showVerificationMessage = false)}>戻る</button
           >
         </div>
+      {:else if resetEmailSent}
+        <div class="verification-message">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="mail-icon"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+          <h3>再設定メールを送信しました</h3>
+          <p>
+            <strong>{email}</strong> 宛にパスワード再設定用のメールを送信しました。
+          </p>
+          <p>
+            メール内のリンクをクリックして、新しいパスワードを設定してください。
+          </p>
+          <p class="note">
+            メールが届かない場合は、迷惑メールフォルダをご確認ください。
+          </p>
+          <button
+            class="auth-btn"
+            onclick={() => {
+              resetEmailSent = false;
+              isResettingPassword = false;
+            }}>ログイン画面に戻る</button
+          >
+        </div>
       {:else}
-        <h3>{isSigningUp ? "アカウント作成" : "サインイン"}</h3>
+        <h3>
+          {isResettingPassword
+            ? "パスワード再設定"
+            : isSigningUp
+              ? "アカウント作成"
+              : "サインイン"}
+        </h3>
 
         {#if error}
           <div class="error-message">{error}</div>
@@ -103,80 +149,105 @@
           />
         </div>
 
-        <div class="form-group password-group">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="パスワード"
-            bind:value={password}
-            disabled={isLoading}
-            class="auth-input"
-          />
-          <button
-            type="button"
-            class="password-toggle-btn"
-            onclick={() => (showPassword = !showPassword)}
-            aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
-          >
-            {#if showPassword}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-                ></path>
-                <line x1="1" y1="1" x2="23" y2="23"></line>
-              </svg>
-            {:else}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            {/if}
-          </button>
-        </div>
+        {#if !isResettingPassword}
+          <div class="form-group password-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="パスワード"
+              bind:value={password}
+              disabled={isLoading}
+              class="auth-input"
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              onclick={() => (showPassword = !showPassword)}
+              aria-label={showPassword
+                ? "パスワードを隠す"
+                : "パスワードを表示"}
+            >
+              {#if showPassword}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  ></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              {:else}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              {/if}
+            </button>
+          </div>
+        {/if}
 
         <button
           class="auth-btn"
           onclick={handleAuth}
           disabled={isLoading ||
             !email ||
-            !password ||
+            (!isResettingPassword && !password) ||
             (isSigningUp && !displayName)}
         >
           {isLoading
             ? "処理中..."
-            : isSigningUp
-              ? "アカウント作成"
-              : "サインイン"}
+            : isResettingPassword
+              ? "再設定メールを送信"
+              : isSigningUp
+                ? "アカウント作成"
+                : "サインイン"}
         </button>
 
-        <button
-          class="toggle-btn"
-          onclick={() => (isSigningUp = !isSigningUp)}
-          disabled={isLoading}
-        >
-          {isSigningUp
-            ? "既にアカウントをお持ちですか？サインイン"
-            : "アカウントを作成しますか？"}
-        </button>
+        {#if !isResettingPassword}
+          <button
+            class="toggle-btn"
+            onclick={() => (isSigningUp = !isSigningUp)}
+            disabled={isLoading}
+          >
+            {isSigningUp
+              ? "既にアカウントをお持ちですか？サインイン"
+              : "アカウントを作成しますか？"}
+          </button>
+          {#if !isSigningUp}
+            <button
+              class="toggle-btn reset-link"
+              onclick={() => (isResettingPassword = true)}
+              disabled={isLoading}
+            >
+              パスワードをお忘れですか？
+            </button>
+          {/if}
+        {:else}
+          <button
+            class="toggle-btn"
+            onclick={() => (isResettingPassword = false)}
+            disabled={isLoading}
+          >
+            サインインに戻る
+          </button>
+        {/if}
       {/if}
     </div>
   </div>
@@ -315,6 +386,12 @@
 
   .toggle-btn:hover:not(:disabled) {
     color: var(--link-hover-color);
+  }
+
+  .reset-link {
+    font-size: 12px;
+    margin-top: -8px;
+    opacity: 0.8;
   }
 
   .error-message {

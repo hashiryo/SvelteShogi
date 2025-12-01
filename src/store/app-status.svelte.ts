@@ -1,4 +1,4 @@
-export type AppStatus = "LOADING" | "UNAUTHENTICATED" | "AUTHENTICATED";
+export type AppStatus = "LOADING" | "UNAUTHENTICATED" | "AUTHENTICATED" | "PASSWORD_RESET";
 
 let status = $state<AppStatus>("LOADING");
 
