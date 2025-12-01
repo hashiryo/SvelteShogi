@@ -28,6 +28,12 @@ export async function initializeAuth() {
 
   // 認証状態の変更監視
   supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('🔍 Auth State Change:', {
+      event,
+      hash: window.location.hash,
+      hasRecovery: window.location.hash.includes("type=recovery"),
+      currentStatus: AppStatusStore.get()
+    });
     // パスワードリセットフローの検出
     if (
       event === "PASSWORD_RECOVERY" ||
