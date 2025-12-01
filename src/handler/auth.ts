@@ -45,13 +45,10 @@ export async function initializeAuth() {
     // パスワードリセットフローの検出
     // 1. PASSWORD_RECOVERYイベント
     // 2. 保存されたフラグ（ハッシュ処理前に取得）
-    // 3. AMRフィールドの認証方法が recovery
-    // 4. localStorageのフラグ（進行中のリセット、タブ間共有）
-    const amr = (session?.user as any)?.amr as Array<{method: string, timestamp: number}> | undefined;
+    // 3. localStorageのフラグ（進行中のリセット、タブ間共有）
     const isPasswordRecovery = 
       event === "PASSWORD_RECOVERY" ||
       isPasswordRecoveryFlow ||
-      amr?.some(item => item.method === "recovery") ||
       isPasswordResetInProgress;
 
     if (isPasswordRecovery) {
