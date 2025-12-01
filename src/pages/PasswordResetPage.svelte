@@ -17,9 +17,10 @@
       await authAPI.updatePassword(password);
       successMessage = "パスワードを更新しました。";
       setTimeout(() => {
-        // ハッシュをクリアして認証済み状態へ遷移
-        window.location.hash = "";
-        AppStatusStore.set("AUTHENTICATED");
+        // ハッシュを完全に削除してからリロード
+        // リロード後、AMRフィールドに recovery がなくなり、通常の認証フローになる
+        history.replaceState(null, "", window.location.pathname);
+        window.location.reload();
       }, 1500);
     } catch (e) {
       error = e instanceof Error ? e.message : "エラーが発生しました";

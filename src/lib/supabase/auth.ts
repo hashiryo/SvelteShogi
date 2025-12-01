@@ -55,7 +55,7 @@ export class AuthAPI {
 
   async resetPasswordForEmail(email: string): Promise<void> {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/`,
+      redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
     });
     if (error) {
       console.error("Reset password error:", error.message);
