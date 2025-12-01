@@ -15,18 +15,15 @@ export async function initializeAuth() {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  
-  console.log('🔍 Initial Auth Check:', {
-    hash: window.location.hash,
-    isRecovery: isPasswordRecoveryFlow,
-    hasSession: !!session,
-    amr: (session?.user as any)?.amr
-  });
+
 
   if (isPasswordRecoveryFlow) {
     if (session?.user) {
       CurrentUserStore.set(session.user);
     }
+    // パスワードリセットフラグをセッションストレージに保存
+    // これにより、パスワード更新が完了するまで状態がロックされる
+    sessionStorage.setItem('password_reset_in_progress', 'true');
     AppStatusStore.set("PASSWORD_RESET");
   } else if (session?.user) {
     CurrentUserStore.set(session.user);
@@ -38,24 +35,20 @@ export async function initializeAuth() {
 
   // 認証状態の変更監視
   supabase.auth.onAuthStateChange(async (event, session) => {
-    console.log('🔍 Auth State Change:', {
-      event,
-      hash: window.location.hash,
-      hasRecovery: window.location.hash.includes("type=recovery"),
-      currentStatus: AppStatusStore.get(),
-      amr: (session?.user as any)?.amr,
-      isPasswordRecoveryFlow
-    });
+    // セッションストレージのフラグをチェック
+    const isPasswordResetInProgress = sessionStorage.getItem('password_reset_in_progress') === 'true';
 
     // パスワードリセットフローの検出
     // 1. PASSWORD_RECOVERYイベント
     // 2. 保存されたフラグ（ハッシュ処理前に取得）
     // 3. AMRフィールドの認証方法が recovery
+    // 4. セッションストレージのフラグ（進行中のリセット）
     const amr = (session?.user as any)?.amr as Array<{method: string, timestamp: number}> | undefined;
     const isPasswordRecovery = 
       event === "PASSWORD_RECOVERY" ||
       isPasswordRecoveryFlow ||
-      amr?.some(item => item.method === "recovery");
+      amr?.some(item => item.method === "recovery") ||
+      isPasswordResetInProgress;
 
     if (isPasswordRecovery) {
       if (session?.user) {

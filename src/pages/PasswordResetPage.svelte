@@ -16,6 +16,10 @@
     try {
       await authAPI.updatePassword(password);
       successMessage = "パスワードを更新しました。";
+
+      // パスワードリセットフラグをクリア
+      sessionStorage.removeItem("password_reset_in_progress");
+
       setTimeout(() => {
         // ハッシュを完全に削除してからリロード
         // リロード後、AMRフィールドに recovery がなくなり、通常の認証フローになる
