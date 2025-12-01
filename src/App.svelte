@@ -1,29 +1,32 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { initialize } from "@/handler/initialize";
+  import { initializeAuth } from "@/handler/auth";
+  import { AppStatusStore } from "@/store/app-status.svelte";
   import MainView from "@/ui/main-view/MainView.svelte";
   import SubView from "@/ui/sub-view/SubView.svelte";
+  import AuthPage from "@/ui/auth/AuthPage.svelte";
 
-  let isInitialized = $state(false);
   let innerWidth = $state(window.innerWidth);
   let isMobile = $derived(innerWidth < 1000);
+  let status = $derived(AppStatusStore.get());
 
   // 初期化処理を onMount で実行
   onMount(async () => {
-    await initialize();
-    isInitialized = true;
+    await initializeAuth();
   });
 </script>
 
 <svelte:window bind:innerWidth />
 
 <main>
-  {#if !isInitialized}
+  {#if status === "LOADING"}
     <div class="loading-container">
       <div class="loading-spinner"></div>
       <p>読み込み中...</p>
     </div>
-  {:else}
+  {:else if status === "UNAUTHENTICATED"}
+    <AuthPage />
+  {:else if status === "AUTHENTICATED"}
     <div class="container" class:mobile={isMobile}>
       <div class="main-section">
         <MainView />
