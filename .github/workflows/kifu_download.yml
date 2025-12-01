@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Run download script
-        run: python kifu_downloader/main.py
+        run: python kifu_downloader/download-wars.py
 
       - name: Insert kifu to database
         env:

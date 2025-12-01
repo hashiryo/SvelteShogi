@@ -58,7 +58,7 @@ UPLOAD_USER_ID="your-user-id"  # オプション
 
 ```bash
 # 仮想環境を有効化してから
-python kifu_downloader/main.py
+python kifu_downloader/download-wars.py
 ```
 
 ダウンロードされた棋譜は `kifu_downloader/kifu/` ディレクトリに保存されます。
@@ -83,7 +83,7 @@ npm run insert-kifu -- kifu_downloader/kifu --skip-duplicate-check
 
 ### ユーザーIDの変更
 
-ダウンロード対象のユーザーIDを変更するには、`kifu_downloader/main.py` の以下の行を編集してください：
+ダウンロード対象のユーザーIDを変更するには、`kifu_downloader/download-wars.py` の以下の行を編集してください：
 
 ```python
 USER_ID = "hashiryoma"  # ここを変更
@@ -136,7 +136,7 @@ on:
 ```
 kifu_downloader/
 ├── README.md           # このファイル
-├── main.py             # 棋譜ダウンロードスクリプト (Python)
+├── download-wars.py             # 棋譜ダウンロードスクリプト (Python)
 ├── insert-kifu.ts      # 棋譜インサートCLI (TypeScript)
 ├── requirements.txt    # Python依存パッケージ
 ├── venv/               # 仮想環境（gitignore対象）
