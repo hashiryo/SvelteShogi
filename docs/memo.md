@@ -6,5 +6,7 @@
   * typesに依存
 * handler: ハンドラ (.ts)
   * types,store,domainに依存
-* ui: UIコンポーネント (.svelte)
+* components: UIコンポーネント (.svelte)
   * types,store,domain,handlerに依存
+* pages: ページ (.svelte)
+  * types,store,domain,handler,componentsに依存

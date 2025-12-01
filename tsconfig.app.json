@@ -13,7 +13,8 @@
       "@/store/*": ["src/store/*"],
       "@/domain/*": ["src/domain/*"],
       "@/handler/*": ["src/handler/*"],
-      "@/ui/*": ["src/ui/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/components/*": ["src/components/*"],
       "@/lib/*": ["src/lib/*"]
     },
     /**

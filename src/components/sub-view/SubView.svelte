@@ -4,12 +4,12 @@
   import FavoriteNextMoves from "./favorite-next-moves/FavoriteNextMoves.svelte";
   import NextMoveStatistics from "./next-move-statistics/NextMoveStatistics.svelte";
   import FileImport from "./file-import/FileImport.svelte";
-  import UserAuth from "./user-auth/UserAuth.svelte";
+  import User from "./user/User.svelte";
   import { fade, fly } from "svelte/transition";
 
   let activeTab = $state("kifu"); // "kifu" | "data" | "settings"
   let isDialogOpen = $state(false); // ダイアログの表示状態
-  let innerWidth = $state(0);
+  let innerWidth = $state(window.innerWidth);
 
   // 1000px未満をモバイルとする
   let isMobile = $derived(innerWidth < 1000);
@@ -87,7 +87,7 @@
               <FavoriteNextMoves />
               <NextMoveStatistics />
             {:else if activeTab === "settings"}
-              <UserAuth />
+              <User />
               <FileImport />
             {/if}
           </div>
@@ -98,7 +98,7 @@
     <!-- PC用レイアウト（一覧表示） -->
     <div class="pc-layout">
       <div class="section">
-        <UserAuth />
+        <User />
       </div>
       <div class="section">
         <KifuHistory />
