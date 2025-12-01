@@ -22,6 +22,7 @@
     "supabase": "^2.26.9",
     "svelte": "^5.34.7",
     "svelte-check": "^4.2.2",
+    "tsx": "^4.21.0",
     "typescript": "~5.8.3",
     "vite": "^6.0.0",
     "vite-plugin-pwa": "^1.2.0",

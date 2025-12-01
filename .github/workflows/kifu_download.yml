@@ -39,7 +39,7 @@ jobs:
       - name: Run download script
         run: python kifu_downloader/main.py
 
-      - name: Upload kifu to database
+      - name: Insert kifu to database
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
