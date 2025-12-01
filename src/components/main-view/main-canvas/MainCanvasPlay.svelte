@@ -343,6 +343,6 @@
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 200; /* 情報レイヤーを上に */
+    z-index: 2000; /* 情報レイヤーを上に */
   }
 </style>
