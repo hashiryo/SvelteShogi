@@ -96,7 +96,7 @@
     role="listbox"
     bind:this={containerRef}
   >
-    {#each ids as id}
+    {#each ids as id, index}
       {@const node = NodesStore.getNode(id)}
       <div
         class="kifu-history-item"
@@ -112,6 +112,9 @@
         }}
       >
         <div class="kifu-history-item-display">
+          {#if index > 0}
+            <span class="move-number">{index}</span>
+          {/if}
           {node.display}
         </div>
         {#if !isSpecialMove(node.move)}
@@ -194,6 +197,15 @@
     color: var(--selected-text-color);
     border-radius: 4px;
   }
+  .move-number {
+    display: inline-block;
+    min-width: 1.5em;
+    text-align: right;
+    margin-right: 4px;
+    opacity: 0.7;
+    font-size: 0.9em;
+  }
+
   .kifu-history-item-display {
     width: 70%;
     text-align: left;
