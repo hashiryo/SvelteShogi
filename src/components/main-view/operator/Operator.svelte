@@ -3,7 +3,6 @@
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { executeResign, executeTimeout } from "@/handler/execute-move";
-  import { executeInsertKifu } from "@/handler/insert-kifu";
 
   let reverse = $derived(ReverseStore.get());
   let ids = $derived(NodesStore.getPath(0));
@@ -20,9 +19,6 @@
   let isResignState = $derived(
     currentNode?.display === "投了" || currentNode?.display === "切れ負け",
   );
-  let isSavedState = $derived(currentNode?.isSaved ?? false);
-  let shouldShowSaveButton = $derived(isResignState);
-  let isSaveButtonDisabled = $derived(isSavedState);
 
   // ボタンの有効/無効状態
   let canGoToFirst = $derived(ids.length > 0 && currentPos > 0);
@@ -166,23 +162,24 @@
     </button>
   </div>
 
-  <!-- 下段：投了/切れ負け または セーブ -->
+  <!-- 下段：投了/切れ負け -->
   <div class="row">
-    {#if shouldShowSaveButton}
-      <button
-        aria-label="save"
-        onclick={() => {
-          executeInsertKifu(currentIndex);
-        }}
-        disabled={isSaveButtonDisabled}
-        class="save-btn {isSaveButtonDisabled ? 'disabled' : ''}"
-      >
-        セーブ
-      </button>
-    {:else}
-      <button aria-label="resign" onclick={executeResign}> 投了 </button>
-      <button aria-label="timeout" onclick={executeTimeout}> 切れ負け </button>
-    {/if}
+    <button
+      aria-label="resign"
+      onclick={executeResign}
+      disabled={isResignState}
+      class={isResignState ? "disabled" : ""}
+    >
+      投了
+    </button>
+    <button
+      aria-label="timeout"
+      onclick={executeTimeout}
+      disabled={isResignState}
+      class={isResignState ? "disabled" : ""}
+    >
+      切れ負け
+    </button>
   </div>
 </div>
 
@@ -328,56 +325,13 @@
     }
   }
 
-  .save-btn {
-    background-color: var(--success-color);
-    color: white;
-    border: 1px solid var(--success-color);
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 60px;
-    height: 36px;
-  }
-
-  .save-btn:hover:not(.disabled) {
-    opacity: 0.9;
-  }
-
-  .save-btn:active:not(.disabled) {
-    transform: translateY(1px);
-  }
-
-  .save-btn.disabled {
+  button:disabled,
+  button.disabled {
     background-color: var(--button-disabled-bg-color);
     color: var(--button-disabled-text-color);
     border-color: var(--button-border-color);
     cursor: not-allowed;
     opacity: 0.6;
-  }
-
-  .save-btn:focus {
-    outline: 2px solid var(--success-color);
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 1000px) {
-    .save-btn {
-      padding: 12px 18px;
-      min-width: 80px;
-      height: 50px;
-      font-size: 18px;
-    }
-  }
-
-  @media (max-width: 500px) {
-    .save-btn {
-      padding: 10px 14px;
-      min-width: 70px;
-      height: 44px;
-      font-size: 14px;
-    }
   }
 
   button {

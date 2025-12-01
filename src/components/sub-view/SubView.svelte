@@ -5,6 +5,7 @@
   import NextMoveStatistics from "./next-move-statistics/NextMoveStatistics.svelte";
   import FileImport from "./file-import/FileImport.svelte";
   import User from "./user/User.svelte";
+  import GameController from "./settings/GameController.svelte";
   import { fade, fly } from "svelte/transition";
 
   let activeTab = $state("kifu"); // "kifu" | "data" | "settings"
@@ -88,6 +89,7 @@
               <NextMoveStatistics />
             {:else if activeTab === "settings"}
               <User />
+              <GameController />
               <FileImport />
             {/if}
           </div>
@@ -99,6 +101,7 @@
     <div class="pc-layout">
       <div class="section">
         <User />
+        <GameController />
       </div>
       <div class="section">
         <KifuHistory />
