@@ -19,7 +19,7 @@ graph TB
 
     subgraph "Handler Layer"
         D[move-statistics.ts]
-        D --> E[executeSave関数]
+        D --> E[executeInsertKifu関数]
     end
 
     subgraph "データ層"
@@ -47,7 +47,7 @@ sequenceDiagram
     participant Repo as MoveStatisticsRepository
     participant DB as Supabase DB
 
-    UI->>Handler: executeSave(nodeIndex)
+    UI->>Handler: executeInsertKifu(nodeIndex)
     Handler->>Store: getNode(nodeIndex)
     Store-->>Handler: 投了ノード情報
     Handler->>Handler: 親ノード遡り開始
@@ -62,7 +62,7 @@ sequenceDiagram
 
 ## 核心機能の詳細設計
 
-### executeSave機能の実装戦略
+### executeInsertKifu機能の実装戦略
 
 #### 入力検証
 

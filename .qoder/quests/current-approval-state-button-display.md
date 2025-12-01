@@ -27,7 +27,7 @@ graph TD
     B --> C{現在ノードが投了状態?}
     C -->|Yes| D[セーブボタン表示]
     C -->|No| E[投了ボタン表示]
-    D --> F[executeSave関数]
+    D --> F[executeInsertKifu関数]
     E --> G[executeResign関数]
     F --> H[NodesStore.setSaved]
     F --> I[コンソールログ出力]
@@ -94,8 +94,8 @@ graph LR
 
 | 状態                | ボタンテキスト | ハンドラー関数 | 有効性 |
 | ------------------- | -------------- | -------------- | ------ |
-| 投了状態 & 未保存   | セーブ         | executeSave    | 有効   |
-| 投了状態 & 保存済み | セーブ         | executeSave    | 無効   |
+| 投了状態 & 未保存   | セーブ         | executeInsertKifu    | 有効   |
+| 投了状態 & 保存済み | セーブ         | executeInsertKifu    | 無効   |
 | 通常状態            | 投了           | executeResign  | 有効   |
 
 ## セーブ機能実装仕様
@@ -213,8 +213,8 @@ graph LR
 
 | 状態                | ボタンテキスト | ハンドラー関数 | 有効性 |
 | ------------------- | -------------- | -------------- | ------ |
-| 投了状態 & 未保存   | セーブ         | executeSave    | 有効   |
-| 投了状態 & 保存済み | セーブ         | executeSave    | 無効   |
+| 投了状態 & 未保存   | セーブ         | executeInsertKifu    | 有効   |
+| 投了状態 & 保存済み | セーブ         | executeInsertKifu    | 無効   |
 | 通常状態            | 投了           | executeResign  | 有効   |
 
 ## セーブ機能実装仕様

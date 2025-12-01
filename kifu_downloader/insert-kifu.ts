@@ -99,8 +99,8 @@ function generateGameHash(moves: string[], metadata: KifMetadata): string {
   return createHash('sha256').update(jsonString).digest('hex');
 }
 
-// Upload Logic
-async function uploadGame(
+// Insert Logic
+async function insertGame(
   client: ReturnType<typeof createClient<Database>>,
   moves: string[],
   metadata: KifMetadata,
@@ -216,7 +216,7 @@ async function uploadGame(
 
   const { error: statsError } = await client.from("shogi_moves_statistics").insert(statsData);
   if (statsError) {
-    console.error(`  Error uploading statistics: ${statsError.message}`);
+    console.error(`  Error inserting statistics: ${statsError.message}`);
     return false;
   }
 
@@ -237,11 +237,11 @@ async function uploadGame(
 
   const { error: gameError } = await client.from("game_records").insert(gameRecord);
   if (gameError) {
-    console.error(`  Error uploading game record: ${gameError.message}`);
+    console.error(`  Error inserting game record: ${gameError.message}`);
     return false;
   }
 
-  console.log(`  Upload complete: ${statisticsRecords.length} moves`);
+  console.log(`  Insert complete: ${statisticsRecords.length} moves`);
   return true;
 }
 
@@ -324,7 +324,7 @@ async function main() {
         successCount++;
       } else {
         if (client) {
-          const success = await uploadGame(client, moves, metadata, userId, skipDuplicateCheck);
+          const success = await insertGame(client, moves, metadata, userId, skipDuplicateCheck);
           if (success) successCount++;
           else skipCount++;
         }

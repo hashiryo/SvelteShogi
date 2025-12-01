@@ -8,7 +8,7 @@ import { GameRecordsRepository } from "@/lib/supabase/game-records";
 import { MoveStatisticsRepository } from "@/lib/supabase/move-statistics";
 import { CurrentUserStore } from "@/store/auth.svelte";
 
-export async function executeSave(nodeIndex: number) {
+export async function executeInsertKifu(nodeIndex: number) {
   const currentNode = NodesStore.getNode(nodeIndex);
 
   // 入力検証

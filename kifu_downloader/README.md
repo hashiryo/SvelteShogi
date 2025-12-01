@@ -1,13 +1,13 @@
 # 将棋ウォーズ棋譜ダウンローダー & インポーター
 
-このツールは、[SHOGI-EXTEND](https://www.shogi-extend.com/swars/search) から将棋ウォーズの棋譜を自動的にダウンロードし、Supabaseデータベースにインポートします。
+このツールは、[SHOGI-EXTEND](https://www.shogi-extend.com/swars/search) から将棋ウォーズの棋譜を自動的にダウンロードし、Supabaseデータベースにインサートします。
 
 ## 機能
 
 - 指定したユーザーIDの棋譜を一括ダウンロード
 - ページネーション対応（全ページを自動巡回）
 - 既存ファイルのスキップ（重複ダウンロードなし）
-- **棋譜のパースとSupabaseへのインポート**
+- **棋譜のパースとSupabaseへのインサート**
 - **重複チェック（同じ棋譜の二重登録防止）**
 - GitHub Actions による自動定期実行（毎日 00:00 JST）
 
@@ -34,7 +34,7 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-### 2. Node.js環境（インポート用）
+### 2. Node.js環境（インサート用）
 
 プロジェクトルートで依存関係をインストールします。
 
@@ -63,22 +63,22 @@ python kifu_downloader/main.py
 
 ダウンロードされた棋譜は `kifu_downloader/kifu/` ディレクトリに保存されます。
 
-### 棋譜のインポート
+### 棋譜のインサート
 
-TypeScriptで書かれたインポートツールを使用します。
+TypeScriptで書かれたインサートツールを使用します。
 
 ```bash
-# インポート実行
-npm run import-kifu -- kifu_downloader/kifu
+# インサート実行
+npm run insert-kifu -- kifu_downloader/kifu
 
 # ドライラン（DBには書き込まない）
-npm run import-kifu -- kifu_downloader/kifu --dry-run
+npm run insert-kifu -- kifu_downloader/kifu --dry-run
 
-# 特定のファイルのみインポート
-npm run import-kifu -- kifu_downloader/kifu/specific-game.kif
+# 特定のファイルのみインサート
+npm run insert-kifu -- kifu_downloader/kifu/specific-game.kif
 
 # 重複チェックをスキップ
-npm run import-kifu -- kifu_downloader/kifu --skip-duplicate-check
+npm run insert-kifu -- kifu_downloader/kifu --skip-duplicate-check
 ```
 
 ### ユーザーIDの変更
@@ -91,7 +91,7 @@ USER_ID = "hashiryoma"  # ここを変更
 
 ## GitHub Actions での自動実行
 
-このリポジトリでは、GitHub Actions を使用して毎日自動的に棋譜をダウンロード＆インポートします。
+このリポジトリでは、GitHub Actions を使用して毎日自動的に棋譜をダウンロード＆インサートします。
 
 - **自動実行時刻**: 毎日 00:00 JST（UTC 15:00）
 - **ワークフロー**: `.github/workflows/kifu_download.yml`
@@ -137,7 +137,7 @@ on:
 kifu_downloader/
 ├── README.md           # このファイル
 ├── main.py             # 棋譜ダウンロードスクリプト (Python)
-├── import_kifu.ts      # 棋譜インポートCLI (TypeScript)
+├── insert-kifu.ts      # 棋譜インサートCLI (TypeScript)
 ├── requirements.txt    # Python依存パッケージ
 ├── venv/               # 仮想環境（gitignore対象）
 └── kifu/               # ダウンロードされた棋譜の保存先
@@ -154,7 +154,7 @@ kifu_downloader/
 4. `requests` ライブラリで棋譜ファイルをダウンロード
 5. 次のページがあれば移動して繰り返し
 
-### インポート処理 (TypeScript)
+### インサート処理 (TypeScript)
 
 1. KIFファイルをパースしてメタデータと指し手を抽出 (`src/domain/format-parcer.ts` を再利用)
 2. 盤面を再生しながら各局面のSFENXを生成 (`src/domain/move.ts`, `src/domain/sfenx.ts` を再利用)
@@ -170,7 +170,7 @@ kifu_downloader/
 - サイトの仕様が変更された可能性があります（HTMLの構造など）
 - しばらく待ってから再実行してみてください
 
-### インポートが失敗する
+### インサートが失敗する
 
 - 環境変数が正しく設定されているか確認してください
 - Service Role Keyを使用しているか確認してください（anon keyでは権限不足の可能性）

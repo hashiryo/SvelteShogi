@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "test": "vitest run",
     "types:generate": "supabase gen types typescript --local > src/lib/supabase/types.d.ts",
-    "import-kifu": "tsx --tsconfig tsconfig.app.json kifu_downloader/import_kifu.ts"
+    "insert-kifu": "tsx --tsconfig tsconfig.app.json kifu_downloader/insert-kifu.ts"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.0",

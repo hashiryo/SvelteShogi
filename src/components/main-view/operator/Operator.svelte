@@ -3,14 +3,14 @@
   import { CurrentIndexStore, NodesStore } from "@/store/kifu-node.svelte";
   import { jumpToKifu } from "@/handler/kifu-node";
   import { executeResign, executeTimeout } from "@/handler/execute-move";
-  import { executeSave } from "@/handler/save";
+  import { executeInsertKifu } from "@/handler/insert-kifu";
 
   let reverse = $derived(ReverseStore.get());
   let ids = $derived(NodesStore.getPath(0));
 
   let currentIndex = $derived(CurrentIndexStore.get());
   let currentNode = $derived(
-    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null
+    currentIndex >= 0 ? NodesStore.getNode(currentIndex) : null,
   );
 
   // 現在位置の計算
@@ -18,7 +18,7 @@
 
   // 投了状態の判定
   let isResignState = $derived(
-    currentNode?.display === "投了" || currentNode?.display === "切れ負け"
+    currentNode?.display === "投了" || currentNode?.display === "切れ負け",
   );
   let isSavedState = $derived(currentNode?.isSaved ?? false);
   let shouldShowSaveButton = $derived(isResignState);
@@ -172,7 +172,7 @@
       <button
         aria-label="save"
         onclick={() => {
-          executeSave(currentIndex);
+          executeInsertKifu(currentIndex);
         }}
         disabled={isSaveButtonDisabled}
         class="save-btn {isSaveButtonDisabled ? 'disabled' : ''}"
