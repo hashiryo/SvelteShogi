@@ -1,19 +1,19 @@
-# 将棋ウォーズ棋譜ダウンローダー & アップローダー
+# 将棋ウォーズ棋譜ダウンローダー & インポーター
 
-このツールは、[SHOGI-EXTEND](https://www.shogi-extend.com/swars/search) から将棋ウォーズの棋譜を自動的にダウンロードし、Supabaseデータベースにアップロードします。
+このツールは、[SHOGI-EXTEND](https://www.shogi-extend.com/swars/search) から将棋ウォーズの棋譜を自動的にダウンロードし、Supabaseデータベースにインポートします。
 
 ## 機能
 
 - 指定したユーザーIDの棋譜を一括ダウンロード
 - ページネーション対応（全ページを自動巡回）
 - 既存ファイルのスキップ（重複ダウンロードなし）
-- **棋譜のパースとSupabaseへのアップロード**
+- **棋譜のパースとSupabaseへのインポート**
 - **重複チェック（同じ棋譜の二重登録防止）**
 - GitHub Actions による自動定期実行（毎日 00:00 JST）
 
 ## セットアップ
 
-### 1. 依存関係のインストール
+### 1. Python環境（ダウンロード用）
 
 ```bash
 # プロジェクトルートから実行
@@ -34,41 +34,56 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
+### 2. Node.js環境（インポート用）
+
+プロジェクトルートで依存関係をインストールします。
+
+```bash
+npm install
+```
+
+### 3. 環境変数の設定
+
+`.env` または `.env.local` ファイルを作成し、以下の変数を設定してください。
+
+```env
+SUPABASE_URL="your-supabase-url"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+UPLOAD_USER_ID="your-user-id"  # オプション
+```
+
 ## 使い方
 
 ### 棋譜のダウンロード
 
 ```bash
-source venv/bin/activate
-python main.py
+# 仮想環境を有効化してから
+python kifu_downloader/main.py
 ```
 
-ダウンロードされた棋譜は `kifu/` ディレクトリに保存されます。
+ダウンロードされた棋譜は `kifu_downloader/kifu/` ディレクトリに保存されます。
 
-### 棋譜のアップロード
+### 棋譜のインポート
+
+TypeScriptで書かれたインポートツールを使用します。
 
 ```bash
-# 環境変数を設定
-export SUPABASE_URL="your-supabase-url"
-export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
-export UPLOAD_USER_ID="your-user-id"  # オプション
-
-# アップロード実行
-python upload_kifu.py
+# インポート実行
+npm run import-kifu -- kifu_downloader/kifu
 
 # ドライラン（DBには書き込まない）
-python upload_kifu.py --dry-run
+npm run import-kifu -- kifu_downloader/kifu --dry-run
 
-# 特定のファイルのみアップロード
-python upload_kifu.py kifu/specific-game.kif
+# 特定のファイルのみインポート
+npm run import-kifu -- kifu_downloader/kifu/specific-game.kif
 
 # 重複チェックをスキップ
-python upload_kifu.py --skip-duplicate-check
+npm run import-kifu -- kifu_downloader/kifu --skip-duplicate-check
 ```
 
 ### ユーザーIDの変更
 
-`main.py` の以下の行を編集してください：
+ダウンロード対象のユーザーIDを変更するには、`kifu_downloader/main.py` の以下の行を編集してください：
 
 ```python
 USER_ID = "hashiryoma"  # ここを変更
@@ -76,7 +91,7 @@ USER_ID = "hashiryoma"  # ここを変更
 
 ## GitHub Actions での自動実行
 
-このリポジトリでは、GitHub Actions を使用して毎日自動的に棋譜をダウンロード＆アップロードします。
+このリポジトリでは、GitHub Actions を使用して毎日自動的に棋譜をダウンロード＆インポートします。
 
 - **自動実行時刻**: 毎日 00:00 JST（UTC 15:00）
 - **ワークフロー**: `.github/workflows/kifu_download.yml`
@@ -121,11 +136,8 @@ on:
 ```
 kifu_downloader/
 ├── README.md           # このファイル
-├── main.py             # 棋譜ダウンロードスクリプト
-├── upload_kifu.py      # 棋譜アップロードCLI
-├── kif_parser.py       # KIF形式パーサー
-├── shogi_board.py      # 盤面管理・SFENX変換
-├── db_uploader.py      # Supabaseアップロード処理
+├── main.py             # 棋譜ダウンロードスクリプト (Python)
+├── import_kifu.ts      # 棋譜インポートCLI (TypeScript)
 ├── requirements.txt    # Python依存パッケージ
 ├── venv/               # 仮想環境（gitignore対象）
 └── kifu/               # ダウンロードされた棋譜の保存先
@@ -134,7 +146,7 @@ kifu_downloader/
 
 ## 仕組み
 
-### ダウンロード処理
+### ダウンロード処理 (Python)
 
 1. Playwright を使用して検索ページにアクセス
 2. 棋譜一覧から各対局のIDを抽出
@@ -142,10 +154,10 @@ kifu_downloader/
 4. `requests` ライブラリで棋譜ファイルをダウンロード
 5. 次のページがあれば移動して繰り返し
 
-### アップロード処理
+### インポート処理 (TypeScript)
 
-1. KIFファイルをパースしてメタデータと指し手を抽出
-2. 盤面を再生しながら各局面のSFENXを生成
+1. KIFファイルをパースしてメタデータと指し手を抽出 (`src/domain/format-parcer.ts` を再利用)
+2. 盤面を再生しながら各局面のSFENXを生成 (`src/domain/move.ts`, `src/domain/sfenx.ts` を再利用)
 3. 重複チェック（同じハッシュの棋譜が既に存在しないか）
 4. 統計データ（`shogi_moves_statistics`）をバルクインサート
 5. ゲームレコード（`game_records`）を挿入
@@ -158,7 +170,7 @@ kifu_downloader/
 - サイトの仕様が変更された可能性があります（HTMLの構造など）
 - しばらく待ってから再実行してみてください
 
-### アップロードが失敗する
+### インポートが失敗する
 
 - 環境変数が正しく設定されているか確認してください
 - Service Role Keyを使用しているか確認してください（anon keyでは権限不足の可能性）
