@@ -10,7 +10,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "test:watch": "vitest",
     "test": "vitest run",
-    "types:generate": "supabase gen types typescript --local > src/lib/supabase/types.d.ts"
+    "types:generate": "supabase gen types typescript --local > src/lib/supabase/types.d.ts",
+    "upload-kifu": "tsx --tsconfig tsconfig.app.json kifu_downloader/upload_kifu.ts"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
