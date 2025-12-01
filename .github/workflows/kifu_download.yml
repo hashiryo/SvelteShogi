@@ -27,6 +27,15 @@ jobs:
       - name: Install Playwright browsers
         run: playwright install chromium
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
       - name: Run download script
         run: python kifu_downloader/main.py
 
@@ -35,7 +44,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           UPLOAD_USER_ID: ${{ secrets.UPLOAD_USER_ID }}
-        run: python kifu_downloader/upload_kifu.py
+        run: npm run import-kifu
 
       - name: Commit and push changes
         run: |
