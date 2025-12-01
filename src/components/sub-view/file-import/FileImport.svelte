@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { parseKif, readFileAsText } from "@/domain/format-parcer";
+  import { parseKif, parseCsa, readFileAsText } from "@/domain/format-parcer";
   import { movesToNodes } from "@/domain/move";
   import {
     fetchAndSetFavoriteMovesMulti,
@@ -22,8 +22,11 @@
   let metadata = $derived(MetadataStore.get());
 
   async function handleFileImport(file: File) {
-    if (!file.name.endsWith(".kif")) {
-      error = "KIFファイルのみ対応しています";
+    const isKif = file.name.toLowerCase().endsWith(".kif");
+    const isCsa = file.name.toLowerCase().endsWith(".csa");
+
+    if (!isKif && !isCsa) {
+      error = "KIFまたはCSAファイルのみ対応しています";
       return;
     }
 
@@ -43,7 +46,8 @@
         content = await readFileAsText(file, "UTF-8");
         console.log("UTF-8での読み込み完了、パース開始");
 
-        const parsedData = parseKif(content);
+        // 拡張子に応じてパーサーを切り替え
+        const parsedData = isCsa ? parseCsa(content) : parseKif(content);
 
         // メタデータが空の場合、エンコーディングが間違っている可能性がある
         if (
@@ -70,7 +74,7 @@
       }
 
       // Shift_JISでのパース
-      const parsedData = parseKif(content);
+      const parsedData = isCsa ? parseCsa(content) : parseKif(content);
       console.log(`✅ ${encoding}でのパース完了:`, parsedData);
       await processKifData(parsedData);
     } catch (err) {
@@ -172,7 +176,7 @@
   >
     <input
       type="file"
-      accept=".kif"
+      accept=".kif,.csa"
       bind:this={fileInput}
       onchange={handleFileSelect}
       style="display: none;"
@@ -199,7 +203,7 @@
       {#if isLoading}
         読み込み中...
       {:else}
-        KIFファイルをドロップ<br />またはクリックして選択
+        KIFまたはCSAファイルをドロップ<br />またはクリックして選択
       {/if}
     </p>
   </div>

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
-import { parseKif } from "@/domain/format-parcer";
+import { parseKif, parseCsa } from "@/domain/format-parcer";
 import { moveToNextGridCaptures } from "@/domain/move";
 import {
   sfenxToShogiBoard,
@@ -310,13 +310,15 @@ async function main() {
   if (fs.statSync(targetPath).isFile()) {
     kifFiles.push(targetPath);
   } else {
-    const files = fs.readdirSync(targetPath).filter((f) => f.endsWith(".kif"));
+    const files = fs
+      .readdirSync(targetPath)
+      .filter((f) => f.endsWith(".kif") || f.endsWith(".csa"));
     files.sort();
     files.forEach((f) => kifFiles.push(path.join(targetPath, f)));
   }
 
   if (kifFiles.length === 0) {
-    console.error(`No KIF files found in: ${targetPath}`);
+    console.error(`No KIF/CSA files found in: ${targetPath}`);
     process.exit(1);
   }
 
@@ -344,7 +346,12 @@ async function main() {
     console.log(`Processing: ${path.basename(file)}`);
     try {
       const content = fs.readFileSync(file, "utf-8");
-      const { metadata, moves } = parseKif(content);
+      const ext = path.extname(file).toLowerCase();
+      
+      // Select parser based on file extension
+      const { metadata, moves } = ext === ".csa" 
+        ? parseCsa(content) 
+        : parseKif(content);
 
       if (dryRun) {
         console.log(`  Parse success: ${moves.length} moves`);
