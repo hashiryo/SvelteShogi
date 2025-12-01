@@ -38,7 +38,7 @@
 <div class="auth-page">
   <div class="auth-container">
     <div class="app-logo">
-      <h1>Svelte Shogi</h1>
+      <h1>将棋分析アプリ</h1>
     </div>
 
     <div class="auth-card">
