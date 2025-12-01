@@ -16,14 +16,18 @@ export async function initializeAuth() {
     data: { session },
   } = await supabase.auth.getSession();
 
+  // localStorageのフラグもチェック（リロード & タブ間共有対応）
+  const isPasswordResetInProgress = localStorage.getItem('password_reset_in_progress') === 'true';
+  const shouldShowPasswordReset = isPasswordRecoveryFlow || isPasswordResetInProgress;
 
-  if (isPasswordRecoveryFlow) {
+  if (shouldShowPasswordReset) {
     if (session?.user) {
       CurrentUserStore.set(session.user);
     }
-    // パスワードリセットフラグをセッションストレージに保存
+    // パスワードリセットフラグをlocalStorageに保存
     // これにより、パスワード更新が完了するまで状態がロックされる
-    sessionStorage.setItem('password_reset_in_progress', 'true');
+    // localStorageを使うことで、すべてのタブで状態が共有される
+    localStorage.setItem('password_reset_in_progress', 'true');
     AppStatusStore.set("PASSWORD_RESET");
   } else if (session?.user) {
     CurrentUserStore.set(session.user);
@@ -35,14 +39,14 @@ export async function initializeAuth() {
 
   // 認証状態の変更監視
   supabase.auth.onAuthStateChange(async (event, session) => {
-    // セッションストレージのフラグをチェック
-    const isPasswordResetInProgress = sessionStorage.getItem('password_reset_in_progress') === 'true';
+    // localStorageのフラグをチェック
+    const isPasswordResetInProgress = localStorage.getItem('password_reset_in_progress') === 'true';
 
     // パスワードリセットフローの検出
     // 1. PASSWORD_RECOVERYイベント
     // 2. 保存されたフラグ（ハッシュ処理前に取得）
     // 3. AMRフィールドの認証方法が recovery
-    // 4. セッションストレージのフラグ（進行中のリセット）
+    // 4. localStorageのフラグ（進行中のリセット、タブ間共有）
     const amr = (session?.user as any)?.amr as Array<{method: string, timestamp: number}> | undefined;
     const isPasswordRecovery = 
       event === "PASSWORD_RECOVERY" ||

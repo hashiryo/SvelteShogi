@@ -18,7 +18,7 @@
       successMessage = "パスワードを更新しました。";
 
       // パスワードリセットフラグをクリア
-      sessionStorage.removeItem("password_reset_in_progress");
+      localStorage.removeItem("password_reset_in_progress");
 
       setTimeout(() => {
         // ハッシュを完全に削除してからリロード
