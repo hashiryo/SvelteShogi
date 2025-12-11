@@ -8,9 +8,13 @@ USER_ID = "hashiryoma"
 BASE_URL = f"https://www.shogi-extend.com/swars/search?query={USER_ID}"
 DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "kifu")
 
+# Realistic User-Agent to avoid bot detection
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
 def download_file(url, save_path):
     try:
-        response = requests.get(url)
+        headers = {"User-Agent": USER_AGENT}
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
         with open(save_path, 'wb') as f:
             f.write(response.content)
@@ -27,16 +31,22 @@ def run():
     with sync_playwright() as p:
         print("Launching browser...")
         browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
+        page = browser.new_page(user_agent=USER_AGENT)
 
         print(f"Navigating to {BASE_URL}...")
-        page.goto(BASE_URL)
+        page.goto(BASE_URL, wait_until="networkidle")
         
-        # Wait for results to load
+        # Wait for results to load (increased timeout for CI environments)
         try:
-            page.wait_for_selector("table", timeout=10000)
+            page.wait_for_selector("table", timeout=30000)
+            # Additional wait for JavaScript to fully render
+            time.sleep(3)
         except:
             print("Could not find table. The page might not have loaded correctly or no results found.")
+            # Save screenshot for debugging
+            screenshot_path = os.path.join(os.path.dirname(__file__), "debug_screenshot.png")
+            page.screenshot(path=screenshot_path)
+            print(f"Debug screenshot saved to: {screenshot_path}")
             browser.close()
             return
 
@@ -48,8 +58,14 @@ def run():
             # These links look like /swars/battles/Ifsixwasnine69-hashiryoma-20251129_200135/?viewpoint=white
             detail_links = page.locator("a.ShowButton").all()
             
+            print(f"Found {len(detail_links)} game links on page {page_num}")
+            
             if not detail_links:
                 print("No game links found on this page.")
+                # Save screenshot for debugging
+                screenshot_path = os.path.join(os.path.dirname(__file__), "debug_no_games.png")
+                page.screenshot(path=screenshot_path)
+                print(f"Debug screenshot saved to: {screenshot_path}")
                 break
             
             new_downloads_count = 0
