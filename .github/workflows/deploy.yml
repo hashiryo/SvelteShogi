@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"] # またはmasterブランチ
+    paths-ignore:
+      - "kifu_downloader/**"
+      - "*.md"
+      - ".gitignore"
   workflow_dispatch:
 
 permissions:
