@@ -31,6 +31,7 @@
         ? relativeCapturedSentePositions.find((p) => p.piece === arrow.piece)
         : relativeCapturedGotePositions.find((p) => p.piece === arrow.piece);
       if (position) {
+        console.log(position);
         return {
           startX: position.position.x,
           startY: position.position.y,

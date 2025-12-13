@@ -29,11 +29,11 @@
 
   let elements = $state([]) as HTMLDivElement[];
   $effect(() => {
-    if (elements.length == capturedPieces.length) {
+    if (elements.length == adjustCapturedPieces.length) {
       elements.forEach((element, index) => {
         if (element) {
           capturedElements[index] = {
-            piece: capturedPieces[index].piece,
+            piece: adjustCapturedPieces[index].piece,
             element,
           };
         }
