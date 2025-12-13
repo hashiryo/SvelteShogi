@@ -134,6 +134,7 @@
     bottom: -10%;
     right: -10%;
     z-index: 30;
+    text-align: center;
     box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
   }
 </style>
