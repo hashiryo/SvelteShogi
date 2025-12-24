@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { parseKif, parseCsa, readFileAsText } from "@/domain/format-parcer";
   import { movesToNodes } from "@/domain/move";
   import {
@@ -20,6 +21,93 @@
   let isDragging = $state(false);
   let fileInput: HTMLInputElement;
   let metadata = $derived(MetadataStore.get());
+
+  onMount(() => {
+    const handleGlobalPaste = (e: ClipboardEvent) => {
+      // 入力欄でのペーストは無視
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      const text = e.clipboardData?.getData("text");
+      if (text) {
+        handleKifuTextImport(text);
+      }
+    };
+
+    window.addEventListener("paste", handleGlobalPaste);
+    return () => window.removeEventListener("paste", handleGlobalPaste);
+  });
+
+  async function handleKifuTextImport(text: string) {
+    if (!text || text.trim().length === 0) return;
+
+    // 棋譜っぽいテキストかざっくり判定
+    const isKif =
+      text.includes("開始日時：") ||
+      text.includes("手数----指手") ||
+      text.includes("手合割：");
+    const isCsa =
+      text.includes("V2.2") ||
+      text.startsWith("+") ||
+      text.startsWith("-") ||
+      text.includes("PI");
+
+    if (!isKif && !isCsa) {
+      // どちらでもない場合は試してみて失敗したらエラーにする
+      console.log("形式不明のため、KIFとしてパースを試みます...");
+    }
+
+    isLoading = true;
+    error = null;
+    MetadataStore.clear();
+
+    try {
+      let parsedData;
+      if (isCsa) {
+        parsedData = parseCsa(text);
+      } else {
+        try {
+          parsedData = parseKif(text);
+        } catch (kifError) {
+          if (!isKif) {
+            // 最初からKIFと分かっていない場合はCSAも試す
+            console.log("KIFパース失敗、CSAとして試行します...");
+            parsedData = parseCsa(text);
+          } else {
+            throw kifError;
+          }
+        }
+      }
+
+      await processKifData(parsedData);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "不明なエラーが発生しました";
+      error = `棋譜のパースに失敗しました: ${errorMessage}`;
+      console.error("❌ テキストパースエラー:", err);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  async function handleClipboardPaste() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        await handleKifuTextImport(text);
+      } else {
+        error = "クリップボードが空です";
+      }
+    } catch (err) {
+      console.error("❌ クリップボードの読み取りに失敗しました:", err);
+      error =
+        "クリップボードの読み取り権限がないか、ブラウザが対応していません";
+    }
+  }
 
   async function handleFileImport(file: File) {
     const isKif = file.name.toLowerCase().endsWith(".kif");
@@ -164,6 +252,32 @@
 </script>
 
 <div class="import-container">
+  <div class="actions-container">
+    <button
+      class="clipboard-button"
+      onclick={handleClipboardPaste}
+      disabled={isLoading}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+        ></path>
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+      </svg>
+      クリップボードから貼り付け
+    </button>
+  </div>
+
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
@@ -203,7 +317,8 @@
       {#if isLoading}
         読み込み中...
       {:else}
-        KIFまたはCSAファイルをドロップ<br />またはクリックして選択
+        KIF/CSAをドロップ・クリック<br />
+        または画面上でペースト(Ctrl+V)
       {/if}
     </p>
   </div>
@@ -262,6 +377,48 @@
 <style>
   .import-container {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .clipboard-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .clipboard-button:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .clipboard-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .clipboard-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--border-color);
   }
 
   .drop-zone {
