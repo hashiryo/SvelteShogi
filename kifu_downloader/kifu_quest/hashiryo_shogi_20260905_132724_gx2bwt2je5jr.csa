@@ -1,0 +1,46 @@
+'Shogi Quest
+N+the_king(1721)
+N-hashiryo(1694)
+P1-KY-KE-GI-KI-OU-KI-GI-KE-KY
+P2 * -HI *  *  *  *  * -KA * 
+P3-FU-FU-FU-FU-FU-FU-FU-FU-FU
+P4 *  *  *  *  *  *  *  *  * 
+P5 *  *  *  *  *  *  *  *  * 
+P6 *  *  *  *  *  *  *  *  * 
+P7+FU+FU+FU+FU+FU+FU+FU+FU+FU
+P8 * +KA *  *  *  *  * +HI * 
+P9+KY+KE+GI+KI+OU+KI+GI+KE+KY
++
++2726FU
+-3334FU
++7776FU
+-4344FU
++3948GI
+-3142GI
++4958KI
+-4243GI
++5968OU
+-4132KI
++2625FU
+-2233KA
++4746FU
+-8272HI
++4847GI
+-7374FU
++4756GI
+-7162GI
++7978GI
+-5354FU
++6879OU
+-6253GI
++3736FU
+-6152KI
++2937KE
+-7475FU
++7675FU
+-7275HI
++8866KA
+-7572HI
++3635FU
+-3435FU
+%TORYO
